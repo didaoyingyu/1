@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
+
 /**
  * CodeIgniter
  *
@@ -16,7 +17,6 @@ if (!defined('BASEPATH'))
  * @filesource	
  */
 // ------------------------------------------------------------------------
-
 /**
  * CodeIgniter APC Caching Class 
  *
@@ -39,12 +39,10 @@ class CI_Cache_apc extends CI_Driver {
 	 */
 	public function get($id) {
 		$data = apc_fetch($id);
-
 		return (is_array($data)) ? $data[0] : FALSE;
 	}
 
 	// ------------------------------------------------------------------------	
-
 	/**
 	 * Cache Save
 	 *
@@ -59,7 +57,6 @@ class CI_Cache_apc extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Delete from Cache
 	 *
@@ -71,7 +68,6 @@ class CI_Cache_apc extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Clean the cache
 	 *
@@ -82,7 +78,6 @@ class CI_Cache_apc extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Cache Info
 	 *
@@ -94,7 +89,6 @@ class CI_Cache_apc extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Get Cache Metadata
 	 *
@@ -103,13 +97,10 @@ class CI_Cache_apc extends CI_Driver {
 	 */
 	public function get_metadata($id) {
 		$stored = apc_fetch($id);
-
 		if (count($stored) !== 3) {
 			return FALSE;
 		}
-
 		list($data, $time, $ttl) = $stored;
-
 		return array(
 			'expire' => $time + $ttl,
 			'mtime' => $time,
@@ -118,7 +109,6 @@ class CI_Cache_apc extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * is_supported()
 	 *
@@ -129,7 +119,6 @@ class CI_Cache_apc extends CI_Driver {
 			log_message('error', 'The APC PHP extension must be loaded to use APC Cache.');
 			return FALSE;
 		}
-
 		return TRUE;
 	}
 
@@ -137,6 +126,5 @@ class CI_Cache_apc extends CI_Driver {
 }
 
 // End Class
-
 /* End of file Cache_apc.php */
 /* Location: ./system/libraries/Cache/drivers/Cache_apc.php */

@@ -20,15 +20,11 @@ class Deck extends CI_Controller {
 		$config['upload_path'] = './uploads/';
 		$config['allowed_types'] = 'txt';
 		$config['max_size'] = '1000';
-
 		$this->load->library('upload', $config);
-
 		$deckName = $this->input->post('deck_name', FALSE);
 		$deckNameTst = $deckName . "";
 		$deckNameTst = preg_replace('/\s+/', '', $deckNameTst);
-
 		if ($deckName != null && !empty($deckNameTst)) {
-
 			if (!$this->upload->do_upload()) {
 				$error = array('error' => $this->upload->display_errors());
 				$this->load->view('new_deck', $error);
@@ -36,7 +32,6 @@ class Deck extends CI_Controller {
 				$uploadData = $this->upload->data();
 				$uplodedFile = $uploadData['full_path'];
 				/* echo $uplodedFile."<br>"; */
-
 				/* load the deck */
 				$file = fopen($uplodedFile, "r");
 				if ($file) {
@@ -51,7 +46,6 @@ class Deck extends CI_Controller {
 						}
 					}
 					fclose($file);
-
 					//save the deck and print a sucess message
 					$user = $this->ion_auth->user()->row();
 					$saveStatus = $this->card->save_deck($deckName, $qans, $user->id);

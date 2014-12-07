@@ -16,7 +16,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * CodeIgniter Security Helpers
  *
@@ -27,7 +26,6 @@ if (!defined('BASEPATH'))
  * @link		http://codeigniter.com/user_guide/helpers/security_helper.html
  */
 // ------------------------------------------------------------------------
-
 /**
  * XSS Filtering
  *
@@ -44,9 +42,7 @@ if (!function_exists('xss_clean')) {
 	}
 
 }
-
 // ------------------------------------------------------------------------
-
 /**
  * Sanitize Filename
  *
@@ -62,9 +58,7 @@ if (!function_exists('sanitize_filename')) {
 	}
 
 }
-
 // --------------------------------------------------------------------
-
 /**
  * Hash encode a string
  *
@@ -83,9 +77,7 @@ if (!function_exists('do_hash')) {
 	}
 
 }
-
 // ------------------------------------------------------------------------
-
 /**
  * Strip Image Tags
  *
@@ -98,14 +90,11 @@ if (!function_exists('strip_image_tags')) {
 	function strip_image_tags($str) {
 		$str = preg_replace("#<img\s+.*?src\s*=\s*[\"'](.+?)[\"'].*?\>#", "\\1", $str);
 		$str = preg_replace("#<img\s+.*?src\s*=\s*(.+?).*?\>#", "\\1", $str);
-
 		return $str;
 	}
 
 }
-
 // ------------------------------------------------------------------------
-
 /**
  * Convert PHP tags to entities
  *
@@ -120,7 +109,5 @@ if (!function_exists('encode_php_tags')) {
 	}
 
 }
-
-
 /* End of file security_helper.php */
 /* Location: ./system/helpers/security_helper.php */

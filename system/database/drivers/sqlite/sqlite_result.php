@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
+
 /**
  * CodeIgniter
  *
@@ -16,7 +17,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * SQLite Result Class
  *
@@ -39,7 +39,6 @@ class CI_DB_sqlite_result extends CI_DB_result {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Number of fields in the result set
 	 *
@@ -51,7 +50,6 @@ class CI_DB_sqlite_result extends CI_DB_result {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Fetch Field Names
 	 *
@@ -65,12 +63,10 @@ class CI_DB_sqlite_result extends CI_DB_result {
 		for ($i = 0; $i < $this->num_fields(); $i++) {
 			$field_names[] = sqlite_field_name($this->result_id, $i);
 		}
-
 		return $field_names;
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Field data
 	 *
@@ -88,15 +84,12 @@ class CI_DB_sqlite_result extends CI_DB_result {
 			$F->max_length = 0;
 			$F->primary_key = 0;
 			$F->default = '';
-
 			$retval[] = $F;
 		}
-
 		return $retval;
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Free the result
 	 *
@@ -107,7 +100,6 @@ class CI_DB_sqlite_result extends CI_DB_result {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Data Seek
 	 *
@@ -123,7 +115,6 @@ class CI_DB_sqlite_result extends CI_DB_result {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Result - associative array
 	 *
@@ -137,7 +128,6 @@ class CI_DB_sqlite_result extends CI_DB_result {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Result - object
 	 *

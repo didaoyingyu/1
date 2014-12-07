@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
+
 /**
  * CodeIgniter
  *
@@ -16,7 +17,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * CodeIgniter Dummy Caching Class
  *
@@ -41,7 +41,6 @@ class CI_Cache_dummy extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Cache Save
 	 *
@@ -56,7 +55,6 @@ class CI_Cache_dummy extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Delete from Cache
 	 *
@@ -68,7 +66,6 @@ class CI_Cache_dummy extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Clean the cache
 	 *
@@ -79,7 +76,6 @@ class CI_Cache_dummy extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Cache Info
 	 *
@@ -91,7 +87,6 @@ class CI_Cache_dummy extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Get Cache Metadata
 	 *
@@ -103,7 +98,6 @@ class CI_Cache_dummy extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Is this caching driver supported on the system?
 	 * Of course this one is.
@@ -118,6 +112,5 @@ class CI_Cache_dummy extends CI_Driver {
 }
 
 // End Class
-
 /* End of file Cache_dummy.php */
 /* Location: ./system/libraries/Cache/drivers/Cache_dummy.php */

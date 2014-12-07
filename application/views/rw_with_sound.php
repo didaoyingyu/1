@@ -428,17 +428,13 @@
         <!--      
         <audio controls="controls">
           <source id="sorce_id" type="audio/mpeg" >
-		 
         Your browser does not support the audio element. Please Update Browser..
-		
         Details:
-		
         supported browser: 
         Internet Explorer
         Google Chrome
         Firefox (Firefox 21 running on Windows 7, Windows 8, Windows Vista, and Android now supports MP3)
         Safari
-		
         </audio>-->
         <div class="container">
             <!-- Header Section -->

@@ -194,7 +194,6 @@
 			}
 			function deleteFile(id, obj)
 			{
-
 				var con = confirm("Are you sure you want to delete this?");
 				if (con)
 				{
@@ -361,7 +360,6 @@
 						"action",
 						"answer_upload_file"
 						);
-
 				data['items'] = getPostData("#table", fields).length > 0 ? getPostData("#table", fields) : null;
 				$.post(base_url + "index.php/game/update_cards",
 						{"cards": data},

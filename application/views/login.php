@@ -28,7 +28,6 @@
         <div class="container">
             <!-- Header Section -->
             <div class="header"><div class="headerText">Flash Card Game - Login</div></div>
-
             <!-- Login Window -->
             <div class="loginFormHolder">
                 <form method="POST" action="<?php echo base_url() ?>index.php/game/login" id="loginForm" onsubmit="doLogin()">

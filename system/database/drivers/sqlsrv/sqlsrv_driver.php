@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
+
 /**
  * CodeIgniter
  *
@@ -16,7 +17,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * SQLSRV Database Adapter Class
  *
@@ -57,7 +57,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	function db_connect($pooling = false) {
 		// Check for a UTF-8 charset being passed as CI's default 'utf8'.
 		$character_set = (0 === strcasecmp('utf8', $this->char_set)) ? 'UTF-8' : $this->char_set;
-
 		$connection = array(
 			'UID' => empty($this->username) ? '' : $this->username,
 			'PWD' => empty($this->password) ? '' : $this->password,
@@ -66,18 +65,15 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 			'CharacterSet' => $character_set,
 			'ReturnDatesAsStrings' => 1
 		);
-
 		// If the username and password are both empty, assume this is a 
 		// 'Windows Authentication Mode' connection.
 		if (empty($connection['UID']) && empty($connection['PWD'])) {
 			unset($connection['UID'], $connection['PWD']);
 		}
-
 		return sqlsrv_connect($this->hostname, $connection);
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Persistent database connection
 	 *
@@ -89,7 +85,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Reconnect
 	 *
@@ -104,7 +99,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Select the database
 	 *
@@ -116,7 +110,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Set client character set
 	 *
@@ -131,7 +124,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Execute the query
 	 *
@@ -148,7 +140,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Prep the query
 	 *
@@ -163,7 +154,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Begin Transaction
 	 *
@@ -174,22 +164,18 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 		if (!$this->trans_enabled) {
 			return TRUE;
 		}
-
 		// When transactions are nested we only begin/commit/rollback the outermost ones
 		if ($this->_trans_depth > 0) {
 			return TRUE;
 		}
-
 		// Reset the transaction failure flag.
 		// If the $test_mode flag is set to TRUE transactions will be rolled back
 		// even if the queries produce a successful result.
 		$this->_trans_failure = ($test_mode === TRUE) ? TRUE : FALSE;
-
 		return sqlsrv_begin_transaction($this->conn_id);
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Commit Transaction
 	 *
@@ -200,17 +186,14 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 		if (!$this->trans_enabled) {
 			return TRUE;
 		}
-
 		// When transactions are nested we only begin/commit/rollback the outermost ones
 		if ($this->_trans_depth > 0) {
 			return TRUE;
 		}
-
 		return sqlsrv_commit($this->conn_id);
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Rollback Transaction
 	 *
@@ -221,17 +204,14 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 		if (!$this->trans_enabled) {
 			return TRUE;
 		}
-
 		// When transactions are nested we only begin/commit/rollback the outermost ones
 		if ($this->_trans_depth > 0) {
 			return TRUE;
 		}
-
 		return sqlsrv_rollback($this->conn_id);
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Escape String
 	 *
@@ -246,7 +226,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Affected Rows
 	 *
@@ -258,7 +237,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Insert ID
 	 *
@@ -272,7 +250,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Parse major version
 	 *
@@ -289,7 +266,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Version number query string
 	 *
@@ -302,7 +278,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * "Count All" query
 	 *
@@ -316,19 +291,15 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	function count_all($table = '') {
 		if ($table == '')
 			return '0';
-
 		$query = $this->query("SELECT COUNT(*) AS numrows FROM " . $this->dbprefix . $table);
-
 		if ($query->num_rows() == 0)
 			return '0';
-
 		$row = $query->row();
 		$this->_reset_select();
 		return $row->numrows;
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * List table query
 	 *
@@ -343,7 +314,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * List column query
 	 *
@@ -358,7 +328,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Field data query
 	 *
@@ -373,7 +342,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * The error message string
 	 *
@@ -386,7 +354,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * The error message number
 	 *
@@ -399,7 +366,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Escape Table Name
 	 *
@@ -428,7 +394,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * From Tables
 	 *
@@ -443,12 +408,10 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 		if (!is_array($tables)) {
 			$tables = array($tables);
 		}
-
 		return implode(', ', $tables);
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Insert statement
 	 *
@@ -465,7 +428,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Update statement
 	 *
@@ -483,12 +445,10 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 		foreach ($values as $key => $val) {
 			$valstr[] = $key . " = " . $val;
 		}
-
 		return "UPDATE " . $this->_escape_table($table) . " SET " . implode(', ', $valstr) . " WHERE " . implode(" ", $where);
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Truncate statement
 	 *
@@ -505,7 +465,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Delete statement
 	 *
@@ -522,7 +481,6 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Limit string
 	 *
@@ -536,12 +494,10 @@ class CI_DB_sqlsrv_driver extends CI_DB {
 	 */
 	function _limit($sql, $limit, $offset) {
 		$i = $limit + $offset;
-
 		return preg_replace('/(^\SELECT (DISTINCT)?)/i', '\\1 TOP ' . $i . ' ', $sql);
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Close DB Connection
 	 *

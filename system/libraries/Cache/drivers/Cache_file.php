@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
+
 /**
  * CodeIgniter
  *
@@ -16,7 +17,6 @@ if (!defined('BASEPATH'))
  * @filesource	
  */
 // ------------------------------------------------------------------------
-
 /**
  * CodeIgniter Memcached Caching Class 
  *
@@ -36,14 +36,11 @@ class CI_Cache_file extends CI_Driver {
 	public function __construct() {
 		$CI = & get_instance();
 		$CI->load->helper('file');
-
 		$path = $CI->config->item('cache_path');
-
 		$this->_cache_path = ($path == '') ? APPPATH . 'cache/' : $path;
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Fetch from cache
 	 *
@@ -54,20 +51,16 @@ class CI_Cache_file extends CI_Driver {
 		if (!file_exists($this->_cache_path . $id)) {
 			return FALSE;
 		}
-
 		$data = read_file($this->_cache_path . $id);
 		$data = unserialize($data);
-
 		if (time() > $data['time'] + $data['ttl']) {
 			unlink($this->_cache_path . $id);
 			return FALSE;
 		}
-
 		return $data['data'];
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Save into cache
 	 *
@@ -83,17 +76,14 @@ class CI_Cache_file extends CI_Driver {
 			'ttl' => $ttl,
 			'data' => $data
 		);
-
 		if (write_file($this->_cache_path . $id, serialize($contents))) {
 			@chmod($this->_cache_path . $id, 0777);
 			return TRUE;
 		}
-
 		return FALSE;
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Delete from Cache
 	 *
@@ -105,7 +95,6 @@ class CI_Cache_file extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Clean the Cache
 	 *
@@ -116,7 +105,6 @@ class CI_Cache_file extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Cache Info
 	 *
@@ -130,7 +118,6 @@ class CI_Cache_file extends CI_Driver {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Get Cache Metadata
 	 *
@@ -141,28 +128,22 @@ class CI_Cache_file extends CI_Driver {
 		if (!file_exists($this->_cache_path . $id)) {
 			return FALSE;
 		}
-
 		$data = read_file($this->_cache_path . $id);
 		$data = unserialize($data);
-
 		if (is_array($data)) {
 			$mtime = filemtime($this->_cache_path . $id);
-
 			if (!isset($data['ttl'])) {
 				return FALSE;
 			}
-
 			return array(
 				'expire' => $mtime + $data['ttl'],
 				'mtime' => $mtime
 			);
 		}
-
 		return FALSE;
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Is supported
 	 *
@@ -178,6 +159,5 @@ class CI_Cache_file extends CI_Driver {
 }
 
 // End Class
-
 /* End of file Cache_file.php */
 /* Location: ./system/libraries/Cache/drivers/Cache_file.php */

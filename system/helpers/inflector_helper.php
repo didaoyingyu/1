@@ -16,7 +16,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * CodeIgniter Inflector Helpers
  *
@@ -27,7 +26,6 @@ if (!defined('BASEPATH'))
  * @link		http://codeigniter.com/user_guide/helpers/directory_helper.html
  */
 // --------------------------------------------------------------------
-
 /**
  * Singular
  *
@@ -41,7 +39,6 @@ if (!function_exists('singular')) {
 
 	function singular($str) {
 		$result = strval($str);
-
 		$singular_rules = array(
 			'/(matr)ices$/' => '\1ix',
 			'/(vert|ind)ices$/' => '\1ex',
@@ -71,21 +68,17 @@ if (!function_exists('singular')) {
 			'/(n)ews$/' => '\1\2ews',
 			'/([^u])s$/' => '\1',
 		);
-
 		foreach ($singular_rules as $rule => $replacement) {
 			if (preg_match($rule, $result)) {
 				$result = preg_replace($rule, $replacement, $result);
 				break;
 			}
 		}
-
 		return $result;
 	}
 
 }
-
 // --------------------------------------------------------------------
-
 /**
  * Plural
  *
@@ -100,7 +93,6 @@ if (!function_exists('plural')) {
 
 	function plural($str, $force = FALSE) {
 		$result = strval($str);
-
 		$plural_rules = array(
 			'/^(ox)$/' => '\1\2en', // ox
 			'/([m|l])ouse$/' => '\1ice', // mouse, louse
@@ -122,21 +114,17 @@ if (!function_exists('plural')) {
 			'/s$/' => 's', // no change (compatibility)
 			'/$/' => 's',
 		);
-
 		foreach ($plural_rules as $rule => $replacement) {
 			if (preg_match($rule, $result)) {
 				$result = preg_replace($rule, $replacement, $result);
 				break;
 			}
 		}
-
 		return $result;
 	}
 
 }
-
 // --------------------------------------------------------------------
-
 /**
  * Camelize
  *
@@ -155,9 +143,7 @@ if (!function_exists('camelize')) {
 	}
 
 }
-
 // --------------------------------------------------------------------
-
 /**
  * Underscore
  *
@@ -174,9 +160,7 @@ if (!function_exists('underscore')) {
 	}
 
 }
-
 // --------------------------------------------------------------------
-
 /**
  * Humanize
  *
@@ -193,7 +177,5 @@ if (!function_exists('humanize')) {
 	}
 
 }
-
-
 /* End of file inflector_helper.php */
 /* Location: ./system/helpers/inflector_helper.php */

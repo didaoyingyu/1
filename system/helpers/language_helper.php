@@ -16,7 +16,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * CodeIgniter Language Helpers
  *
@@ -27,7 +26,6 @@ if (!defined('BASEPATH'))
  * @link		http://codeigniter.com/user_guide/helpers/language_helper.html
  */
 // ------------------------------------------------------------------------
-
 /**
  * Lang
  *
@@ -43,16 +41,13 @@ if (!function_exists('lang')) {
 	function lang($line, $id = '') {
 		$CI = & get_instance();
 		$line = $CI->lang->line($line);
-
 		if ($id != '') {
 			$line = '<label for="' . $id . '">' . $line . "</label>";
 		}
-
 		return $line;
 	}
 
 }
-
 // ------------------------------------------------------------------------
 /* End of file language_helper.php */
 /* Location: ./system/helpers/language_helper.php */

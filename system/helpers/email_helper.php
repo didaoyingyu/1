@@ -16,7 +16,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * CodeIgniter Email Helpers
  *
@@ -27,7 +26,6 @@ if (!defined('BASEPATH'))
  * @link		http://codeigniter.com/user_guide/helpers/email_helper.html
  */
 // ------------------------------------------------------------------------
-
 /**
  * Validate email address
  *
@@ -41,9 +39,7 @@ if (!function_exists('valid_email')) {
 	}
 
 }
-
 // ------------------------------------------------------------------------
-
 /**
  * Send an email
  *
@@ -57,7 +53,5 @@ if (!function_exists('send_email')) {
 	}
 
 }
-
-
 /* End of file email_helper.php */
 /* Location: ./system/helpers/email_helper.php */

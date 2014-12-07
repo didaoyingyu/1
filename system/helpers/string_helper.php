@@ -16,7 +16,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * CodeIgniter String Helpers
  *
@@ -27,7 +26,6 @@ if (!defined('BASEPATH'))
  * @link		http://codeigniter.com/user_guide/helpers/string_helper.html
  */
 // ------------------------------------------------------------------------
-
 /**
  * Trim Slashes
  *
@@ -50,9 +48,7 @@ if (!function_exists('trim_slashes')) {
 	}
 
 }
-
 // ------------------------------------------------------------------------
-
 /**
  * Strip Slashes
  *
@@ -72,14 +68,11 @@ if (!function_exists('strip_slashes')) {
 		} else {
 			$str = stripslashes($str);
 		}
-
 		return $str;
 	}
 
 }
-
 // ------------------------------------------------------------------------
-
 /**
  * Strip Quotes
  *
@@ -96,9 +89,7 @@ if (!function_exists('strip_quotes')) {
 	}
 
 }
-
 // ------------------------------------------------------------------------
-
 /**
  * Quotes to Entities
  *
@@ -115,9 +106,7 @@ if (!function_exists('quotes_to_entities')) {
 	}
 
 }
-
 // ------------------------------------------------------------------------
-
 /**
  * Reduce Double Slashes
  *
@@ -141,9 +130,7 @@ if (!function_exists('reduce_double_slashes')) {
 	}
 
 }
-
 // ------------------------------------------------------------------------
-
 /**
  * Reduce Multiples
  *
@@ -165,18 +152,14 @@ if (!function_exists('reduce_multiples')) {
 
 	function reduce_multiples($str, $character = ',', $trim = FALSE) {
 		$str = preg_replace('#' . preg_quote($character, '#') . '{2,}#', $character, $str);
-
 		if ($trim === TRUE) {
 			$str = trim($str, $character);
 		}
-
 		return $str;
 	}
 
 }
-
 // ------------------------------------------------------------------------
-
 /**
  * Create a Random String
  *
@@ -197,7 +180,6 @@ if (!function_exists('random_string')) {
 			case 'numeric' :
 			case 'nozero' :
 			case 'alpha' :
-
 				switch ($type) {
 					case 'alpha' : $pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 						break;
@@ -208,7 +190,6 @@ if (!function_exists('random_string')) {
 					case 'nozero' : $pool = '123456789';
 						break;
 				}
-
 				$str = '';
 				for ($i = 0; $i < $len; $i++) {
 					$str .= substr($pool, mt_rand(0, strlen($pool) - 1), 1);
@@ -217,15 +198,12 @@ if (!function_exists('random_string')) {
 				break;
 			case 'unique' :
 			case 'md5' :
-
 				return md5(uniqid(mt_rand()));
 				break;
 			case 'encrypt' :
 			case 'sha1' :
-
 				$CI = & get_instance();
 				$CI->load->helper('security');
-
 				return do_hash(uniqid(mt_rand(), TRUE), 'sha1');
 				break;
 		}
@@ -234,7 +212,6 @@ if (!function_exists('random_string')) {
 }
 
 // ------------------------------------------------------------------------
-
 /**
  * Add's _1 to a string or increment the ending number to allow _2, _3, etc
  *
@@ -245,12 +222,10 @@ if (!function_exists('random_string')) {
  */
 function increment_string($str, $separator = '_', $first = 1) {
 	preg_match('/(.+)' . $separator . '([0-9]+)$/', $str, $match);
-
 	return isset($match[2]) ? $match[1] . $separator . ($match[2] + 1) : $str . $separator . $first;
 }
 
 // ------------------------------------------------------------------------
-
 /**
  * Alternator
  *
@@ -264,7 +239,6 @@ if (!function_exists('alternator')) {
 
 	function alternator() {
 		static $i;
-
 		if (func_num_args() == 0) {
 			$i = 0;
 			return '';
@@ -274,9 +248,7 @@ if (!function_exists('alternator')) {
 	}
 
 }
-
 // ------------------------------------------------------------------------
-
 /**
  * Repeater function
  *
@@ -292,7 +264,5 @@ if (!function_exists('repeater')) {
 	}
 
 }
-
-
 /* End of file string_helper.php */
 /* Location: ./system/helpers/string_helper.php */

@@ -16,7 +16,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * CodeIgniter Array Helpers
  *
@@ -27,7 +26,6 @@ if (!defined('BASEPATH'))
  * @link		http://codeigniter.com/user_guide/helpers/array_helper.html
  */
 // ------------------------------------------------------------------------
-
 /**
  * Element
  *
@@ -46,14 +44,11 @@ if (!function_exists('element')) {
 		if (!isset($array[$item]) OR $array[$item] == "") {
 			return $default;
 		}
-
 		return $array[$item];
 	}
 
 }
-
 // ------------------------------------------------------------------------
-
 /**
  * Random Element - Takes an array as input and returns a random element
  *
@@ -67,14 +62,11 @@ if (!function_exists('random_element')) {
 		if (!is_array($array)) {
 			return $array;
 		}
-
 		return $array[array_rand($array)];
 	}
 
 }
-
 // --------------------------------------------------------------------
-
 /**
  * Elements
  *
@@ -91,11 +83,9 @@ if (!function_exists('elements')) {
 
 	function elements($items, $array, $default = FALSE) {
 		$return = array();
-
 		if (!is_array($items)) {
 			$items = array($items);
 		}
-
 		foreach ($items as $item) {
 			if (isset($array[$item])) {
 				$return[$item] = $array[$item];
@@ -103,11 +93,9 @@ if (!function_exists('elements')) {
 				$return[$item] = $default;
 			}
 		}
-
 		return $return;
 	}
 
 }
-
 /* End of file array_helper.php */
 /* Location: ./system/helpers/array_helper.php */

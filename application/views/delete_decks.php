@@ -11,9 +11,7 @@
 				}
 			}
 			function editDeck(deckId) {
-
 				window.location = "<?php echo base_url() ?>" + "index.php/game/edit_decks/" + deckId;
-
 			}
         </script>
     </head>
@@ -33,7 +31,6 @@
                 </div>
                 <div class="clearFloat"></div>
             </div>
-
             <div class="genaricFormHolder">
                 <form method="post" action="<?php echo base_url(); ?>/index.php/">
                     <table border="1" style="width:100%">
@@ -52,10 +49,8 @@
 						?>
                     </table>
                 </form>
-
             </div>
             <p><?php echo anchor('', 'Home') ?></p>
         </div>
-
     </body>
 </html>

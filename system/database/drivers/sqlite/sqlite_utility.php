@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
+
 /**
  * CodeIgniter
  *
@@ -16,7 +17,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * SQLite Utility Class
  *
@@ -45,7 +45,6 @@ class CI_DB_sqlite_utility extends CI_DB_utility {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Optimize table query
 	 *
@@ -60,7 +59,6 @@ class CI_DB_sqlite_utility extends CI_DB_utility {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Repair table query
 	 *
@@ -75,7 +73,6 @@ class CI_DB_sqlite_utility extends CI_DB_utility {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * SQLite Export
 	 *

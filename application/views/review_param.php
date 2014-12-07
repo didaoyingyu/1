@@ -25,7 +25,6 @@
 					?>
                 </div>
             </div>
-
             <!-- Login Window -->
             <div class="rmParamFormHolder">
 				<?php echo validation_errors(); ?>
@@ -96,8 +95,6 @@
                 </form>
                 <br><br><p><?php echo anchor('', 'Home') ?></p> 
             </div>
-
         </div>
-
     </body>
 </html>

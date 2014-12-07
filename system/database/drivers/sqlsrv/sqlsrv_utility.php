@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
+
 /**
  * CodeIgniter
  *
@@ -16,7 +17,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * SQLSRV Utility Class
  *
@@ -37,7 +37,6 @@ class CI_DB_sqlsrv_utility extends CI_DB_utility {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Optimize table query
 	 *
@@ -52,7 +51,6 @@ class CI_DB_sqlsrv_utility extends CI_DB_utility {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * Repair table query
 	 *
@@ -67,7 +65,6 @@ class CI_DB_sqlsrv_utility extends CI_DB_utility {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 * MSSQL Export
 	 *

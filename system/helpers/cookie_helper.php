@@ -16,7 +16,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * CodeIgniter Cookie Helpers
  *
@@ -27,7 +26,6 @@ if (!defined('BASEPATH'))
  * @link		http://codeigniter.com/user_guide/helpers/cookie_helper.html
  */
 // ------------------------------------------------------------------------
-
 /**
  * Set cookie
  *
@@ -52,9 +50,7 @@ if (!function_exists('set_cookie')) {
 	}
 
 }
-
 // --------------------------------------------------------------------
-
 /**
  * Fetch an item from the COOKIE array
  *
@@ -67,20 +63,15 @@ if (!function_exists('get_cookie')) {
 
 	function get_cookie($index = '', $xss_clean = FALSE) {
 		$CI = & get_instance();
-
 		$prefix = '';
-
 		if (!isset($_COOKIE[$index]) && config_item('cookie_prefix') != '') {
 			$prefix = config_item('cookie_prefix');
 		}
-
 		return $CI->input->cookie($prefix . $index, $xss_clean);
 	}
 
 }
-
 // --------------------------------------------------------------------
-
 /**
  * Delete a COOKIE
  *
@@ -97,7 +88,5 @@ if (!function_exists('delete_cookie')) {
 	}
 
 }
-
-
 /* End of file cookie_helper.php */
 /* Location: ./system/helpers/cookie_helper.php */

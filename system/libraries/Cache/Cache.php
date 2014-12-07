@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
+
 /**
  * CodeIgniter
  *
@@ -16,7 +17,6 @@ if (!defined('BASEPATH'))
  * @filesource	
  */
 // ------------------------------------------------------------------------
-
 /**
  * CodeIgniter Caching Class 
  *
@@ -36,7 +36,6 @@ class CI_Cache extends CI_Driver_Library {
 	protected $_backup_driver;
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Constructor
 	 *
@@ -49,7 +48,6 @@ class CI_Cache extends CI_Driver_Library {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Get 
 	 *
@@ -64,7 +62,6 @@ class CI_Cache extends CI_Driver_Library {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Cache Save
 	 *
@@ -79,7 +76,6 @@ class CI_Cache extends CI_Driver_Library {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Delete from Cache
 	 *
@@ -91,7 +87,6 @@ class CI_Cache extends CI_Driver_Library {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Clean the cache
 	 *
@@ -102,7 +97,6 @@ class CI_Cache extends CI_Driver_Library {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Cache Info
 	 *
@@ -114,7 +108,6 @@ class CI_Cache extends CI_Driver_Library {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Get Cache Metadata
 	 *
@@ -126,7 +119,6 @@ class CI_Cache extends CI_Driver_Library {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Initialize
 	 *
@@ -140,15 +132,12 @@ class CI_Cache extends CI_Driver_Library {
 			'adapter',
 			'memcached'
 		);
-
 		foreach ($default_config as $key) {
 			if (isset($config[$key])) {
 				$param = '_' . $key;
-
 				$this->{$param} = $config[$key];
 			}
 		}
-
 		if (isset($config['backup'])) {
 			if (in_array('cache_' . $config['backup'], $this->valid_drivers)) {
 				$this->_backup_driver = $config['backup'];
@@ -157,7 +146,6 @@ class CI_Cache extends CI_Driver_Library {
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * Is the requested driver supported in this environment?
 	 *
@@ -166,16 +154,13 @@ class CI_Cache extends CI_Driver_Library {
 	 */
 	public function is_supported($driver) {
 		static $support = array();
-
 		if (!isset($support[$driver])) {
 			$support[$driver] = $this->{$driver}->is_supported();
 		}
-
 		return $support[$driver];
 	}
 
 	// ------------------------------------------------------------------------
-
 	/**
 	 * __get()
 	 *
@@ -184,11 +169,9 @@ class CI_Cache extends CI_Driver_Library {
 	 */
 	public function __get($child) {
 		$obj = parent::__get($child);
-
 		if (!$this->is_supported($child)) {
 			$this->_adapter = $this->_backup_driver;
 		}
-
 		return $obj;
 	}
 
@@ -196,6 +179,5 @@ class CI_Cache extends CI_Driver_Library {
 }
 
 // End Class
-
 /* End of file Cache.php */
 /* Location: ./system/libraries/Cache/Cache.php */

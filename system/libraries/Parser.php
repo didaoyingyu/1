@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
+
 /**
  * CodeIgniter
  *
@@ -16,7 +17,6 @@ if (!defined('BASEPATH'))
  * @filesource
  */
 // ------------------------------------------------------------------------
-
 /**
  * Parser Class
  *
@@ -47,12 +47,10 @@ class CI_Parser {
 	public function parse($template, $data, $return = FALSE) {
 		$CI = & get_instance();
 		$template = $CI->load->view($template, $data, TRUE);
-
 		return $this->_parse($template, $data, $return);
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 *  Parse a String
 	 *
@@ -70,7 +68,6 @@ class CI_Parser {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 *  Parse a template
 	 *
@@ -87,7 +84,6 @@ class CI_Parser {
 		if ($template == '') {
 			return FALSE;
 		}
-
 		foreach ($data as $key => $val) {
 			if (is_array($val)) {
 				$template = $this->_parse_pair($key, $val, $template);
@@ -95,17 +91,14 @@ class CI_Parser {
 				$template = $this->_parse_single($key, (string) $val, $template);
 			}
 		}
-
 		if ($return == FALSE) {
 			$CI = & get_instance();
 			$CI->output->append_output($template);
 		}
-
 		return $template;
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 *  Set the left/right variable delimiters
 	 *
@@ -120,7 +113,6 @@ class CI_Parser {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 *  Parse a single key/value
 	 *
@@ -135,7 +127,6 @@ class CI_Parser {
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 *  Parse a tag pair
 	 *
@@ -151,7 +142,6 @@ class CI_Parser {
 		if (FALSE === ($match = $this->_match_pair($string, $variable))) {
 			return $string;
 		}
-
 		$str = '';
 		foreach ($data as $row) {
 			$temp = $match['1'];
@@ -162,15 +152,12 @@ class CI_Parser {
 					$temp = $this->_parse_pair($key, $val, $temp);
 				}
 			}
-
 			$str .= $temp;
 		}
-
 		return str_replace($match['0'], $str, $string);
 	}
 
 	// --------------------------------------------------------------------
-
 	/**
 	 *  Matches a variable pair
 	 *
@@ -183,13 +170,11 @@ class CI_Parser {
 		if (!preg_match("|" . preg_quote($this->l_delim) . $variable . preg_quote($this->r_delim) . "(.+?)" . preg_quote($this->l_delim) . '/' . $variable . preg_quote($this->r_delim) . "|s", $string, $match)) {
 			return FALSE;
 		}
-
 		return $match;
 	}
 
 }
 
 // END Parser Class
-
 /* End of file Parser.php */
 /* Location: ./system/libraries/Parser.php */

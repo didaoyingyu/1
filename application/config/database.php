@@ -100,10 +100,8 @@ $mysql_host = "mysql7.000webhost.com";
 $mysql_database = "a1988745_fgame";
 $mysql_user = "a1988745_fgame";
 $mysql_password = "fgame123";
- 
 New Domain
 flashgamemax.hostoi.com
- 
 $mysql_host = "mysql10.000webhost.com";
 $mysql_database = "a9006797_fgame";
 $mysql_user = "a9006797_root";

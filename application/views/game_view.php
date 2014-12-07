@@ -432,7 +432,6 @@
 				/* var myRequest = new ajaxObject(loadDecksAjaxPath, loadDecksHandler, loadDecksResponse, loadDecksResponseStatus);
 				 //alert(myRequest); loadGameMd(myRequest);
 				 //loadGameMd('123_12');
-				 
 				 alert(myRequest.update()); //alert(myRequest); */
 			}
 			// register the handler 

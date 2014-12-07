@@ -21,10 +21,8 @@
                 </div>
                 <div class="clearFloat"></div>
             </div>
-
             <div class="genaricFormHolder">
 				<?php echo $error; ?>
-
 				<?php echo form_open_multipart('deck/new_deck'); ?>
                 <p>Deck Name</p>
                 <input type="text" name="deck_name"/>
@@ -38,12 +36,10 @@
                     Question 3||Answer 3
                     Question 4||Answer 4
                 </pre>
-
                 </p>
                 </form>
                 <p><?php echo anchor('', 'Home') ?></p>
             </div>
         </div>
-
     </body>
 </html>

@@ -50,7 +50,6 @@ class game extends CI_Controller {
 		} else {
 			$logged_in = true;
 		}
-		
 		if ($logged_in) {
 			redirect('');
 		}
