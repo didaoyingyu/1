@@ -1,0 +1,4 @@
+Ques 1 || Ans 1
+Ques 2 || Ans 2
+Ques 1 || Ans 3
+Ques 4 || Ans 4

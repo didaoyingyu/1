@@ -1,0 +1,7 @@
+﻿我懂一点||I understand a little
+我懂英文||I understand English
+你懂吗？||Do you understand
+你是中国人吗？||Are you Chinese
+我懂一点英文||I understand a little English
+你懂英文吗?||Do you understand English
+我不懂英文||I don't understand English
