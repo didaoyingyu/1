@@ -306,8 +306,10 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 	}
 	//see if a card was selected
 	if (selectedCardIndex != -1) {
-		return this.setAsNextCard(selectedCardIndex, (algoChoice == 0 ? "RANDOM" : "OLDEST") + " pick from min rank: " + minRank);
+		return this.setAsNextCard(selectedCardIndex, (algoChoice == 0 ? "RANDOM" : "OLDEST") + " pick from min rank");
 	}
+	//prompt that min rank mode failed
+	console.log("Failed to find a card for min rank: " + minRank);
 	//if using learn logic select another new card
 	if (inLearning == 1) {
 		for (var i = 0; i < this.deck.length; i++) {
