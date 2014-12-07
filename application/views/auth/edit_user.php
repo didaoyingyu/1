@@ -87,7 +87,7 @@
 				<?php echo form_hidden($csrf); ?>
                 <p><?php echo form_submit('submit', lang('edit_user_submit_btn')); ?></p>
 				<?php echo form_close(); ?>
-                <p><?php echo anchor('game/home', 'Admin Home') ?></p>
+                <p><?php echo anchor('', 'Admin Home') ?></p>
             </div>
             <div id="infoMessage"><?php echo $message; ?></div>
         </div>

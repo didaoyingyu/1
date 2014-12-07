@@ -93,7 +93,7 @@
                     <div class="clearFloat"></div><br/>
                     <div class="buttonHolder loginButton"><div class="buttonInner"><div class="button" onclick="save()" ><p>Save</p></div></div></div>
                 </form>
-                <br><br><p><?php echo anchor('game/home', 'Home') ?></p> 
+                <br><br><p><?php echo anchor('', 'Home') ?></p> 
             </div>
         </div>
     </body>

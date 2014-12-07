@@ -16,4 +16,4 @@
 <?php echo form_input($user_id); ?>
 <p><?php echo form_submit('submit', lang('change_password_submit_btn')); ?></p>
 <?php echo form_close(); ?>
-<p><?php echo anchor('game/home', 'Admin Home') ?></p>
+<p><?php echo anchor('', 'Admin Home') ?></p>

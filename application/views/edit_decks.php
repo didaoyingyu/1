@@ -117,7 +117,7 @@
                     <div><input type='button' class='btn-classic' value='Save' style="width:100px;float:right;margin-top:5px" onClick="save()"/></div>
                 </form>
             </div>
-            <p><?php echo anchor('game/home', 'Home') ?></p>
+            <p><?php echo anchor('', 'Home') ?></p>
 			<a href="#" onclick="incrementCount();
 					getNewRow()">Add New Row</a>
         </div>

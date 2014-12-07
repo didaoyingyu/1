@@ -31,7 +31,7 @@
 
             <!-- Login Window -->
             <div class="loginFormHolder">
-                <form method="POST" action="<?php echo base_url() ?>index.php/game/login" id="loginForm">
+                <form method="POST" action="<?php echo base_url() ?>index.php/game/login" id="loginForm" onsubmit="doLogin()">
                     <p>User Name<span class="required" id="reqUname"></span></p>
                     <input type="text" name="username" id="username" />
                     <p>Password<span class="required" id="reqPass"></span></p>
@@ -43,11 +43,9 @@
 						}
 						?></div>
                     <div class="clearFloat"></div><br/>
-                    <div class="buttonHolder loginButton"><div class="buttonInner"><div class="button" onclick="doLogin()" ><p>Login</p></div></div></div>
+                    <div class="buttonHolder loginButton"><div class="buttonInner"><input type="submit" class="button" value="Login"/></div></div>
                 </form>
             </div>
-
         </div>
-
     </body>
 </html>

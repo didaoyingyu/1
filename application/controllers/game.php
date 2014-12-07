@@ -20,10 +20,19 @@ class game extends CI_Controller {
 		$this->load->helper('language');
 		$this->load->helper('form');
 		$this->load->library('form_validation');
+		$this->load->helper('url');
 	}
 
 	function index() {
-		$this->load->view('login');
+		if (!$this->ion_auth->logged_in()) {
+			$this->load->view('login');
+		} else {
+			if ($this->ion_auth->is_admin()) {
+				$this->load->view('admin_view');
+			} else {
+				$this->load->view('game_view');
+			}
+		}
 	}
 
 	/* login a user to the system */
@@ -33,23 +42,17 @@ class game extends CI_Controller {
 			$username = $this->input->post('username');
 			$password = $this->input->post('password');
 			$remember = FALSE;
-			$sucess = $this->ion_auth->login($username, $password, $remember);
-			if ($sucess) {
-				if ($this->ion_auth->is_admin()) {
-					$this->load->view('admin_view');
-				} else {
-					$this->load->view('game_view');
-				}
-			} else {
+			$logged_in = $this->ion_auth->login($username, $password, $remember);
+			if (!$logged_in) {
 				$data = array('message' => 'Login Failed');
 				$this->load->view('login', $data);
 			}
 		} else {
-			if ($this->ion_auth->is_admin()) {
-				$this->load->view('admin_view');
-			} else {
-				$this->load->view('game_view');
-			}
+			$logged_in = true;
+		}
+		
+		if ($logged_in) {
+			redirect('');
 		}
 	}
 
@@ -60,20 +63,6 @@ class game extends CI_Controller {
 			$this->ion_auth->logout();
 		}
 		redirect('');
-	}
-
-	/* load home related to the logged usr */
-
-	function home() {
-		if (!$this->ion_auth->logged_in()) {
-			redirect('');
-		} else {
-			if ($this->ion_auth->is_admin()) {
-				$this->load->view('admin_view');
-			} else {
-				$this->load->view('game_view');
-			}
-		}
 	}
 
 	/* show the game */

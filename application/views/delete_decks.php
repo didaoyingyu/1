@@ -54,7 +54,7 @@
                 </form>
 
             </div>
-            <p><?php echo anchor('game/home', 'Home') ?></p>
+            <p><?php echo anchor('', 'Home') ?></p>
         </div>
 
     </body>

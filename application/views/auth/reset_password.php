@@ -13,4 +13,4 @@
 <?php echo form_hidden($csrf); ?>
 <p><?php echo form_submit('submit', lang('reset_password_submit_btn')); ?></p>
 <?php echo form_close(); ?>
-<p><?php echo anchor('game/home', 'Admin Home') ?></p>
+<p><?php echo anchor('', 'Admin Home') ?></p>

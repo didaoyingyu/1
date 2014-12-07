@@ -47,7 +47,7 @@
                 <p><?php echo form_submit('submit', lang('create_group_submit_btn')); ?></p>
 
 
-                <p><?php echo anchor('game/home', 'Admin Home') ?></p>
+                <p><?php echo anchor('', 'Admin Home') ?></p>
 				<?php echo form_close(); ?>
             </div>
         </div>
