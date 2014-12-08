@@ -71,7 +71,7 @@ var r6 = 86; //6
 var r7 = 91; //5
 var r8 = 95; //4
 var r9 = 98; //3
-var r10 = 100; //2 //rand 9+
+var r10 = 100; //2 //rand 13+
 /****************************LEARN Logic Variables***************************/
 var learn_correct_first_time = '8'; //First time shown marked right history mark
 var learn_correct = 'L'; //Answered correctly history mark
@@ -198,7 +198,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 	} else if (randNum > r8 && randNum <= r9) {
 		rank = 12;
 	} else if (randNum > r9 && randNum <= r10) {
-		rank = 13;
+		rank = Math.floor(12 + 2/(r10 - randNum));
 	}
 	console.log("Trying random rank mode...");
 	console.log("Rand: " + randNum + ", Selectd Rank: " + rank);

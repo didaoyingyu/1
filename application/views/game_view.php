@@ -78,7 +78,7 @@
 				}
 			}
 			function loadReviewModeParams() {
-				var loadDecksAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_rm_params/";
+				var loadDecksAjaxPath = "<?php echo base_url() ?>index.php/game/load_rm_params/";
 				var myRequest = new ajaxObject(loadDecksAjaxPath, loadReviewModeParamsHandler, loadRmParamsResponse, loadRmParamsResponseStatus);
 				myRequest.update();
 			}
@@ -114,7 +114,7 @@
 			}
 			/********Load Card Decks****************************/
 			function loadDecks() {
-				var loadDecksAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_decks/" + "<?php echo $this->ion_auth->user()->row()->id ?>";
+				var loadDecksAjaxPath = "<?php echo base_url() ?>index.php/game/load_decks/<?php echo $this->ion_auth->user()->row()->id ?>";
 				var myRequest = new ajaxObject(loadDecksAjaxPath, loadDecksHandler, loadDecksResponse, loadDecksResponseStatus);
 				myRequest.update();
 			}
@@ -159,7 +159,7 @@
 				game_results['deck'] = new Object();
 				game_results['card_count'] = new Object();
 				deckId = deckIdIn;
-				var loadGameAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_cards/" + userId + "/" + deckId;
+				var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards/" + userId + "/" + deckId;
 				var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandler, loadGameResponse, loadGameResponseStatus);
 				myRequest.update();
 			}
@@ -183,7 +183,7 @@
 				}
 			}
 			function saveCard(card) {
-				var saveCardAjaxPath = "<?php echo base_url() ?>" + "index.php/game/save_user_card";
+				var saveCardAjaxPath = "<?php echo base_url() ?>index.php/game/save_user_card";
 				var myRequest = new ajaxObject(saveCardAjaxPath, saveCardHandler, saveCardResponse, saveCardResponseStatus);
 				/*set last shown time*/
 				var time = new Date();
@@ -205,7 +205,7 @@
 			}
 			/*********Load Game multiple deck mode*********************/
 			function loadGameMd(deckIds) {
-				var loadGameAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_cards_md/" + userId + "/" + deckIds;
+				var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards_md/" + userId + "/" + deckIds;
 				var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandlerMd, loadGameResponseMd, loadGameResponseStatusMd);
 				myRequest.update();
 			}
@@ -420,10 +420,9 @@
 				}
 			}
 			/** NEW QUICK REVIEW **/
-			function quick_reivew() {
-				loadReviewModeParams();
+			function quick_review() {
 				setGameModeAndLoadDecks('RW');
-				var loadDecksAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_decks_id/" + "<?php echo $this->ion_auth->user()->row()->id ?>";
+				var loadDecksAjaxPath = "<?php echo base_url() ?>index.php/game/load_decks_id/<?php echo $this->ion_auth->user()->row()->id ?>";
 				$.post(loadDecksAjaxPath, {"data": ""}, function(res) {
 					//loadGame(res);
 					loadGameMd(res);
@@ -500,7 +499,7 @@
             <!--QuickView not redirect same page-->
             <!-- Game mode and extra functions selector Screen -->
             <div class="gameModeScreen" id="gameModeScreen">
-                <div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quick_reivew();"><p>Quick Review</p></div></div></div> 
+                <div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quick_review();"><p>Quick Review</p></div></div></div> 
                 <br/><br/><br/>
                 <div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:setGameModeAndLoadDecks('TR');"><p>Training Mode</p></div></div></div> 
                 <br/><br/><br/>

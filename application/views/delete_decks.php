@@ -7,11 +7,11 @@
         <script language="javascript">
 			function deleteDeck(deckId) {
 				if (confirm("Do you want to delete this deck? \n Note: All the information related will be deleted and this action cannot be undone!")) {
-					window.location = "<?php echo base_url() ?>" + "index.php/game/delete_decks/" + deckId;
+					window.location = "<?php echo base_url() ?>index.php/game/delete_decks/" + deckId;
 				}
 			}
 			function editDeck(deckId) {
-				window.location = "<?php echo base_url() ?>" + "index.php/game/edit_decks/" + deckId;
+				window.location = "<?php echo base_url() ?>index.php/game/edit_decks/" + deckId;
 			}
         </script>
     </head>

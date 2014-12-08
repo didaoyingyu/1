@@ -95,7 +95,7 @@
 				}
 			}
 			function loadReviewModeParams() {
-				var loadDecksAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_stst_params/";
+				var loadDecksAjaxPath = "<?php echo base_url() ?>index.php/game/load_stst_params/";
 				var myRequest = new ajaxObject(loadDecksAjaxPath, loadReviewModeParamsHandler, loadRmParamsResponse, loadRmParamsResponseStatus);
 				myRequest.update();
 			}
@@ -106,7 +106,7 @@
 			function sendPassword()
 			{
 				var pass = $("#password_inp").val();
-				$.post("<?php echo base_url() ?>" + "index.php/auth/check_password", {'pass': pass}, function(res) {
+				$.post("<?php echo base_url() ?>index.php/auth/check_password", {'pass': pass}, function(res) {
 					if (res == 'correct')
 					{
 						//  jQuery('#cboxClose').click();
@@ -146,13 +146,13 @@
 				var username = ($("#username_inp").val());
 				var card_to_test = ($("#card_to_test").val());
 				if (username != '') {
-					$.post("<?php echo base_url() ?>" + "index.php/auth/check_username", {'user': username}, function(res) {
+					$.post("<?php echo base_url() ?>index.php/auth/check_username", {'user': username}, function(res) {
 						var result = clickify(res);
 						if (result == 'yes')
 						{
 //                                        alert(res);
 							$.colorbox({html: "<p>" + res + "<p>"});
-							$.post("<?php echo base_url() ?>" + "index.php/auth/check_userid", {'user': username}, function(res) {
+							$.post("<?php echo base_url() ?>index.php/auth/check_userid", {'user': username}, function(res) {
 								if (res != 'Please check username again' && res != 'not admin')
 								{
 									game_results['user_id'] = new Object();
@@ -190,7 +190,7 @@
 			/**load supervised plus mode privious result ASHVIN PATEL 29/JUN/2014**/
 			function loadSupervisedPlusPreviousResult(current_user_id) {
 				$.ajax({
-					url: "<?php echo base_url() ?>" + "index.php/game/load_stst_plus_privious_result/",
+					url: "<?php echo base_url() ?>index.php/game/load_stst_plus_privious_result/",
 					type: "post",
 					data: {userid: current_user_id},
 					success: function(loadRmParamsResponse, loadRmParamsResponseStatus, xhr) {
@@ -208,7 +208,7 @@
 				card_to_test = $('#card_to_test').val();
 				if (card_to_test != '') {
 					$.ajax({
-						url: "<?php echo base_url() ?>" + "index.php/game/load_stst_plus_params/",
+						url: "<?php echo base_url() ?>index.php/game/load_stst_plus_params/",
 						type: "post",
 						success: function(loadRmParamsResponse, loadRmParamsResponseStatus, xhr) {
 							//alert(loadRmParamsResponse);
@@ -219,7 +219,7 @@
 				} else {
 					alert('Enter card to test');
 				}
-				/*var loadDecksAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_stst_plus_params/";
+				/*var loadDecksAjaxPath = "<?php echo base_url() ?>index.php/game/load_stst_plus_params/";
 				 var myRequest = new ajaxObject(loadDecksAjaxPath, loadReviewModeParamsHandler, loadRmParamsResponse, loadRmParamsResponseStatus);
 				 myRequest.update();*/
 			}
@@ -265,7 +265,7 @@
 			}
 			/********Load Card Decks****************************/
 			function loadDecks() {
-				var loadDecksAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_plus_decks/" + current_user_id;
+				var loadDecksAjaxPath = "<?php echo base_url() ?>index.php/game/load_plus_decks/" + current_user_id;
 				var myRequest = new ajaxObject(loadDecksAjaxPath, loadDecksHandler, loadDecksResponse, loadDecksResponseStatus);
 				myRequest.update();
 			}
@@ -297,7 +297,7 @@
 				pre_deck_card = parseInt(card_to_test) - parseInt(more_cards);
 				var loadmorecardshtml = '<div class="more_cards" style="padding: 19px 72px 2px 80px;text-align: center;color: #ff0000;"><label style="display: block;margin-bottom: 5px;text-align: center;">Selected deck have only <span style="font-weight: bold;color: #831F1F;">' + pre_deck_card + '</span> cards to test</label><label style="display: block;">Please load <span style="font-weight: bold;color: #831F1F;">' + more_cards + '</span> more cards from belove decks</label></div>';
 				$('.plus_mode_test_report').after(loadmorecardshtml);
-				var loadDecksAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_plus_decks_more/" + current_user_id;
+				var loadDecksAjaxPath = "<?php echo base_url() ?>index.php/game/load_plus_decks_more/" + current_user_id;
 				var myRequest = new ajaxObject(loadDecksAjaxPath, loadDecksHandlerM, loadDecksResponse, loadDecksResponseStatus);
 				myRequest.update();
 			}
@@ -420,7 +420,7 @@
 						loadGameHandler(loadRmParamsResponse, xhr.status)
 					}
 				});
-				/*var loadGameAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_card_data/";
+				/*var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_card_data/";
 				 var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandler, loadGameResponse, loadGameResponseStatus);
 				 //myRequest.update();
 				 myRequest.update('card_ids=' + JSON.stringify(card_ids), 'POST');*/
@@ -444,7 +444,7 @@
 				}
 			}
 			function saveCard(card) {
-				var saveCardAjaxPath = "<?php echo base_url() ?>" + "index.php/game/save_user_card";
+				var saveCardAjaxPath = "<?php echo base_url() ?>index.php/game/save_user_card";
 				var myRequest = new ajaxObject(saveCardAjaxPath, saveCardHandler, saveCardResponse, saveCardResponseStatus);
 				/*set last shown time*/
 				var time = new Date();
@@ -488,7 +488,7 @@
 				var first_time_card_count = 0;
 				var first_time_correct_Card_cout = 0;
 				// deckId = deckIdIn;
-				var loadGameAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_cards_md/" + current_user_id + "/" + deckIds;
+				var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards_md/" + current_user_id + "/" + deckIds;
 				var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandlerMd, loadGameResponseMd, loadGameResponseStatusMd);
 				myRequest.update();
 			}

@@ -89,7 +89,7 @@
 				}
 			}
 			function loadReviewModeParams() {
-				var loadDecksAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_stst_params/";
+				var loadDecksAjaxPath = "<?php echo base_url() ?>index.php/game/load_stst_params/";
 				var myRequest = new ajaxObject(loadDecksAjaxPath, loadReviewModeParamsHandler, loadRmParamsResponse, loadRmParamsResponseStatus);
 				myRequest.update();
 			}
@@ -98,14 +98,14 @@
 				$.colorbox({html: "<label>Enter Your Password</label><input type='password' id='password_inp'/><input type='button' value='enter' onclick='sendPassword()' />"});
 			}
 			function loadSuperVisedModeParams() {
-				var loadDecksAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_stst_params/";
+				var loadDecksAjaxPath = "<?php echo base_url() ?>index.php/game/load_stst_params/";
 				var myRequest = new ajaxObject(loadDecksAjaxPath, loadReviewModeParamsHandler, loadRmParamsResponse, loadRmParamsResponseStatus);
 				myRequest.update();
 			}
 			function sendPassword()
 			{
 				var pass = $("#password_inp").val();
-				$.post("<?php echo base_url() ?>" + "index.php/auth/check_password", {'pass': pass}, function(res) {
+				$.post("<?php echo base_url() ?>index.php/auth/check_password", {'pass': pass}, function(res) {
 					if (res == 'correct')
 					{
 						//  jQuery('#cboxClose').click();
@@ -142,13 +142,13 @@
 			{
 				$("#username_inp").attr("disabled", "disabled");
 				var username = ($("#username_inp").val());
-				$.post("<?php echo base_url() ?>" + "index.php/auth/check_username", {'user': username}, function(res) {
+				$.post("<?php echo base_url() ?>index.php/auth/check_username", {'user': username}, function(res) {
 					var result = clickify(res);
 					if (result == 'yes')
 					{
 //                                        alert(res);
 						$.colorbox({html: "<p>" + res + "<p>"});
-						$.post("<?php echo base_url() ?>" + "index.php/auth/check_userid", {'user': username}, function(res) {
+						$.post("<?php echo base_url() ?>index.php/auth/check_userid", {'user': username}, function(res) {
 							if (res != 'Please check username again' && res != 'not admin')
 							{
 								game_results['user_id'] = new Object();
@@ -208,7 +208,7 @@
 			}
 			/********Load Card Decks****************************/
 			function loadDecks() {
-				var loadDecksAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_decks/" + current_user_id;
+				var loadDecksAjaxPath = "<?php echo base_url() ?>index.php/game/load_decks/" + current_user_id;
 				var myRequest = new ajaxObject(loadDecksAjaxPath, loadDecksHandler, loadDecksResponse, loadDecksResponseStatus);
 				myRequest.update();
 			}
@@ -266,7 +266,7 @@
 				var first_time_card_count = 0;
 				var first_time_correct_Card_cout = 0;
 				deckId = deckIdIn;
-				var loadGameAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_cards/" + current_user_id + "/" + deckId;
+				var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards/" + current_user_id + "/" + deckId;
 				var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandler, loadGameResponse, loadGameResponseStatus);
 				myRequest.update();
 			}
@@ -291,7 +291,7 @@
 				}
 			}
 			function saveCard(card) {
-				var saveCardAjaxPath = "<?php echo base_url() ?>" + "index.php/game/save_user_card";
+				var saveCardAjaxPath = "<?php echo base_url() ?>index.php/game/save_user_card";
 				var myRequest = new ajaxObject(saveCardAjaxPath, saveCardHandler, saveCardResponse, saveCardResponseStatus);
 				/*set last shown time*/
 				var time = new Date();
@@ -334,7 +334,7 @@
 				var first_time_card_count = 0;
 				var first_time_correct_Card_cout = 0;
 				// deckId = deckIdIn;
-				var loadGameAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_cards_md/" + current_user_id + "/" + deckIds;
+				var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards_md/" + current_user_id + "/" + deckIds;
 				var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandlerMd, loadGameResponseMd, loadGameResponseStatusMd);
 				myRequest.update();
 			}

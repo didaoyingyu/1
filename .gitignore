@@ -2,3 +2,5 @@ sound-files/*
 application/logs/*
 colorbox/example*
 colorbox/content
+nbproject/private
+nbproject/private/*

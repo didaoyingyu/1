@@ -4,7 +4,7 @@
         <script type="text/javascript">
 			var ajax = new AjaxRequest();
 			function ajax_test() {
-				var ajaxPath = "<?php echo base_url() ?>" + "index.php/game/load_cards";
+				var ajaxPath = "<?php echo base_url() ?>index.php/game/load_cards";
 				alert(ajaxPath);
 				ajax.doTextRequest(ajaxPath, 'GET', '', showResults, true);
 			}

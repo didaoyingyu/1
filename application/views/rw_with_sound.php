@@ -78,7 +78,7 @@
 				}
 			}
 			function loadReviewModeParams() {
-				var loadDecksAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_rm_params/";
+				var loadDecksAjaxPath = "<?php echo base_url() ?>index.php/game/load_rm_params/";
 				var myRequest = new ajaxObject(loadDecksAjaxPath, loadReviewModeParamsHandler, loadRmParamsResponse, loadRmParamsResponseStatus);
 				myRequest.update();
 			}
@@ -114,7 +114,7 @@
 			}
 			/********Load Card Decks****************************/
 			function loadDecks() {
-				var loadDecksAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_decks/" + "<?php echo $this->ion_auth->user()->row()->id ?>";
+				var loadDecksAjaxPath = "<?php echo base_url() ?>index.php/game/load_decks/<?php echo $this->ion_auth->user()->row()->id ?>";
 				var myRequest = new ajaxObject(loadDecksAjaxPath, loadDecksHandler, loadDecksResponse, loadDecksResponseStatus);
 				myRequest.update();
 			}
@@ -159,7 +159,7 @@
 				game_results['deck'] = new Object();
 				game_results['card_count'] = new Object();
 				deckId = deckIdIn;
-				var loadGameAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_cards/" + userId + "/" + deckId;
+				var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards/" + userId + "/" + deckId;
 				var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandler, loadGameResponse, loadGameResponseStatus);
 				myRequest.update();
 			}
@@ -183,7 +183,7 @@
 				}
 			}
 			function saveCard(card) {
-				var saveCardAjaxPath = "<?php echo base_url() ?>" + "index.php/game/save_user_card";
+				var saveCardAjaxPath = "<?php echo base_url() ?>index.php/game/save_user_card";
 				var myRequest = new ajaxObject(saveCardAjaxPath, saveCardHandler, saveCardResponse, saveCardResponseStatus);
 				/*set last shown time*/
 				var time = new Date();
@@ -205,7 +205,7 @@
 			}
 			/*********Load Game multiple deck mode*********************/
 			function loadGameMd(deckIds) {
-				var loadGameAjaxPath = "<?php echo base_url() ?>" + "index.php/game/load_cards_md/" + userId + "/" + deckIds;
+				var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards_md/" + userId + "/" + deckIds;
 				var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandlerMd, loadGameResponseMd, loadGameResponseStatusMd);
 				myRequest.update();
 			}
