@@ -3,7 +3,7 @@
     <head>
         <title>Flash Card Game-Supervised Mode</title>
         <meta name="viewport" content="width=device-width" />
-        <meta http-equiv = "content-type" content = "text/html" charset = "UTF-8" />
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
         <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.js"></script>
         <link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
         <link rel="stylesheet" href="<?php echo base_url(); ?>colorbox/colorbox.css"/>
@@ -449,12 +449,12 @@
 				/*set last shown time*/
 				var time = new Date();
 				var timeMils = time.getTime();
-				console.log("Saving Card: " + card['card_id']);
 				card['last_shown'] = timeMils;
 				card['last_date'] = timeMils;
-				console.log("\tRecord ID:" + card['record_id'] + ", User Id:" + card['user_id']);
-				console.log("\tQuestion:" + card['question']);
-				console.log("\tCard Rank: " + card['rank']);
+//				console.log("Saving Card: " + card['card_id']);
+//				console.log("\tRecord ID:" + card['record_id'] + ", User Id:" + card['user_id']);
+//				console.log("\tQuestion:" + card['question']);
+//				console.log("\tCard Rank: " + card['rank']);
 				myRequest.update('data=' + JSON.stringify(card), 'POST');
 			}
 			function saveCardHandler(saveCardResponse, saveCardResponseStatus) {

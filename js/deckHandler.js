@@ -212,7 +212,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 		var ch = this.deck[j]['history'].search(/[^-]/);
 		if (ch == -1 || this.deck[j]['learning'] == 1)
 			continue;
-		console.log("Current Card: " + j);
+//		console.log("Current Card: " + j);
 		if (j == startPoint && !firstRound) {
 			break;
 		}
@@ -287,7 +287,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 				continue;
 			rank = parseInt(this.deck[i]['rank']);
 			delay = (nowMils - parseInt(this.deck[i]['last_shown'])) / 1000;
-			console.log("Card " + i + ": rank = " + rank + ", delay = " + delay);
+//			console.log("Card " + i + ": rank = " + rank + ", delay = " + delay);
 			//check minRepeatTime (highest priority), then rank, then delay
 			if (delay > minRepeatTime && rank < minRank) { //lower rank; pick it
 				longestDelay = delay;
@@ -306,7 +306,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 	}
 	//see if a card was selected
 	if (selectedCardIndex != -1) {
-		return this.setAsNextCard(selectedCardIndex, (algoChoice == 0 ? "RANDOM" : "OLDEST") + " pick from min rank");
+		return this.setAsNextCard(selectedCardIndex, (algoChoice == 0 ? "RANDOM" : "OLDEST") + " pick from min rank " + minRank);
 	}
 	//prompt that min rank mode failed
 	console.log("Failed to find a card for min rank: " + minRank);
@@ -450,7 +450,7 @@ DeckHandler.prototype.updateCard = function(card) {
 };
 /*manage the history of a card*/
 DeckHandler.prototype.handleCardStatus = function(card, ansCorrect, gameMode, historyLength, variableOk) {
-	console.log("Updating card: current rank = " + card['rank'] + ", answer = " + (ansCorrect == 1 ? "correct" : "wrong") + ", history = " + card['history']);
+//	console.log("Updating card: current rank = " + card['rank'] + ", answer = " + (ansCorrect == 1 ? "correct" : "wrong") + ", history = " + card['history']);
 	/*handle the rank*/
 	var rank = parseInt(card['rank']);
 	if (ansCorrect == 1) {
@@ -459,7 +459,7 @@ DeckHandler.prototype.handleCardStatus = function(card, ansCorrect, gameMode, hi
 		}
 		card['correct'] = card['correct'] + 1;
 		if (gameMode == 'RW' || gameMode == 'STST') {
-			console.log(card);
+//			console.log(card);
 			if (card['correct'] == correctCountForInc) {
 				rank = rank + rankInc;
 				if (card['learning'] == 1) {
@@ -543,8 +543,8 @@ DeckHandler.prototype.handleCardStatus = function(card, ansCorrect, gameMode, hi
 		historyStr = recordChar + historyStr.substr(0, historyLength - 2);
 	}
 	card['history'] = historyStr;
-	console.log(card);
-	console.log("Card updated: new rank = " + card['rank'] + ", new history = " + card['history']);
+//	console.log(card);
+//	console.log("Card updated: new rank = " + card['rank'] + ", new history = " + card['history']);
 	if (ansCorrect == 0) //marked wrong; start SPECIAL FREQUENCY
 	{
 		if (card['learning'] != 1 && card['alternate'] != 1) {
@@ -552,13 +552,13 @@ DeckHandler.prototype.handleCardStatus = function(card, ansCorrect, gameMode, hi
 			specialFreq = true;
 			//if the card currently in SPECIAL FREQUENCY was marked wrong
 			if (specialQueue.peek() == card) {
-				console.log("Card " + card['card_id'] + " marked wrong, " + "moving it to start of queue");
+//				console.log("Card " + card['card_id'] + " marked wrong, " + "moving it to start of queue");
 				//reset controls (start over)
 				skipIndex = 0;
 				skipCount = 0;
 			} else {
 				//a different card was marked wrong; add it to queue
-				console.log("Card " + card['card_id'] + " marked wrong, " + "adding to SPECIAL FREQUENCY queue");
+//				console.log("Card " + card['card_id'] + " marked wrong, " + "adding to SPECIAL FREQUENCY queue");
 				//add to queue
 				specialQueue.enqueue(card);
 			}

@@ -1207,6 +1207,38 @@ class card extends CI_Model {
 		$query = $this->db->query($sql, array($user_name))->result();
 		return $query;
 	}
+	
+	public function save_quick_review_log($data) {
+		$data['reason'] = str_replace('&gt;&gt;', '', $data['reason']);
+		$deck_name = $this->db->select("deck_name")->from("card_deck")->where("deck_id", $data['deck_id'])->get()->row_array();
+		$data['deck_name'] = $deck_name['deck_name'];
+		if (isset($data['reason'])) {
+			$utp = $this->db->select("utp")->from("user_card")
+					->where("user_id",$data['user_id'])
+					->where("deck_id",$data['deck_id'])
+					->where("card_id",$data['card_id'])
+					->get()->row_array();
+			$data['utp']=$utp['utp'];
+			$this->db->insert('quick_review_log', $data);
+			return $this->db->insert_id();
+		} else {
+			return FALSE;
+		}
+	}
+
+	public function get_quick_review_log($user_id) {
+		return $this->db->where("user_id", $user_id)->order_by("id desc")->get("quick_review_log")->result_array();
+	}
+
+	public function get_users() {
+		return $this->db->get("users")->result_array();
+	}
+
+	public function save_quick_review_control($logs) {
+		foreach ($logs as $log) {
+			$this->db->where("id", $log['user_id'])->update("users", array("review_log_status" => $log['status']));
+		}
+	}
 
 }
 

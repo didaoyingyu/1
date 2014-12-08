@@ -860,19 +860,22 @@ class Auth extends CI_Controller {
 	}
 
 	function reviewModeSave() {
+		$this->load->model('card');
 		$gameArray = $this->input->post('data');
-		//     $gameArray['game_date']=date("d-m-Y H:i:s");
 		$decks = $gameArray['deck'];
 		unset($gameArray['deck']);
 		$gameSave = array();
 		$gameSave = $gameArray;
 		$decksArray = array();
 		$html = '';
+		$user = $this->ion_auth->user()->row();
 		foreach ($decks AS $deck) {
+			$deck['user_id'] = $user->id;
+			if (isset($deck['reason'])) {
+				$reason = str_replace('&gt;&gt;', '', $deck['reason']);
+				$deck['reason'] = $reason;
+			}
 			if (!in_array($deck['deck_id'], $decksArray)) {
-				//  $gameSave['deck'][$deck['deck_id']]=$deck['deck_id'];
-				//   $gameSave['deck'][$deck['deck_id']]['card_id']=$deck['card_id'];
-				//   $gameSave['deck'][$deck['deck_id']]['ans']=$deck['ans'];
 				$decksArray[] = $deck['deck_id'];
 			}
 		}
@@ -885,12 +888,9 @@ class Auth extends CI_Controller {
 			}
 			$deck_id = $option;
 		}
-		//    print_r($gameSave);
 		$gameSave['decks_name'] = $html;
 		$gameSave['game_date'] = date("Y-m-d H:i:s");
 		$gameSave['cards'] = $decks;
-		$user = $this->ion_auth->user()->row();
-		$this->load->model('card');
 		$cards = $this->card->saveReportDetailsReviewMode($gameSave, $user->id);
 		if ($cards == 1) {
 			echo 'success';
@@ -899,4 +899,23 @@ class Auth extends CI_Controller {
 		}
 	}
 
+	function save_quick_review_log() {
+		$this->load->model('card');
+		$log = $this->input->post('data');
+		$log = $log['log'];
+		$user = $this->ion_auth->user()->row();
+		$log['user_id'] = $user->id;
+		$review_log = $this->card->save_quick_review_log($log);
+		if ($review_log) {
+			echo "success";
+		}
+	}
+	
+	function review_log_control(){
+		$this->load->model('card');
+		$log = $this->input->post('log');
+		$review_log = $this->card->save_quick_review_control($log);
+		$message = "success";
+		return $message;
+	}
 }

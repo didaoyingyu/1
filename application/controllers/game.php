@@ -75,6 +75,22 @@ class game extends CI_Controller {
 		$this->load->view('game_view');
 	}
 
+	function review_log() {
+		/* security check */
+		if (!$this->ion_auth->logged_in()) {
+			redirect('');
+		}
+		$data['users'] = $this->card->get_users();
+		/* load review log control */
+		$this->load->view('review_log_control', $data);
+	}
+
+	function quick_review_log($user_Id) {
+		$this->load->model('card');
+		$data['logs'] = $this->card->get_quick_review_log($user_Id);
+		$this->load->view('quick_review_log', $data);
+	}
+
 	/* ajax library test function */
 
 	function ajax_test() {
@@ -423,10 +439,10 @@ class game extends CI_Controller {
 		// $data['title'] = 'a';
 		//  $data['body'] = 'b';
 		$this->load->view('edit_decks', $cards);
-//            $allDecksArr = $this->card->load_decks(-1);
-//            $allDecks = array();
-//            $allDecks['allDecks'] = $allDecksArr;
-//            $this->load->view('edit_decks');
+//			$allDecksArr = $this->card->load_decks(-1);
+//			$allDecks = array();
+//			$allDecks['allDecks'] = $allDecksArr;
+//			$this->load->view('edit_decks');
 	}
 
 	function object_to_array($object) {
@@ -457,20 +473,20 @@ class game extends CI_Controller {
 				$status = 'error';
 				$msg = $this->upload->display_errors('', '');
 			} else {
-				//      $new_file_name = date("dmyhis")."_". rand( 100 , 999 )."_". rand( 100 , 999 );
+				//	  $new_file_name = date("dmyhis")."_". rand( 100 , 999 )."_". rand( 100 , 999 );
 				$data = $this->upload->data();
 				// $file_id = $this->files_model->insert_file($new_file_name, $_POST['id']);
 				//   if($file_id)
 				//   {
 				$status = "success";
 				$msg = "File successfully uploaded_-_-0909//^%*(" . $data['file_name'];
-				//    }
-				//    else
-				//     {
-//            unlink($data['full_path']);
-//            $status = "error";
-//            $msg = "Something went wrong when saving the file, please try again.";
-				//     }
+				//	}
+				//	else
+				//	 {
+//			unlink($data['full_path']);
+//			$status = "error";
+//			$msg = "Something went wrong when saving the file, please try again.";
+				//	 }
 			}
 			@unlink($_FILES[$file_element_name]);
 		}
@@ -497,20 +513,20 @@ class game extends CI_Controller {
 				$status = 'error';
 				$msg = $this->upload->display_errors('', '');
 			} else {
-				//      $new_file_name = date("dmyhis")."_". rand( 100 , 999 )."_". rand( 100 , 999 );
+				//	  $new_file_name = date("dmyhis")."_". rand( 100 , 999 )."_". rand( 100 , 999 );
 				$data = $this->upload->data();
 				// $file_id = $this->files_model->insert_file($new_file_name, $_POST['id']);
 				//   if($file_id)
 				//   {
 				$status = "success";
 				$msg = "File successfully uploaded_-_-0909//^%*(" . $data['file_name'];
-				//    }
-				//    else
-				//     {
-//            unlink($data['full_path']);
-//            $status = "error";
-//            $msg = "Something went wrong when saving the file, please try again.";
-				//     }
+				//	}
+				//	else
+				//	 {
+//			unlink($data['full_path']);
+//			$status = "error";
+//			$msg = "Something went wrong when saving the file, please try again.";
+				//	 }
 			}
 			@unlink($_FILES[$file_element_name]);
 		}
@@ -531,20 +547,20 @@ class game extends CI_Controller {
 				$status = 'error';
 				$msg = $this->upload->display_errors('', '');
 			} else {
-				//      $new_file_name = date("dmyhis")."_". rand( 100 , 999 )."_". rand( 100 , 999 );
+				//	  $new_file_name = date("dmyhis")."_". rand( 100 , 999 )."_". rand( 100 , 999 );
 				$data = $this->upload->data();
 				// $file_id = $this->files_model->insert_file($new_file_name, $_POST['id']);
 				//   if($file_id)
 				//   {
 				$status = "success";
 				$msg = "File successfully uploaded_-_-0909//^%*(" . $data['file_name'];
-				//    }
-				//    else
-				//     {
-//            unlink($data['full_path']);
-//            $status = "error";
-//            $msg = "Something went wrong when saving the file, please try again.";
-				//     }
+				//	}
+				//	else
+				//	 {
+//			unlink($data['full_path']);
+//			$status = "error";
+//			$msg = "Something went wrong when saving the file, please try again.";
+				//	 }
 			}
 			@unlink($_FILES[$file_element_name]);
 		}
