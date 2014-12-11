@@ -224,8 +224,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 		if (delay <= minRepeatTime) {
 			continue;
 		}
-		var rankPick = parseInt(this.deck[j]['rank']);
-		if (rankPick == rank || (rank == 10 && rankPick >= rank)) {
+		if (rank == parseInt(this.deck[j]['rank'])) {
 			if (algoChoice == 0) { //RANDOM
 				// since we start from random point, no need to make a randomized pick again
 				if (prevSelectedCardIndex != j) {
@@ -306,7 +305,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 	}
 	//see if a card was selected
 	if (selectedCardIndex != -1) {
-		return this.setAsNextCard(selectedCardIndex, (algoChoice == 0 ? "RANDOM" : "OLDEST") + " pick from min rank " + minRank);
+		return this.setAsNextCard(selectedCardIndex, (algoChoice == 0 ? "RANDOM" : "OLDEST") + " pick from min rank " + minRank + ", Random Number: " + randNum);
 	}
 	//prompt that min rank mode failed
 	console.log("Failed to find a card for min rank: " + minRank);
@@ -316,10 +315,10 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 			if (this.deck[i]['learning'] == 1) {
 				this.deck[i]['lskips'] = 0;
 			} else if (this.deck[i]['alternate'] == 1) {
-				return this.setAsNextCard(i, "not finding an old card");
+				return this.setAsNextCard(i, "not finding an old card; Random Number: " + randNum);
 			} else if (this.deck[i]['last_shown'] == 0) {
 				this.deck[i]['alternate'] = 1;
-				return this.setAsNextCard(i, "not finding an old card");
+				return this.setAsNextCard(i, "not finding an old card; Random Number: " + randNum);
 			}
 		}
 	}
@@ -340,7 +339,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 			randomSelection = false;
 		}
 	}
-	return this.setAsNextCard(selectedCardIndex, "Random Index, Deck Size: " + this.deck.length);
+	return this.setAsNextCard(selectedCardIndex, "Random Index, Deck Size: " + this.deck.length + ", Random Number: " + randNum);
 };
 jQuery.removeFromArray = function(value, arr) {
 	return jQuery.grep(arr, function(elem, index) {
