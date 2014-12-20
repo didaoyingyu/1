@@ -7,10 +7,10 @@ if (!defined('BASEPATH'))
  * 
  * Author: Toni Haryanto
  * 		  toha.samba@gmail.com
- *         @yllumi
+ *		 @yllumi
  * 
  * Location: https://github.com/yllumi/CodeIgniter-Ion-Auth
- *          
+ *		  
  * Created:  11.15.2011
  * 
  * Description:  Indonesian language file for Ion Auth messages and errors

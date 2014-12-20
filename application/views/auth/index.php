@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Flash Card Game - Login</title>
-        <meta name="viewport" content="width=device-width" />
-        <link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <div class="headerText"><?php echo lang('index_heading'); ?></div>
-                <div class="logOut">
+	<head>
+		<title>Flash Card Game - Login</title>
+		<meta name="viewport" content="width=device-width" />
+		<link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<div class="headerText"><?php echo lang('index_heading'); ?></div>
+				<div class="logOut">
 					<?php
 					if ($this->ion_auth->logged_in()) {
 						$user = $this->ion_auth->user()->row();
@@ -17,18 +17,18 @@
 						echo "Logg out: " . anchor('game/logout', $userName);
 					}
 					?>
-                </div>
-            </div>
-            <div class="userIndexFormHolder">
-                <table cellpadding=0 cellspacing=10>
-                    <tr>
-                        <th><?php echo lang('index_fname_th'); ?></th>
-                        <th><?php echo lang('index_lname_th'); ?></th>
-                        <th><?php echo lang('index_email_th'); ?></th>
-                        <th><?php echo lang('index_groups_th'); ?></th>
-                        <th><?php echo lang('index_status_th'); ?></th>
-                        <th><?php echo lang('index_action_th'); ?></th>
-                    </tr>
+				</div>
+			</div>
+			<div class="userIndexFormHolder">
+				<table cellpadding=0 cellspacing=10>
+					<tr>
+						<th><?php echo lang('index_fname_th'); ?></th>
+						<th><?php echo lang('index_lname_th'); ?></th>
+						<th><?php echo lang('index_email_th'); ?></th>
+						<th><?php echo lang('index_groups_th'); ?></th>
+						<th><?php echo lang('index_status_th'); ?></th>
+						<th><?php echo lang('index_action_th'); ?></th>
+					</tr>
 					<?php foreach ($users as $user): ?>
 						<tr>
 							<td><?php echo $user->first_name; ?></td>
@@ -45,8 +45,8 @@
 					<?php endforeach; ?>
 				</table>
 				<p><?php echo anchor('auth/create_user', lang('index_create_user_link')) ?>  <?php /* echo anchor('auth/create_group', lang('index_create_group_link')) */ ?>| <?php echo anchor('', 'Admin Home') ?></p>
-				<div id="infoMessage"><?php echo $message; ?>       </div>
-            </div>
-        </div>
-    </body>
+				<div id="infoMessage"><?php echo $message; ?>	   </div>
+			</div>
+		</div>
+	</body>
 </html>

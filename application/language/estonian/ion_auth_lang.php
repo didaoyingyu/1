@@ -6,8 +6,8 @@ if (!defined('BASEPATH'))
  * Name:  Ion Auth Lang - Estonian
  *
  * Author: Esko Lehtme
- *         esko@tsoon.com
- *         @eskolehtme
+ *		 esko@tsoon.com
+ *		 @eskolehtme
  *
  * Location: http://github.com/benedmunds/ion_auth/
  *

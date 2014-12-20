@@ -6,11 +6,11 @@ if (!defined('BASEPATH'))
  * Name:  Ion Auth Lang - Italian
  * 
  * Author: Ben Edmunds
- *         ben.edmunds@gmail.com
- *         @benedmunds
+ *		 ben.edmunds@gmail.com
+ *		 @benedmunds
  * 
  * Location: http://github.com/benedmunds/ion_auth/
- *          
+ *		  
  * Created:  07.08.2010 
  * 
  * Description:  Italian language file for Ion Auth messages and errors

@@ -7,10 +7,10 @@ if (!defined('BASEPATH'))
  * 
  * Author: Kain Liu
  * 		  Lkaihua@gmail.com
- *         @China
+ *		 @China
  * 
  * Location: http://github.com/benedmunds/ion_auth/
- *          
+ *		  
  * Created:  10.24.2011
  * 
  * Description:  Simplified Chinese language file for Ion Auth messages and errors

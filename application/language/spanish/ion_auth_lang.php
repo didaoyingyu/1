@@ -7,10 +7,10 @@ if (!defined('BASEPATH'))
  * 
  * Author: Wilfrido Garc�a Espinosa
  * 		  contacto@wilfridogarcia.com
- *         @wilfridogarcia
+ *		 @wilfridogarcia
  * 
  * Location: http://github.com/benedmunds/ion_auth/
- *          
+ *		  
  * Created:  05.04.2010 
  * 
  * Description:  Spanish language file for Ion Auth messages and errors

@@ -7,13 +7,13 @@ if (!defined('BASEPATH'))
  *
  * Author: Ben Edmunds
  * 		  ben.edmunds@gmail.com
- *         @benedmunds
+ *		 @benedmunds
  *
  * Author: Daniel Davis
- *         @ourmaninjapan
+ *		 @ourmaninjapan
  * 
  * Author: Josue Ibarra
- *         @josuetijuana
+ *		 @josuetijuana
  *
  * Location: http://github.com/benedmunds/ion_auth/
  *

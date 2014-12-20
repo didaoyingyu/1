@@ -7,7 +7,7 @@ if (!defined('BASEPATH'))
  *
  * Author: Ben Edmunds
  * 		  ben.edmunds@gmail.com
- *         @benedmunds
+ *		 @benedmunds
  *
  * Translation: primjeri
  * 		info@primjeri.com

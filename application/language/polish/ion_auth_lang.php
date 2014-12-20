@@ -7,13 +7,13 @@ if (!defined('BASEPATH'))
  * 
  * Author: Bart Majewski
  * 		  hello@bartoszmajewski.pl
- *         @bart_majewski
+ *		 @bart_majewski
  * Updates: Slawomir Jasinski
  * 			slav123@gmail.com
  * 			@slavomirj
  * 
  * Location: http://github.com/benedmunds/ion_auth/
- *          
+ *		  
  * Created:  03.23.2010
  * Updated:  22.08.2012
  * 

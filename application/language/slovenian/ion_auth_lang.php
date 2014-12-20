@@ -7,7 +7,7 @@ if (!defined('BASEPATH'))
  *
  * Author: Žiga Drnovšček
  * 		  ziga.drnovscek@gmail.com
- *         
+ *		 
  *
  *
  * Location: http://github.com/benedmunds/ion_auth/

@@ -633,7 +633,7 @@ class Auth extends CI_Controller {
 			// $this->load->view('delete_decks',$allDecks);
 			/* 			$this->data['SelectDeck'] = array(
 			  'name'  => 'SelectDeck',
-			  'id'    => 'SelectDeck',
+			  'id'	=> 'SelectDeck',
 			  'type'  => 'text',
 			  'value' => $this->form_validation->set_value('SelectDeck'),
 			  ); */
@@ -846,7 +846,7 @@ class Auth extends CI_Controller {
 			}
 			$deck_id = $option;
 		}
-		//    print_r($gameSave);
+		//	print_r($gameSave);
 		$gameSave['decks_name'] = $html;
 		$gameSave['game_date'] = date("Y-m-d H:i:s");
 		$gameSave['cards'] = $decks;

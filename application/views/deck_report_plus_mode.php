@@ -1,16 +1,16 @@
 <div class="start_test_area">
-    <div class='card'><label>Enter cards want to test this time</label><input type='text' id='card_to_test' /><input type="button" name="start_test" id="start_test" value="Start Test Auto" onClick="loadSuperVisedModeParams('automatic')"><input type="button" name="start_test" id="start_test" value="Start Test Manual" onClick="loadSuperVisedModeParams('manual')"></div>
+	<div class='card'><label>Enter cards want to test this time</label><input type='text' id='card_to_test' /><input type="button" name="start_test" id="start_test" value="Start Test Auto" onClick="loadSuperVisedModeParams('automatic')"><input type="button" name="start_test" id="start_test" value="Start Test Manual" onClick="loadSuperVisedModeParams('manual')"></div>
 </div>
 <div class="header">
-    <div class="headerText">Report</div>
+	<div class="headerText">Report</div>
 </div>
 <div class="container" style="width:100%">
-    <div class="never_tested_cards">
-        <div><label>Untested Cards: </label><?php echo $cardCount['N']; ?></div>
-        <div><label>Prev XX Cards: </label><?php echo $cardCount['XX']; ?></div>
-        <div><label>Prev X Cards: </label><?php echo $cardCount['X']; ?></div>
-        <div><label>Prev write Cards: </label><?php echo $cardCount['O']; ?></div>
-    </div>
+	<div class="never_tested_cards">
+		<div><label>Untested Cards: </label><?php echo $cardCount['N']; ?></div>
+		<div><label>Prev XX Cards: </label><?php echo $cardCount['XX']; ?></div>
+		<div><label>Prev X Cards: </label><?php echo $cardCount['X']; ?></div>
+		<div><label>Prev write Cards: </label><?php echo $cardCount['O']; ?></div>
+	</div>
 	<?php
 	$type = '';
 	foreach ($allCards as $card) {
@@ -137,7 +137,7 @@
 								CORRECT   
 							</th>
 							<th>
-								INCORRECT     
+								INCORRECT	 
 							</th>
 							<th>
 								%   

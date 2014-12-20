@@ -7,12 +7,12 @@ if (!defined('BASEPATH'))
  * 
  * Author: Wilfrido García Espinosa
  * 		  contacto@wilfridogarcia.com
- *         @wilfridogarcia
+ *		 @wilfridogarcia
  *
  * Translation: Oriol Navascuez
  * 
  * Location: http://github.com/benedmunds/ion_auth/
- *          
+ *		  
  * Created:  05.04.2010 
  * 
  * Description:  Catalan language file for Ion Auth messages and errors

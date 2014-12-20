@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Flash Card Game - Edit Card Decks</title>
-        <meta name="viewport" content="width=device-width" />
-        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-        <meta content="utf-8" http-equiv="encoding">
-        <link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
-        <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.js"></script>
-        <script src="<?php echo base_url() ?>js/ajaxfileupload.js"></script>
-        <script>
+	<head>
+		<title>Flash Card Game - Edit Card Decks</title>
+		<meta name="viewport" content="width=device-width" />
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta content="utf-8" http-equiv="encoding">
+		<link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
+		<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.js"></script>
+		<script src="<?php echo base_url() ?>js/ajaxfileupload.js"></script>
+		<script>
 			function getValuesOnTrOnQ(obj)
 			{
 				var que = $(obj).val();
@@ -23,14 +23,14 @@
 				$(tr).attr("data-answer", ans);
 				$(tr).attr("data-unchanged", "changed");
 			}
-        </script>
-    </head>
-    <body>
-        <div class="container">
-            <!-- Header Section -->
-            <div class="header">
-                <div class="headerText">Edit Card Deck</div>
-                <div class="logOut">
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<!-- Header Section -->
+			<div class="header">
+				<div class="headerText">Edit Card Deck</div>
+				<div class="logOut">
 					<?php
 					if ($this->ion_auth->logged_in()) {
 						$user = $this->ion_auth->user()->row();
@@ -38,33 +38,33 @@
 						echo "Logg out: " . anchor('game/logout', $userName);
 					}
 					?>
-                </div>
-                <div class="clearFloat"></div>
-            </div>
-            <div class="genaricFormHolder">
-                <input type="hidden" value="1" id="hidden_count" />
-                <form method="post" action="<?php echo base_url(); ?>/index.php/">
-                    <div class="deck_main_enter">
-                        <label>Deck</label>
-                        <input type="text" id="deck_name" value="<?= $allCards['deck_name'] ?>"/>
-                    </div>
-                    <table border="1" style="width:100%" id="table">
-                        <thead>
-                        <th>
-                            Question
-                        </th>
-                        <th>
-                            ||
-                        </th>
-                        <th >
-                            Answer
-                        </th>
-                        <th width="20%">
-                            Attachments
-                        </th>
-                        <th>Action
-                        </th>
-                        </thead>
+				</div>
+				<div class="clearFloat"></div>
+			</div>
+			<div class="genaricFormHolder">
+				<input type="hidden" value="1" id="hidden_count" />
+				<form method="post" action="<?php echo base_url(); ?>/index.php/">
+					<div class="deck_main_enter">
+						<label>Deck</label>
+						<input type="text" id="deck_name" value="<?= $allCards['deck_name'] ?>"/>
+					</div>
+					<table border="1" style="width:100%" id="table">
+						<thead>
+						<th>
+							Question
+						</th>
+						<th>
+							||
+						</th>
+						<th >
+							Answer
+						</th>
+						<th width="20%">
+							Attachments
+						</th>
+						<th>Action
+						</th>
+						</thead>
 						<?php
 						$i = 1;
 						foreach ($allCards['complete_cards'] as $card) {
@@ -92,11 +92,11 @@
 										<div class="delete_file_button" style="float:right;cursor:pointer" onClick="deleteFile(<?= $card->card_id ?>, this)">x</div> 
 										<input type='file' class="sound_file" name="file_name_<?= $card->card_id ?>" id="file_name_<?= $card->card_id ?>" onChange="uploadFiles(<?= $card->card_id ?>, this)" style="display:none" />
 								<marquee class="upload_bar" style="display:none">Uploading</marquee>
-								<!--                                <a class="upload_link" style="display:none">Nothing To display</a>-->
+								<!--								<a class="upload_link" style="display:none">Nothing To display</a>-->
 								<?php
 							} else {
 								?>
-								<!--                                 <a href='<?php echo $url . "/sound-files/" . $card->answer_upload_file; ?>' style="display:none">See Mp3</a>-->
+								<!--								 <a href='<?php echo $url . "/sound-files/" . $card->answer_upload_file; ?>' style="display:none">See Mp3</a>-->
 								<input type='file' class="sound_file" name="file_name_<?= $card->card_id ?>" id="file_name_<?= $card->card_id ?>" onChange="uploadFiles(<?= $card->card_id ?>, this)" />
 								<marquee class="upload_bar" style="display:none">Uploading</marquee>
 								<a class="upload_link" style="display:none">Nothing To display</a>
@@ -113,15 +113,15 @@
 							<?php
 						}
 						?>
-                    </table>
-                    <div><input type='button' class='btn-classic' value='Save' style="width:100px;float:right;margin-top:5px" onClick="save()"/></div>
-                </form>
-            </div>
-            <p><?php echo anchor('', 'Home') ?></p>
+					</table>
+					<div><input type='button' class='btn-classic' value='Save' style="width:100px;float:right;margin-top:5px" onClick="save()"/></div>
+				</form>
+			</div>
+			<p><?php echo anchor('', 'Home') ?></p>
 			<a href="#" onclick="incrementCount();
 					getNewRow()">Add New Row</a>
-        </div>
-        <script>
+		</div>
+		<script>
 			function incrementCount()
 			{
 				var hidden_count = $("#hidden_count").val();
@@ -237,8 +237,8 @@
 				$(tr).find('.upload_bar').show();
 				$(tr).attr('data-unchanged', 'changed');
 				//   var now = new Date();
-				//    var date_now =new Date();
-				//      var outStr = now.getHours()+now.getMinutes()+now.getSeconds()+date_now.getFullYear()+(date_now.getMonth()+1)+date_now.getDate()+Math.floor(Math.random()*6)+Math.floor(Math.random()*6);
+				//	var date_now =new Date();
+				//	  var outStr = now.getHours()+now.getMinutes()+now.getSeconds()+date_now.getFullYear()+(date_now.getMonth()+1)+date_now.getDate()+Math.floor(Math.random()*6)+Math.floor(Math.random()*6);
 				//   var outStr=outStr+date_now.getFullYear();
 				//  alert(outStr);
 				//  alert(date_now.getFullYear());
@@ -287,8 +287,8 @@
 				$(tr).find('.upload_bar').show();
 				$(tr).attr('data-unchanged', 'changed');
 				//   var now = new Date();
-				//    var date_now =new Date();
-				//      var outStr = now.getHours()+now.getMinutes()+now.getSeconds()+date_now.getFullYear()+(date_now.getMonth()+1)+date_now.getDate()+Math.floor(Math.random()*6)+Math.floor(Math.random()*6);
+				//	var date_now =new Date();
+				//	  var outStr = now.getHours()+now.getMinutes()+now.getSeconds()+date_now.getFullYear()+(date_now.getMonth()+1)+date_now.getDate()+Math.floor(Math.random()*6)+Math.floor(Math.random()*6);
 				//   var outStr=outStr+date_now.getFullYear();
 				//  alert(outStr);
 				//  alert(date_now.getFullYear());
@@ -385,5 +385,5 @@
 				return data;
 			}
 		</script>
-    </body>
+	</body>
 </html>

@@ -144,14 +144,14 @@ class card extends CI_Model {
 		$inc_card_ids = array();
 		$cor_card_ids = array();
 		$neverTestcards = array();
-		$this->db->select('card_id, history');
+		$this->db->select('card_id, test_history');
 		$this->db->from('user_card');
 		$this->db->where('user_id', $userId);
 		$query = $this->db->get();
 		//echo $this->db->last_query();
 		$result = $query->result();
 		foreach ($result as $cards) {
-			$card_history = str_replace('-', '', $cards->history);
+			$card_history = str_replace('-', '', $cards->test_history);
 			$card_history_0 = str_replace('x', '', $card_history);
 			$card_history_1 = str_replace('o', '', $card_history_0);
 			$doubleX = substr($card_history_1, 0, 2);
@@ -219,9 +219,10 @@ class card extends CI_Model {
 
 	function load_cards($user_id, $deck_id) {
 		if ($deck_id == -1) {
-			$this->db->select('*');
+			$this->db->select('*,cd.deck_name');
 			$this->db->from('user_card');
-			$this->db->join('card', ' user_card.card_id = card.card_id'); /* show DONE msg */
+			$this->db->join('card', ' user_card.card_id = card.card_id');
+			$this->db->join('card_deck cd', 'cd.deck_id = user_card.deck_id'); /* show DONE msg */
 			$this->db->where('user_card.user_id', $user_id); /* show DONE msg */
 			$query = $this->db->get(); /* Show DONE msg */
 			return $query->result();
@@ -299,7 +300,7 @@ class card extends CI_Model {
 		$result = $query->result();
 		//return $query->result();
 		foreach ($result as $cards) {
-			$card_history = str_replace('-', '', $cards->history);
+			$card_history = str_replace('-', '', $cards->test_history);
 			$card_history_0 = str_replace('x', '', $card_history);
 			$card_history_1 = str_replace('o', '', $card_history_0);
 			$doubleX = substr($card_history_1, 0, 2);
@@ -369,7 +370,7 @@ class card extends CI_Model {
 		$query2 = $this->db->get();
 		$result2 = $query2->result();
 		foreach ($result2 as $cards2) {
-			$card_history2 = str_replace('-', '', $cards2->history);
+			$card_history2 = str_replace('-', '', $cards2->test_history);
 			$card_history_02 = str_replace('x', '', $card_history2);
 			$card_history_12 = str_replace('o', '', $card_history_02);
 			$doubleX2 = substr($card_history_12, 0, 2);
@@ -743,9 +744,10 @@ class card extends CI_Model {
 
 	/* save a card infomation user did some action on it */
 
-	function save_user_card($record_id, $history, $rank, $time, $last_shown, $wrong_twice_or_more_count, $last_date) {
+	function save_user_card($record_id, $history, $test_history, $rank, $time, $last_shown, $wrong_twice_or_more_count, $last_date) {
 		$this->db->where('record_id', $record_id);
 		$this->db->set('history', $history);
+		$this->db->set('test_history', $test_history);
 		$this->db->set('rank', $rank);
 		$this->db->set('last_time', $time);
 		$this->db->set('last_shown', $last_shown);
@@ -837,24 +839,24 @@ class card extends CI_Model {
 
 	public function getCompleteCardSet($id) {
 		if ($id != FALSE) {
-//            $query = $this->db->get_where('news', array('id' => $id));
+//			$query = $this->db->get_where('news', array('id' => $id));
 //
-//              $sql = "SELECT *
+//			  $sql = "SELECT *
 //
-//        FROM card c
+//		FROM card c
 //
-//        INNER JOIN card_in_deck cid ON c.card_id = cid.card_id
+//		INNER JOIN card_in_deck cid ON c.card_id = cid.card_id
 //
-//        INNER JOIN card_deck d ON d.deck_id=cid.deck_id
+//		INNER JOIN card_deck d ON d.deck_id=cid.deck_id
 //
-//        WHERE cid.deck_id = $id";
+//		WHERE cid.deck_id = $id";
 			$sql = "SELECT a.card_id, a.created_user_id, a.question, a.answer, a.answer_upload_file, a.created_date,
 	b.deck_name, b.deck_id, c.id FROM card a
 	INNER JOIN card_in_deck c ON a.card_id = c.card_id
 	INNER JOIN card_deck b ON c.deck_id = b.deck_id WHERE c.deck_id = $id";
 			$query = $this->db->query($sql, array($id))->result();
 			return $query;
-			//     return $query->row_array();
+			//	 return $query->row_array();
 		} else {
 			return FALSE;
 		}
@@ -862,137 +864,137 @@ class card extends CI_Model {
 
 	public function getCompleteGameSessions($user_id) {
 		$sql = "SELECT * FROM (SELECT id,
-				no_pre_wrong,
-				'asupervised' AS type,
-				total_time,
-				decks_name,
-				game_date,
-				correct_total,
-				wrong_total,
-				card_count,
-				wrong_twice_or_more_count,
-				first_time_card_count,
-				first_time_correct_Card_cout,
-				change_minus,
-				cardCompleteCount,
-				cardCompleteCorrectCount,
-				change_plus,
-				prex,
-				prexx,
-				current_true_prex,
-				current_true_prexx,
-				TotalCardCount,
-				new_card_count,
-				new_card_correct_count,
-				correct_to_date_card_count
-			FROM supervised_session
-			WHERE user_id = ?
-			UNION ALL
-			SELECT id,
-			0 AS no_pre_wrong,
-			'review' AS type,
-			total_time,
-			decks_name,
-			game_date,
-			correct_total,
-			wrong_total,
-			card_count,
-			0 AS wrong_twice_or_more_count,
-			0 AS 	first_time_card_count,
-			0 AS first_time_correct_Card_cout,
-			0 AS change_minus,
-			0 AS cardCompleteCount,
-			0 AS cardCompleteCorrectCount,
-			0 AS change_plus,
-			0 AS prex,
-			0 AS prexx,
-			0 AS current_true_prex,
-			0 AS current_true_prexx,
-			0 AS TotalCardCount,
-			0 AS new_card_count,
-			0 AS new_card_correct_count,
-			0 AS correct_to_date_card_count
-			FROM review_session
-			WHERE user_id = ?) AS t order by t.game_date DESC,t.type,t.id ";
+				 no_pre_wrong,
+				 'asupervised' AS type,
+				 total_time,
+				 decks_name,
+				 game_date,
+				 correct_total,
+				 wrong_total,
+				 card_count,
+				 wrong_twice_or_more_count,
+				 first_time_card_count,
+				 first_time_correct_Card_cout,
+				 change_minus,
+				 cardCompleteCount,
+				 cardCompleteCorrectCount,
+				 change_plus,
+				 prex,
+				 prexx,
+				 current_true_prex,
+				 current_true_prexx,
+				 TotalCardCount,
+				 new_card_count,
+				 new_card_correct_count,
+				 correct_to_date_card_count
+		FROM supervised_session
+		WHERE user_id = ?
+		UNION ALL
+		SELECT id,
+		0 AS no_pre_wrong,
+		'review' AS type,
+		total_time,
+		decks_name,
+		game_date,
+		correct_total,
+		wrong_total,
+		card_count,
+		0 AS wrong_twice_or_more_count,
+		0 AS 	first_time_card_count,
+		0 AS first_time_correct_Card_count,
+		0 AS change_minus,
+		0 AS cardCompleteCount,
+		0 AS cardCompleteCorrectCount,
+		0 AS change_plus,
+		0 AS prex,
+		 0 AS prexx,
+		 0 AS current_true_prex,
+		 0 AS current_true_prexx,
+		 0 AS TotalCardCount,
+		 0 AS new_card_count,
+		 0 AS new_card_correct_count,
+		 0 AS correct_to_date_card_count
+		FROM review_session
+		WHERE user_id = ?) AS t order by t.game_date DESC,t.type,t.id ";
 		$query = $this->db->query($sql, array($user_id, $user_id))->result();
 		return $query;
 	}
 
 	public function getCardDetailsCount($user_id) {
 		$sql = "SELECT COUNT(DISTINCT(t.card_id)) AS card_count FROM (
-                    SELECT ssc.card_id FROM supervised_session_cards ssc
-                    INNER JOIN supervised_session ss
-                    ON ss.id=ssc.supervised_session_id WHERE ss.user_id=$user_id
-                    UNION ALL
-                    SELECT rsc.card_id FROM review_session_cards rsc
-                    INNER JOIN review_session rs
-                    ON rs.id=rsc.review_session_id WHERE rs.user_id=$user_id
-                    ) AS t";
+					SELECT ssc.card_id FROM supervised_session_cards ssc
+					INNER JOIN supervised_session ss
+					ON ss.id=ssc.supervised_session_id WHERE ss.user_id=$user_id
+					UNION ALL
+					SELECT rsc.card_id FROM review_session_cards rsc
+					INNER JOIN review_session rs
+					ON rs.id=rsc.review_session_id WHERE rs.user_id=$user_id
+					) AS t";
 		$query = $this->db->query($sql)->result();
 		return $query;
 	}
 
 	public function isAllAnswersCorrectPre($card_id, $user_id) {
 		$sql = "SELECT COUNT(*) AS total_count FROM (
-                    SELECT ssc.card_id FROM supervised_session_cards ssc
-                    INNER JOIN supervised_session ss
-                    ON ss.id=ssc.supervised_session_id WHERE ss.user_id=$user_id
-                    AND ssc.card_id=$card_id AND ssc.ans='false'
-                    UNION ALL
-                    SELECT rsc.card_id FROM review_session_cards rsc
-                    INNER JOIN review_session rs
-                    ON rs.id=rsc.review_session_id WHERE rs.user_id=$user_id
-                    AND rsc.card_id=$card_id AND rsc.ans='false'
-                    ) AS t";
+					SELECT ssc.card_id FROM supervised_session_cards ssc
+					INNER JOIN supervised_session ss
+					ON ss.id=ssc.supervised_session_id WHERE ss.user_id=$user_id
+					AND ssc.card_id=$card_id AND ssc.ans='false'
+					UNION ALL
+					SELECT rsc.card_id FROM review_session_cards rsc
+					INNER JOIN review_session rs
+					ON rs.id=rsc.review_session_id WHERE rs.user_id=$user_id
+					AND rsc.card_id=$card_id AND rsc.ans='false'
+					) AS t";
 		$query = $this->db->query($sql)->result();
 		return $query;
 	}
 
 	public function wasOnceRight($card_id, $user_id) {
 		$sql = "SELECT COUNT(*) AS total_count FROM (
-                    SELECT ssc.card_id FROM supervised_session_cards ssc
-                    INNER JOIN supervised_session ss
-                    ON ss.id=ssc.supervised_session_id WHERE ss.user_id=$user_id
-                    AND ssc.card_id=$card_id AND ssc.ans='true'
-                    ) AS t";
+					SELECT ssc.card_id FROM supervised_session_cards ssc
+					INNER JOIN supervised_session ss
+					ON ss.id=ssc.supervised_session_id WHERE ss.user_id=$user_id
+					AND ssc.card_id=$card_id AND ssc.ans='true'
+					) AS t";
 		$query = $this->db->query($sql)->result();
 		return $query;
 	}
 
 	public function isPreviousTimeWrong($card_id, $user_id) {
 		$sql = "SELECT * FROM (SELECT ssc.* FROM supervised_session_cards ssc
-                    INNER JOIN supervised_session ss
-                    ON ss.id=ssc.supervised_session_id WHERE ss.user_id=$user_id
-                    AND ssc.card_id=$card_id ORDER BY ssc.id DESC) AS t
-                    GROUP BY t.card_id
-                    ";
+					INNER JOIN supervised_session ss
+					ON ss.id=ssc.supervised_session_id WHERE ss.user_id=$user_id
+					AND ssc.card_id=$card_id ORDER BY ssc.id DESC) AS t
+					GROUP BY t.card_id
+					";
 		$query = $this->db->query($sql)->result();
 		return $query;
 	}
 
 	public function isPreviousTwoTimeWrong($card_id, $user_id) {
 		$sql = "SELECT * FROM (SELECT ssc.* FROM supervised_session_cards ssc
-                    INNER JOIN supervised_session ss
-                    ON ss.id=ssc.supervised_session_id WHERE ss.user_id=$user_id
-                    AND ssc.card_id=$card_id ORDER BY ssc.id DESC) AS t
-                    LIMIT 1,1";
+					INNER JOIN supervised_session ss
+					ON ss.id=ssc.supervised_session_id WHERE ss.user_id=$user_id
+					AND ssc.card_id=$card_id ORDER BY ssc.id DESC) AS t
+					LIMIT 1,1";
 		$query = $this->db->query($sql)->result();
 		return $query;
 	}
 
 	public function getCorrectOnlyCount($user_id, $html) {
 		$sql = "SELECT COUNT(*) AS total_count FROM (SELECT ssc.card_id FROM supervised_session_cards ssc
-                    INNER JOIN card c
-                    ON c.card_id=ssc.card_id
-                    INNER JOIN supervised_session ss
-                    ON ss.id=ssc.supervised_session_id
-                     WHERE ss.user_id=$user_id
-                     $html
-                     AND ssc.card_id NOT IN (SELECT ssc.card_id FROM supervised_session_cards 						   ssc
-                    INNER JOIN supervised_session ss
-                    ON ss.id=ssc.supervised_session_id
-                    WHERE ans='false' AND ss.user_id=$user_id $html GROUP BY ssc.card_id) GROUP BY ssc.card_id) AS t
-                   ";
+					INNER JOIN card c
+					ON c.card_id=ssc.card_id
+					INNER JOIN supervised_session ss
+					ON ss.id=ssc.supervised_session_id
+					 WHERE ss.user_id=$user_id
+					 $html
+					 AND ssc.card_id NOT IN (SELECT ssc.card_id FROM supervised_session_cards 						   ssc
+					INNER JOIN supervised_session ss
+					ON ss.id=ssc.supervised_session_id
+					WHERE ans='false' AND ss.user_id=$user_id $html GROUP BY ssc.card_id) GROUP BY ssc.card_id) AS t
+				   ";
 		$query = $this->db->query($sql)->result();
 		return $query;
 	}
@@ -1053,9 +1055,9 @@ class card extends CI_Model {
 						$var['card_id'] = $card_id;
 						$this->db->insert('card_in_deck', $var);
 						$sql = "SELECT *
-                                        FROM user_card
-                                        WHERE deck_id = ?
-                                        GROUP BY user_id";
+										FROM user_card
+										WHERE deck_id = ?
+										GROUP BY user_id";
 						$usersCards = $this->db->query($sql, array($deck_id))->result();
 						if (count($usersCards) > 0) {
 							foreach ($usersCards AS $userCard) {
@@ -1130,7 +1132,9 @@ class card extends CI_Model {
 			unset($gameArray['cards']);
 			$this->db->insert('supervised_session', $gameArray);
 			$session_id = $this->db->insert_id();
+			/*			 * **** */
 			foreach ($cards AS $card) {
+				unset($card['test_history']);
 				$card['supervised_session_id'] = $session_id;
 				$this->db->insert('supervised_session_cards', $card);
 			}
@@ -1152,6 +1156,8 @@ class card extends CI_Model {
 			$this->db->insert('review_session', $gameArray);
 			$session_id = $this->db->insert_id();
 			foreach ($cards AS $card) {
+				unset($card['reason']);
+				unset($card['rank']);
 				$card['review_session_id'] = $session_id;
 				$this->db->insert('review_session_cards', $card);
 			}
@@ -1186,40 +1192,61 @@ class card extends CI_Model {
 	}
 
 	public function getAllErrors($user_name) {
-		$sql = "SELECT cd.deck_name,
-                    ss.game_date,
-                 c.question,
-                 c.answer,
-                    cd.deck_id
-        FROM supervised_session_cards ssc
-        INNER JOIN supervised_session ss
-        ON ss.id=ssc.supervised_session_id
-        INNER JOIN card c
-        ON c.card_id=ssc.card_id
-        INNER JOIN card_deck cd
-        ON cd.deck_id=ssc.deck_id
-        INNER JOIN users u
-        ON u.id=ss.user_id
-        WHERE u.email = ?
-        AND ssc.ans='false'
-        ORDER BY ss.game_date DESC,cd.deck_name ";
+//********/
+		$sql = "SELECT ssc.history,ssc.rank,ssc.itp,ssc.last_shown,ssc.utp,cd.deck_name,
+					ss.game_date,
+				 c.question,
+				 c.answer,
+					cd.deck_id
+		FROM supervised_session_cards ssc
+		INNER JOIN supervised_session ss
+		ON ss.id=ssc.supervised_session_id
+		INNER JOIN card c
+		ON c.card_id=ssc.card_id
+		INNER JOIN card_deck cd
+		ON cd.deck_id=ssc.deck_id
+		INNER JOIN users u
+		ON u.id=ss.user_id
+		WHERE u.email = ?
+		AND ssc.ans='false'
+		ORDER BY ss.game_date DESC,cd.deck_name ";
 		$query = $this->db->query($sql, array($user_name))->result();
 		return $query;
 	}
-	
+
 	public function save_quick_review_log($data) {
 		$data['reason'] = str_replace('&gt;&gt;', '', $data['reason']);
 		$deck_name = $this->db->select("deck_name")->from("card_deck")->where("deck_id", $data['deck_id'])->get()->row_array();
 		$data['deck_name'] = $deck_name['deck_name'];
 		if (isset($data['reason'])) {
 			$utp = $this->db->select("utp")->from("user_card")
-					->where("user_id",$data['user_id'])
-					->where("deck_id",$data['deck_id'])
-					->where("card_id",$data['card_id'])
-					->get()->row_array();
-			$data['utp']=$utp['utp'];
+							->where("user_id", $data['user_id'])
+							->where("deck_id", $data['deck_id'])
+							->where("card_id", $data['card_id'])
+							->get()->row_array();
+			$this->db->set('utp', 'NOW()', FALSE)
+					->where("user_id", $data['user_id'])
+					->where("deck_id", $data['deck_id'])
+					->where("card_id", $data['card_id'])
+					->update('user_card');
+			//print_r($utp);
+			//$data['utp'] = $utp['utp'];
 			$this->db->insert('quick_review_log', $data);
+			//print_r($this->db->last_query());
 			return $this->db->insert_id();
+		} else {
+			return FALSE;
+		}
+	}
+
+	public function get_log_utp($data) {
+		if (isset($data['reason'])) {
+			$utp = $this->db->select("utp")->from("user_card")
+							->where("user_id", $data['user_id'])
+							->where("deck_id", $data['deck_id'])
+							->where("card_id", $data['card_id'])
+							->get()->row_array();
+			return $utp['utp'];
 		} else {
 			return FALSE;
 		}

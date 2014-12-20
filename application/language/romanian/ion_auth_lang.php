@@ -7,7 +7,7 @@ if (!defined('BASEPATH'))
  *
  * Author: Adrian Voicu
  * 		  avenir.ro@gmail.com
- *         @benedmunds
+ *		 @benedmunds
  *
  * Location: http://github.com/benedmunds/ion_auth/
  *

@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Flash Card Game-Sound</title>
-        <meta name="viewport" content="width=device-width" />
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-        <link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
-        <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.js"></script>
-        <!-- Ulatimate Ajax Stript info: http://www.hunlock.com/blogs/The_Ultimate_Ajax_Object -->
-        <script type="text/javascript" src="<?php echo base_url() ?>js/uajax.js"></script>
-        <!-- Card handling logic -->
-        <script type="text/javascript" src="<?php echo base_url() ?>js/deckHandler.js"></script>
-        <!-- Game JS -->
-        <script>
+	<head>
+		<title>Flash Card Game-Sound</title>
+		<meta name="viewport" content="width=device-width" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
+		<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.js"></script>
+		<!-- Ulatimate Ajax Stript info: http://www.hunlock.com/blogs/The_Ultimate_Ajax_Object -->
+		<script type="text/javascript" src="<?php echo base_url() ?>js/uajax.js"></script>
+		<!-- Card handling logic -->
+		<script type="text/javascript" src="<?php echo base_url() ?>js/deckHandler.js"></script>
+		<!-- Game JS -->
+		<script>
 			/*******Common JS varible Section***************/
 			var userId = <?php echo $this->ion_auth->user()->row()->id ?>;
 			var deckId = 1;
@@ -51,7 +51,7 @@
 			game_results['wrong_total'] = new Object();
 			game_results['deck'] = new Object();
 			game_results['card_count'] = new Object();
-			//    var game_results['user_id'] = new Object();
+			//	var game_results['user_id'] = new Object();
 			var current_user_id = 0;
 			var game_count = 0;
 			var correct_total = 0;
@@ -444,27 +444,27 @@
 					}
 					// register the handler 
 					document.addEventListener('keyup', keyHandler, false);
-        </script>
-    </head>
-    <body onload="startGame()">
-        <div id="source_div">
-        </div>
-        <!--      
-        <audio controls="controls">
-          <source id="sorce_id" type="audio/mpeg" >
-        Your browser does not support the audio element. Please Update Browser..
-        Details:
-        supported browser: 
-        Internet Explorer
-        Google Chrome
-        Firefox (Firefox 21 running on Windows 7, Windows 8, Windows Vista, and Android now supports MP3)
-        Safari
-        </audio>-->
-        <div class="container">
-            <!-- Header Section -->
-            <div class="header">
-                <div class="headerText">Flash Card Game</div>
-                <div class="logOut">
+		</script>
+	</head>
+	<body onload="startGame()">
+		<div id="source_div">
+		</div>
+		<!--	  
+		<audio controls="controls">
+		  <source id="sorce_id" type="audio/mpeg" >
+		Your browser does not support the audio element. Please Update Browser..
+		Details:
+		supported browser: 
+		Internet Explorer
+		Google Chrome
+		Firefox (Firefox 21 running on Windows 7, Windows 8, Windows Vista, and Android now supports MP3)
+		Safari
+		</audio>-->
+		<div class="container">
+			<!-- Header Section -->
+			<div class="header">
+				<div class="headerText">Flash Card Game</div>
+				<div class="logOut">
 					<?php
 					if ($this->ion_auth->logged_in()) {
 						$user = $this->ion_auth->user()->row();
@@ -472,76 +472,76 @@
 						echo "Logg out: " . anchor('game/logout', $userName);
 					}
 					?>
-                </div>
-            </div>
-            <!-- Flash card section -->
-            <div class="fcardHodler" id="gameScreen">
-                <div class="fcardFlipper">
-                    <!-- Question Card -->
-                    <div class="fcardQues" id="fcardQues">
-                        <div class="fcardHeadder">
-                            <div id="qMode" class="fcardHeadderContent">Mode: Review</div>
-                            <div id="qHistory" class="fcardHeadderContent">History:###</div>
-                            <div id="qRank" class="fcardHeadderContent">Rank: 1</div>
-                            <div id="qAvg" class="fcardHeadderContent">Avg Time: 04:45</div>
-                            <div id="qTime" class="fcardHeadderContent">Time: 00.00</div>
-                            <div class="clearFloat"></div>
-                        </div>
-                        <div id="qContent" class="fcardContent">
-                            Content
-                        </div>
-                        <div class="fcardFooterQues">
-                            <div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="showAns()"><p>Answer</p></div></div></div>
-                            <div class="buttonHolder"><div class="buttonInner"><div class="button" onclick="finishGame()"><p>Finish</p></div></div></div>
-                            <div class="clearFloat"></div>
-                        </div>
-                    </div>
-                    <!-- Answer Card-->
-                    <div class="fcardAns" id="fcardAns">
-                        <div class="fcardHeadder">
-                            <div id="aMode" class="fcardHeadderContent">Mode: Review</div>
-                            <div id="aHistory" class="fcardHeadderContent">History:###</div>
-                            <div id="aRank" class="fcardHeadderContent">Rank: 1</div>
-                            <div id="aAvg" class="fcardHeadderContent">Avg Time: 04:45</div>
-                            <div id="aTime" class="fcardHeadderContent">Time: 00.00</div>
-                            <div class="clearFloat"></div>
-                        </div>
-                        <div id="aContent" class="fcardContent">
-                            Answer
-                        </div>
-                        <div class="fcardFooterAns">
-                            <div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:ansCorrect();"><p>&#10004;</p></div></div></div> 
-                            <div class="buttonHolder"><div class="buttonInner"><div class="button red" onclick="javascript:ansWrong();"><p>&#10007;</p></div></div></div> 
-                            <div class="clearFloat"></div>
-                        </div>
-                    </div>
-                </div>
-                <div id="extraInfo" style="position:relative; z-index: 500000000000000000000;  top:-20px;"></div>
-            </div>
-            <!-- Game mode and extra functions selector Screen -->
-            <div class="gameModeScreen" id="gameModeScreen">
-                <div class="buttonHolder" style="display:none"><div class="buttonInner"><div class="button green" onclick="javascript:setGameModeAndLoadDecks('TR');"><p>Training Mode</p></div></div></div> 
-                <br/><br/><br/>  
-                <div class="buttonHolder" ><div class="buttonInner"><div class="button green" id="sound_button_loading" onclick="javascript:setGameModeAndLoadDecks('RW');"><p>Review Mode<br/>Loading......</p></div></div></div> 
-                <br/><br/><br/>
-                <div class="buttonHolder" style="display:none"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/rw_with_sound"><p>Review Mode With Sound</p></a></div></div> 
-                <br/><br/><br/>
-                <div class="buttonHolder" style="display:none"><div class="buttonInner"><div class="button green" onclick="javascript:setGameModeAndLoadDecks('TST');"><p>Test Mode</p></div></div></div>
-                <br/><br/><br/>
-                <div class="buttonHolder" style="display:none"><div class="buttonInner"><div class="button green" onclick="javascript:setGameModeAndLoadDecks('STST');"><p>Supervised Test</p></div></div></div>
-                <br/><br/><br/>
-                create new deck
-                <div class='buttonHolder' style="display:none"><div class='buttonInner'><div class='button green' onclick='javascript:newDeck()'><p>New Deck</p></div></div></div>
-                <br/><br/><br/>
-                manage card decks
-                <div class='buttonHolder' style="display:none"><div class='buttonInner'><div class='button green' onclick='javascript:manageDeck()'><p>Manage Deck</p></div></div></div>
-                <br/><br/><br/> 
-            </div>
-            <!-- Card Deck Selection Screen -->
-            <div class="cardDeckSelectionScreen" id="cardDeckSelectionScreen">
-            </div>
-        </div>
-    </body>
+				</div>
+			</div>
+			<!-- Flash card section -->
+			<div class="fcardHodler" id="gameScreen">
+				<div class="fcardFlipper">
+					<!-- Question Card -->
+					<div class="fcardQues" id="fcardQues">
+						<div class="fcardHeadder">
+							<div id="qMode" class="fcardHeadderContent">Mode: Review</div>
+							<div id="qHistory" class="fcardHeadderContent">History:###</div>
+							<div id="qRank" class="fcardHeadderContent">Rank: 1</div>
+							<div id="qAvg" class="fcardHeadderContent">Avg Time: 04:45</div>
+							<div id="qTime" class="fcardHeadderContent">Time: 00.00</div>
+							<div class="clearFloat"></div>
+						</div>
+						<div id="qContent" class="fcardContent">
+							Content
+						</div>
+						<div class="fcardFooterQues">
+							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="showAns()"><p>Answer</p></div></div></div>
+							<div class="buttonHolder"><div class="buttonInner"><div class="button" onclick="finishGame()"><p>Finish</p></div></div></div>
+							<div class="clearFloat"></div>
+						</div>
+					</div>
+					<!-- Answer Card-->
+					<div class="fcardAns" id="fcardAns">
+						<div class="fcardHeadder">
+							<div id="aMode" class="fcardHeadderContent">Mode: Review</div>
+							<div id="aHistory" class="fcardHeadderContent">History:###</div>
+							<div id="aRank" class="fcardHeadderContent">Rank: 1</div>
+							<div id="aAvg" class="fcardHeadderContent">Avg Time: 04:45</div>
+							<div id="aTime" class="fcardHeadderContent">Time: 00.00</div>
+							<div class="clearFloat"></div>
+						</div>
+						<div id="aContent" class="fcardContent">
+							Answer
+						</div>
+						<div class="fcardFooterAns">
+							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:ansCorrect();"><p>&#10004;</p></div></div></div> 
+							<div class="buttonHolder"><div class="buttonInner"><div class="button red" onclick="javascript:ansWrong();"><p>&#10007;</p></div></div></div> 
+							<div class="clearFloat"></div>
+						</div>
+					</div>
+				</div>
+				<div id="extraInfo" style="position:relative; z-index: 500000000000000000000;  top:-20px;"></div>
+			</div>
+			<!-- Game mode and extra functions selector Screen -->
+			<div class="gameModeScreen" id="gameModeScreen">
+				<div class="buttonHolder" style="display:none"><div class="buttonInner"><div class="button green" onclick="javascript:setGameModeAndLoadDecks('TR');"><p>Training Mode</p></div></div></div> 
+				<br/><br/><br/>  
+				<div class="buttonHolder" ><div class="buttonInner"><div class="button green" id="sound_button_loading" onclick="javascript:setGameModeAndLoadDecks('RW');"><p>Review Mode<br/>Loading......</p></div></div></div> 
+				<br/><br/><br/>
+				<div class="buttonHolder" style="display:none"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/rw_with_sound"><p>Review Mode With Sound</p></a></div></div> 
+				<br/><br/><br/>
+				<div class="buttonHolder" style="display:none"><div class="buttonInner"><div class="button green" onclick="javascript:setGameModeAndLoadDecks('TST');"><p>Test Mode</p></div></div></div>
+				<br/><br/><br/>
+				<div class="buttonHolder" style="display:none"><div class="buttonInner"><div class="button green" onclick="javascript:setGameModeAndLoadDecks('STST');"><p>Supervised Test</p></div></div></div>
+				<br/><br/><br/>
+				create new deck
+				<div class='buttonHolder' style="display:none"><div class='buttonInner'><div class='button green' onclick='javascript:newDeck()'><p>New Deck</p></div></div></div>
+				<br/><br/><br/>
+				manage card decks
+				<div class='buttonHolder' style="display:none"><div class='buttonInner'><div class='button green' onclick='javascript:manageDeck()'><p>Manage Deck</p></div></div></div>
+				<br/><br/><br/> 
+			</div>
+			<!-- Card Deck Selection Screen -->
+			<div class="cardDeckSelectionScreen" id="cardDeckSelectionScreen">
+			</div>
+		</div>
+	</body>
 </html>
 <script>
 	$(document).ready(function() {

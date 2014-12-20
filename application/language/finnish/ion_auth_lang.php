@@ -6,8 +6,8 @@ if (!defined('BASEPATH'))
  * Name:  Ion Auth Lang - Finnish
  *
  * Author: Jarno Fabritius
- *         jarno.fabritius@meisso.com
- *         @meisso_jarno
+ *		 jarno.fabritius@meisso.com
+ *		 @meisso_jarno
  *
  * Location: http://github.com/benedmunds/ion_auth/
  *

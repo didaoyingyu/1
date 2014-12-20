@@ -9,7 +9,7 @@ if (!defined('BASEPATH'))
  * 		  vagelispapalou@yahoo.gr
  * 
  * Location: http://github.com/benedmunds/ion_auth/
- *          
+ *		  
  * Created:  02.04.2011
  * 
  * Description:  Greek language file for Ion Auth messages and errors

@@ -7,10 +7,10 @@ if (!defined('BASEPATH'))
  * 
  * Author: Tomas E. Sandven
  * 		  tomas191191@gmail.com
- *         @codemonkey1991
+ *		 @codemonkey1991
  * 
  * Location: http://github.com/benedmunds/ion_auth/
- *          
+ *		  
  * Created:  01.01.2012
  * 
  * Description:  Norwegian language file for Ion Auth messages and errors

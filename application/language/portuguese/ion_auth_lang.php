@@ -6,7 +6,7 @@ if (!defined('BASEPATH'))
  * Name:  Ion Auth Lang - Portuguese
  *
  * Author: Andr&eacute; Br&aacute;s Sim&otilde;es
- *       andrebrassimoes@gmail.com
+ *	   andrebrassimoes@gmail.com
  *
  * Adjustments by @Dentxinho
  *

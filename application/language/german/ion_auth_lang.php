@@ -3,21 +3,21 @@
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
 /**
- * Name:         Ion Auth Lang - German
+ * Name:		 Ion Auth Lang - German
  * 
- * Author:       Ben Edmunds
- * 		        ben.edmunds@gmail.com
- *               @benedmunds
+ * Author:	   Ben Edmunds
+ * 				ben.edmunds@gmail.com
+ *			   @benedmunds
  * Translation:  Bernd Hückstädt
- * 		        akademie@joytopia.net
+ * 				akademie@joytopia.net
  * 
  * 
- * Location:     http://github.com/benedmunds/ion_auth/
- *          
+ * Location:	 http://github.com/benedmunds/ion_auth/
+ *		  
  * Created:  04.02.2010 
  * 
- * Description:      German language file for Ion Auth messages and errors
- * Beschreibung:     Deutsche Sprach-Datei für Ion Auth System- und Fehlermeldungen
+ * Description:	  German language file for Ion Auth messages and errors
+ * Beschreibung:	 Deutsche Sprach-Datei für Ion Auth System- und Fehlermeldungen
  * 
  */
 // Account Creation

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Flash Card Game - Login</title>
-        <meta name="viewport" content="width=device-width" />
-        <link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
-        <script>
+	<head>
+		<title>Flash Card Game - Login</title>
+		<meta name="viewport" content="width=device-width" />
+		<link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
+		<script>
 			function doLogin() {
 				if (document.getElementById("username").value.length > 0) {
 					if (document.getElementById("password").value.length > 0) {
@@ -22,29 +22,29 @@
 					}
 				}
 			}
-        </script>
-    </head>
-    <body>
-        <div class="container">
-            <!-- Header Section -->
-            <div class="header"><div class="headerText">Flash Card Game - Login</div></div>
-            <!-- Login Window -->
-            <div class="loginFormHolder">
-                <form method="POST" action="<?php echo base_url() ?>index.php/game/login" id="loginForm" onsubmit="doLogin()">
-                    <p>User Name<span class="required" id="reqUname"></span></p>
-                    <input type="text" name="username" id="username" />
-                    <p>Password<span class="required" id="reqPass"></span></p>
-                    <input type="password" name="password" id="password" />
-                    <!-- Login Error -->
-                    <div class="loginError" id="loginErrorBox"><?php
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<!-- Header Section -->
+			<div class="header"><div class="headerText">Flash Card Game - Login</div></div>
+			<!-- Login Window -->
+			<div class="loginFormHolder">
+				<form method="POST" action="<?php echo base_url() ?>index.php/game/login" id="loginForm" onsubmit="doLogin()">
+					<p>User Name<span class="required" id="reqUname"></span></p>
+					<input type="text" name="username" id="username" />
+					<p>Password<span class="required" id="reqPass"></span></p>
+					<input type="password" name="password" id="password" />
+					<!-- Login Error -->
+					<div class="loginError" id="loginErrorBox"><?php
 						if (isset($message)) {
 							echo $message;
 						}
 						?></div>
-                    <div class="clearFloat"></div><br/>
-                    <div class="buttonHolder loginButton"><div class="buttonInner"><input type="submit" class="button" value="Login"/></div></div>
-                </form>
-            </div>
-        </div>
-    </body>
+					<div class="clearFloat"></div><br/>
+					<div class="buttonHolder loginButton"><div class="buttonInner"><input type="submit" class="button" value="Login"/></div></div>
+				</form>
+			</div>
+		</div>
+	</body>
 </html>

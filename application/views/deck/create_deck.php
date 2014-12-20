@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Flash Card Game - Add Card Decks</title>
-        <meta name="viewport" content="width=device-width" />
-        <link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
-        <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.js"></script>
-        <script src="<?php echo base_url() ?>js/ajaxfileupload.js"></script>
-        <script>
+	<head>
+		<title>Flash Card Game - Add Card Decks</title>
+		<meta name="viewport" content="width=device-width" />
+		<link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
+		<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.js"></script>
+		<script src="<?php echo base_url() ?>js/ajaxfileupload.js"></script>
+		<script>
 			function getValuesOnTrOnQ(obj)
 			{
 				var que = $(obj).val();
@@ -21,14 +21,14 @@
 				$(tr).attr("data-answer", ans);
 				$(tr).attr("data-unchanged", "changed");
 			}
-        </script>
-    </head>
-    <body>
-        <div class="container">
-            <!-- Header Section -->
-            <div class="header">
-                <div class="headerText">Add Card Deck</div>
-                <div class="logOut">
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<!-- Header Section -->
+			<div class="header">
+				<div class="headerText">Add Card Deck</div>
+				<div class="logOut">
 					<?php
 					$count = 1;
 					if ($this->ion_auth->logged_in()) {
@@ -37,65 +37,65 @@
 						echo "Logg out: " . anchor('game/logout', $userName);
 					}
 					?>
-                </div>
-                <div class="clearFloat"></div>
-            </div>
-            <div class="genaricFormHolder">
-                <input type="hidden" value="1" id="hidden_count" />
-                <form method="post" action="<?php echo base_url(); ?>/index.php/">
-                    <div class="deck_main_enter">
-                        <label>Deck</label>
-                        <input type="text" id="deck_name"/>
-                    </div>
-                    <table border="1" style="width:100%" id="table">
-                        <thead>
-                        <th>
-                            Question
-                        </th>
-                        <th>
-                            ||
-                        </th>
-                        <th >
-                            Answer
-                        </th>
-                        <th width="20%">
-                            Attachments
-                        </th>
-                        <th >
-                            Action
-                        </th>
-                        </thead>
-                        <tbody>
-                            <tr data-count="<?= $count ?>">
-                                <td cell-name='question'>
-                                    <input type='text' class="question" onBlur='getValuesOnTrOnQ(this)' />
-                                </td>
-                                <td class='center-align'>
-                                    ||
-                                </td>
-                                <td cell-name='answer'>
-                                    <input type='text' class="answer" onBlur='getValuesOnTrOnA(this)' />
-                                </td>
-                                <td>
-                                    <input class="sound_file" type='file' name="file_name_<?= $count ?>" id="file_name_<?= $count ?>"   onChange="uploadFiles(<?= $count ?>, this)" />
-                        <marquee class="upload_bar" style="display:none">Uploading</marquee>
-                        <a class="upload_link" style="display:none">Nothing To display</a>
-                        <div class="delete_file_button" style="float:right;display:none;cursor:pointer" onClick="deleteFile(<?= $count ?>, this)">x</div> 
-                        </td>
-                        <td>
+				</div>
+				<div class="clearFloat"></div>
+			</div>
+			<div class="genaricFormHolder">
+				<input type="hidden" value="1" id="hidden_count" />
+				<form method="post" action="<?php echo base_url(); ?>/index.php/">
+					<div class="deck_main_enter">
+						<label>Deck</label>
+						<input type="text" id="deck_name"/>
+					</div>
+					<table border="1" style="width:100%" id="table">
+						<thead>
+						<th>
+							Question
+						</th>
+						<th>
+							||
+						</th>
+						<th >
+							Answer
+						</th>
+						<th width="20%">
+							Attachments
+						</th>
+						<th >
+							Action
+						</th>
+						</thead>
+						<tbody>
+							<tr data-count="<?= $count ?>">
+								<td cell-name='question'>
+									<input type='text' class="question" onBlur='getValuesOnTrOnQ(this)' />
+								</td>
+								<td class='center-align'>
+									||
+								</td>
+								<td cell-name='answer'>
+									<input type='text' class="answer" onBlur='getValuesOnTrOnA(this)' />
+								</td>
+								<td>
+									<input class="sound_file" type='file' name="file_name_<?= $count ?>" id="file_name_<?= $count ?>"   onChange="uploadFiles(<?= $count ?>, this)" />
+						<marquee class="upload_bar" style="display:none">Uploading</marquee>
+						<a class="upload_link" style="display:none">Nothing To display</a>
+						<div class="delete_file_button" style="float:right;display:none;cursor:pointer" onClick="deleteFile(<?= $count ?>, this)">x</div> 
+						</td>
+						<td>
 							<button type="button" class="btn-custom3" onClick="incrementCount();
 									clone(this)" style="cursor:pointer">Add</button>
-                            <button type="button" class="btn-danger dis" onClick="deleteThis(this)" style="cursor:pointer" disabled>Delete</button>
-                        </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div><input type='button' class='btn-classic' value='Save' style="width:100px;float:right;margin-top:5px" onClick="save()"/></div>
-                </form>
-            </div>
-            <p><?php echo anchor('', 'Home') ?></p>
-        </div>
-        <script>
+							<button type="button" class="btn-danger dis" onClick="deleteThis(this)" style="cursor:pointer" disabled>Delete</button>
+						</td>
+						</tr>
+						</tbody>
+					</table>
+					<div><input type='button' class='btn-classic' value='Save' style="width:100px;float:right;margin-top:5px" onClick="save()"/></div>
+				</form>
+			</div>
+			<p><?php echo anchor('', 'Home') ?></p>
+		</div>
+		<script>
 			function incrementCount()
 			{
 				var hidden_count = $("#hidden_count").val();
@@ -111,8 +111,8 @@
 				$(tr).find('.upload_bar').show();
 				$(tr).attr('data-unchanged', 'changed');
 				//   var now = new Date();
-				//    var date_now =new Date();
-				//      var outStr = now.getHours()+now.getMinutes()+now.getSeconds()+date_now.getFullYear()+(date_now.getMonth()+1)+date_now.getDate()+Math.floor(Math.random()*6)+Math.floor(Math.random()*6);
+				//	var date_now =new Date();
+				//	  var outStr = now.getHours()+now.getMinutes()+now.getSeconds()+date_now.getFullYear()+(date_now.getMonth()+1)+date_now.getDate()+Math.floor(Math.random()*6)+Math.floor(Math.random()*6);
 				//   var outStr=outStr+date_now.getFullYear();
 				//  alert(outStr);
 				//  alert(date_now.getFullYear());
@@ -245,10 +245,10 @@
 			function clone(obj)
 			{
 				var tr = $(obj).parents(tr).first();
-				//              if($(tr).find('cell-name=question')=='')
-				//                  {
-				//                      alert("Add Question");
-				//                  }
+				//			  if($(tr).find('cell-name=question')=='')
+				//				  {
+				//					  alert("Add Question");
+				//				  }
 				initialClone(obj);
 				getValuesOnTrOnQ(this);
 				getValuesOnTrOnA(this);
@@ -291,6 +291,6 @@
 				});
 				return data;
 			}
-        </script>
-    </body>
+		</script>
+	</body>
 </html>

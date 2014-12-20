@@ -7,9 +7,9 @@ if (!defined('BASEPATH'))
  *
  * Author: Ben Edmunds
  * 		  ben.edmunds@gmail.com
- *         @benedmunds
+ *		 @benedmunds
  * Translation:  Radas7
- *             radas7@gmail.com
+ *			 radas7@gmail.com
  *
  *
  * Created:  2012-03-04

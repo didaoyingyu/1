@@ -6,12 +6,12 @@ if (!defined('BASEPATH'))
  * Name:  Ion Auth Lang - Dutch
  * 
  * Author: Jeroen van der Gulik
- *         jeroen@isset.nl
+ *		 jeroen@isset.nl
  *
  * Adjustments by Dieter
  * 
  * Location: http://github.com/benedmunds/CodeIgniter-Ion-Auth
- *          
+ *		  
  * Created:  05.01.2010 
  * 
  * Description:  Dutch language file for Ion Auth messages and errors

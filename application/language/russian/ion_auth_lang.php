@@ -7,9 +7,9 @@ if (!defined('BASEPATH'))
  *
  * Author: Ben Edmunds
  * 		  ben.edmunds@gmail.com
- *         @benedmunds
+ *		 @benedmunds
  * Translation:  Petrosyan R.
- *             for@petrosyan.rv.ua
+ *			 for@petrosyan.rv.ua
  *
  * Location: http://github.com/benedmunds/ion_auth/
  *

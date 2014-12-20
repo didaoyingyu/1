@@ -6,9 +6,9 @@ if (!defined('BASEPATH'))
  * Name:  Ion Auth Lang - Persian
  *
  * Author: Rob Davarnia
- *         robdvr@gmail.com
- *         @robdvr
- *         
+ *		 robdvr@gmail.com
+ *		 @robdvr
+ *		 
  * Modification: Ghasem Shahabi
  * 		  ghasem.shahabi@gmail.com
  * 		  @GhasemShahabi

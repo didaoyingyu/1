@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Flash Card Game - Report</title>
-        <meta name="viewport" content="width=device-width" />
-        <link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
-    </head>
-    <body>
-        <div class="header">
-            <div class="headerText">Report</div>
-        </div>
-        <div class="container">
+	<head>
+		<title>Flash Card Game - Report</title>
+		<meta name="viewport" content="width=device-width" />
+		<link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
+	</head>
+	<body>
+		<div class="header">
+			<div class="headerText">Report</div>
+		</div>
+		<div class="container">
 			<?php
 			$type = '';
 			foreach ($allCards as $card) {
@@ -136,7 +136,7 @@
 										CORRECT   
 									</th>
 									<th>
-										INCORRECT     
+										INCORRECT	 
 									</th>
 									<th>
 										%   
@@ -204,6 +204,6 @@
 				<?php
 			}
 			?>
-        </div>
-    </body>
+		</div>
+	</body>
 </html>
