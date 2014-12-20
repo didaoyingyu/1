@@ -825,6 +825,8 @@ class Auth extends CI_Controller {
 			}
 		}
 		$getCorrectOnly = $this->card->getCorrectOnlyCount($user_Id, $html1);
+		$cards['cardCount'] = $this->card->neverTestedCards($user_Id);
+		$correct_to_date_card_count = $cards['cardCount']['O'];
 		$correct_to_date_card_count = $correct_to_date_card_count + $getCorrectOnly[0]->total_count;
 		$gameSave['correct_to_date_card_count'] = $correct_to_date_card_count;
 		$gameSave['new_card_count'] = $new_card_count;
@@ -910,8 +912,20 @@ class Auth extends CI_Controller {
 			echo "success";
 		}
 	}
+
+	function get_log_utp() {
+		$this->load->model('card');
+		$log = $this->input->post('data');
+		$log = $log['log'];
+		$user = $this->ion_auth->user()->row();
+		$log['user_id'] = $user->id;
+		$review_log = $this->card->get_log_utp($log);
+		if ($review_log) {
+			echo $review_log;
+		}
+	}
 	
-	function review_log_control(){
+	function review_log_control() {
 		$this->load->model('card');
 		$log = $this->input->post('log');
 		$review_log = $this->card->save_quick_review_control($log);

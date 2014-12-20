@@ -42,7 +42,7 @@
 			var questionTimeDiv;
 			var timerIntervalId;
 			/*game history length */
-			var historyLength = 10;
+			var historyLength = 30;
 			/*reviw mode gama parameters*/
 			var loadRmParamsResponse;
 			var loadRmParamsResponseStatus;
@@ -546,7 +546,7 @@
 				if (parseInt(currentCard['play_count']) != 0) {
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
-				renderQuestion(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question']);
+				renderQuestion(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question']);
 			}
 			function showAns() {
 				flip();
@@ -561,18 +561,24 @@
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
 				totalSeconds = 0;
-				renderAnswer(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
-			}
+				renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
+ 			}
 			function ansCorrect() {
 				total_cards++;
 				if (game_results['deck'][game_count]['history'] == '----------' || game_results['deck'][game_count]['history'] == '' || game_results['deck'][game_count]['history'] == null)
 				{
 					first_time_correct_Card_cout++;
 				}
+				var test_history = $(".test_history").html();
+				test_history = test_history.substring(7);
+				Current_test_history = 'O' + test_history;
 				game_results['deck'][game_count]['ans'] = 'true';
+				game_results['deck'][game_count]['rank'] = currentCard['rank'];
+				game_results['deck'][game_count]['last_shown'] = currentCard['last_shown'];
+				game_results['deck'][game_count]['utp'] = currentCard['utp'];
+				currentCard['test_history'] = Current_test_history;
 				game_count++;
 				correct_total++;
-				game_results[correct_total]
 				var prev_history = $(".answer_code").html();
 				Current_history = prev_history + 'O';
 				$(".answer_code").html(Current_history);
@@ -584,12 +590,14 @@
 			}
 			function ansWrong() {
 				total_cards++;
-				// alert(total_cards);
-				//   if(game_results['deck'][game_count]['history'].indexOf('o')!=-1 && game_results['deck'][game_count]['history'].indexOf('O')!=-1)
-				//		 {
-				//			 change_minus++;
-				//		 }
+				var test_history = $(".test_history").html();
+				test_history = test_history.substring(7);
+				Current_test_history = 'X' + test_history;
 				game_results['deck'][game_count]['ans'] = 'false';
+				game_results['deck'][game_count]['rank'] = currentCard['rank'];
+				game_results['deck'][game_count]['last_shown'] = currentCard['last_shown'];
+				game_results['deck'][game_count]['utp'] = currentCard['utp'];
+				currentCard['test_history'] = Current_test_history;
 				game_count++;
 				wrong_total++;
 				var prev_history = $(".answer_code").html();
@@ -711,18 +719,20 @@
 						(/(?:^|\s)fcardAnsFlip(?!\S)/g, '');
 			}
 			/********Card Content Rendering********/
-			function renderQuestion(mode, history, rank, avgTime, ques) {
+			function renderQuestion(mode, history, test_history, rank, avgTime, ques) {
 				document.getElementById("qMode").innerHTML = "M:" + mode;
 				document.getElementById("qHistory").innerHTML = "H:" + history;
+				document.getElementById("qTestHistory").innerHTML = "Test H:" + test_history;
 				document.getElementById("qRank").innerHTML = "R:" + rank;
 				document.getElementById("qAvg").innerHTML = "Avg:" + avgTime;
 				document.getElementById("qContent").innerHTML = ques;
 				/*Call timer function to set count up time*/
 				startTimer(true);
 			}
-			function renderAnswer(mode, history, rank, avgTime, time, ans) {
+			function renderAnswer(mode, history, test_history, rank, avgTime, time, ans) {
 				document.getElementById("aMode").innerHTML = "M:" + mode;
 				document.getElementById("aHistory").innerHTML = "H:" + history;
+				document.getElementById("aTestHistory").innerHTML = "Test H:" + test_history;
 				document.getElementById("aRank").innerHTML = "R:" + rank;
 				document.getElementById("aAvg").innerHTML = "Avg:" + avgTime;
 				document.getElementById("aTime").innerHTML = "Time:" + time;
@@ -825,10 +835,11 @@
 					<div class="fcardQues" id="fcardQues">
 						<div class="fcardHeadder">
 							<div id="qMode" style="width:10%" class="fcardHeadderContent">Mode: Review</div>
-							<div id="qHistory" style="width:50%" class="fcardHeadderContent">History:###</div>
-							<div id="qRank" style="width:10%" class="fcardHeadderContent">Rank: 1</div>
-							<div id="qAvg" style="width:15%" class="fcardHeadderContent">Avg Time: 04:45</div>
-							<div id="qTime" style="width:15%" class="fcardHeadderContent">Time: 00.00</div>
+							<div id="qHistory" style="width:32%" class="fcardHeadderContent">History:###</div>
+							<div id="qTestHistory" style="width:33%" class="test_history fcardHeadderContent">Test History:###</div>
+							<div id="qRank" style="width:5%" class="  fcardHeadderContent">Rank: 1</div>
+							<div id="qAvg" style="width:10%" class="fcardHeadderContent">Avg Time: 04:45</div>
+							<div id="qTime" style="width:10%" class="fcardHeadderContent">Time: 00.00</div>
 							<div class="clearFloat"></div>
 						</div>
 						<div id="qContent" class="fcardContent">
@@ -844,10 +855,11 @@
 					<div class="fcardAns" id="fcardAns">
 						<div class="fcardHeadder">
 							<div id="aMode" style="width:10%" class="fcardHeadderContent">Mode: Review</div>
-							<div id="aHistory" style="width:50%" class="fcardHeadderContent">History:###</div>
-							<div id="aRank" style="width:10%" class="fcardHeadderContent">Rank: 1</div>
-							<div id="aAvg" style="width:15%" class="fcardHeadderContent">Avg Time: 04:45</div>
-							<div id="aTime" style="width:15%" class="fcardHeadderContent">Time: 00.00</div>
+							<div id="aHistory" style="width:32%" class="fcardHeadderContent">History:###</div>
+							<div id="aTestHistory" style="width:33%" class=" test_history fcardHeadderContent">Test History:###</div>
+							<div id="aRank" style="width:5%" class="fcardHeadderContent">Rank: 1</div>
+							<div id="aAvg" style="width:10%" class="fcardHeadderContent">Avg Time: 04:45</div>
+							<div id="aTime" style="width:10%" class="fcardHeadderContent">Time: 00.00</div>
 							<div class="clearFloat"></div>
 						</div>
 						<div id="aContent" class="fcardContent">

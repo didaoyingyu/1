@@ -83,14 +83,14 @@
 							</td>
 							<td>
 								<script>
-									var diffDays ='';
+									var diffDays = '';
 									var date1 = "<?php echo date("Y-m-d\TH:i:s\Z", strtotime($log['itp'])); ?>";
 									var date = "<?php echo date("Y-m-d\TH:i:s\Z", strtotime($log['utp'])); ?>";
 									var date = new Date(date);
 									var date1 = new Date(date1);
 									var timeDiff = Math.abs(date1.getTime() - date.getTime());
-									diffDays = (timeDiff / (1000 *3600*24)).toFixed(5); 
-									document.write(diffDays+" Days");
+									diffDays = (timeDiff / (1000 * 3600 * 24)).toFixed(5);
+									document.write(diffDays + " Days");
 								</script>
 							</td>
 							<td>
