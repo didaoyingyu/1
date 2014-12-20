@@ -694,8 +694,7 @@ class card extends CI_Model {
 
 	/* return arry of cards for some multiple decks, which are seperated from undersore charactor for a particuler user */
 
-	function load_cards_md($user_id, $deck_ids) {
-		$deck_id_arr = explode("_", $deck_ids);
+	function load_cards_md($user_id, $deck_id_arr) {
 		if (sizeof($deck_id_arr) > 0) {
 			foreach ($deck_id_arr as $deck_id) {
 				/* check wheather the user previouly plid the selection */

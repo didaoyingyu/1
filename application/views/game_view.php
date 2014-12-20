@@ -207,19 +207,13 @@
 					}
 					/*********Load Game multiple deck mode*********************/
 					function loadGameMd(deckIds) {
-						var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards_md/" + userId + "/" + deckIds;
+						var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards_md/" + userId;
 						var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandlerMd, loadGameResponseMd, loadGameResponseStatusMd);
-						myRequest.update();
+						myRequest.update("decks=" + JSON.stringify(deckIds), "POST");
 					}
 					function loadGameHandlerMd(loadGameResponseMd, loadGameResponseStatusMd) {
 						if (loadGameResponseStatusMd == 200) {
-							var deckList = loadGameResponseMd.split(']');
-							var responseCleaned = deckList[0];
-							for (var i = 1; i < deckList.length; i++)
-								if (deckList[i].length > 0)
-									responseCleaned += ',' + deckList[i];
-							responseCleaned += ']';
-							cardArray = eval('(' + responseCleaned + ')');
+							cardArray = JSON.parse(loadGameResponseMd);
 							/*add two extra varibles to cards*/
 							for (var i = 0; i < cardArray.length; i++) {
 								cardArray[i]['correct'] = 0;
@@ -243,10 +237,10 @@
 					function playMultiDeckMode() {
 						/*check the selected decks*/
 						var selected = false;
-						var decks = "";
+						var decks = [];
 						for (var i = 0; i < currentDeckArray.length; i++) {
 							if (document.getElementById("chk_" + currentDeckArray[i]['deck_id']).checked) {
-								decks = decks + currentDeckArray[i]['deck_id'] + "_";
+								decks.push(currentDeckArray[i]['deck_id']);
 								selected = true;
 							}
 						}
@@ -281,12 +275,6 @@
 						renderAnswer(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
 					}
 					function ansCorrect() {
-//                     if(game_results['deck'][game_count]['history']=='----------' || game_results['deck'][game_count]['history']=='' || game_results['deck'][game_count]['history']==null)
-//                             {
-//                                 
-//                                first_time_correct_Card_cout++;
-//                             }
-//                        game_results['deck'][game_count]['ans']='true';
 						total_cards++;
 						game_results['deck'][game_count]['ans'] = 'true';
 						game_results['deck'][game_count]['rank'] = currentCard['rank'];
@@ -294,7 +282,6 @@
 						updateQuickReviewLogs(true);
 						game_count++;
 						correct_total++;
-						game_results[correct_total]
 						var ansStatus = new Boolean(1);
 						deckHander.handleCardStatus(currentCard, ansStatus, gameMode, historyLength);
 						saveCard(currentCard);

@@ -134,8 +134,9 @@ class game extends CI_Controller {
 
 	/* load the card form multiple decks */
 
-	function load_cards_md($user_id, $deck_ids) {
-		$cardArray = $this->card->load_cards_md($user_id, $deck_ids);
+	function load_cards_md($user_id) {
+		$deck_id_arr = json_decode($this->input->post('decks'));
+		$cardArray = $this->card->load_cards_md($user_id, $deck_id_arr);
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($cardArray));
 	}
@@ -181,19 +182,12 @@ class game extends CI_Controller {
 
 	function load_decks_id($userId) {
 		$deckArray = $this->card->load_decks($userId);
-		//$final_res['deck)'] =''
-		if (!empty($deckArray[0]->deck_id)) {
-			//$res = $this->objectToArray($deckArray);
+		$this->output->set_content_type('application/json');
 			foreach ($deckArray as $dec_res) {
-				$res[] = $dec_res->deck_id;
+				$ids[] = $dec_res->deck_id;
 			}
-			$final_res = implode('_', $res);
-			echo $final_res;
-		} else {
-			echo '';
-		}
-		//$this->output->set_content_type('application/json');
-		//$this->output->set_output(json_encode($deckArray));
+		$this->output->set_content_type('application/json');
+		$this->output->set_output(json_encode($ids));
 	}
 
 	/* save card info back to the DB */

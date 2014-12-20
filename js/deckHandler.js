@@ -13,6 +13,12 @@ var prevSelectedCardIndex = -1;
 var prevRandNum = -1;
 /*algorithm alternation: 0 = RANDOM, 1 = OLDEST*/
 var algoChoice = 0;
+/*maxNoShowTime Expired card queue; can grow limitlessly*/
+var expiredQueue = [];
+/*skip counter for skipping rounds, to show expired cards periodically*/
+var expiredSkipCount = 0;
+/*period after which a new expired card can be picked*/
+var expiredCardPickPeriod = 10;
 /*indicates whether SPECIAL FREQUENCY is active*/
 var specialFreq = false;
 /*SPECIAL FREQUENCY card queue; change 10 (length) as needed*/
@@ -92,17 +98,24 @@ function DeckHandler() {
 	this.cardPointer = 0;
 	this.setDeck = function(deck) {
 		this.deck = deck;
+		var nowMils = new Date().getTime();
 		matches = [];
 		DATA_INDEX = 0;
 		ERROR_INDEX = 1;
-		/* load all 'failed' cards (cards with an X not preceded by an O) into the special frequency queue */
+		/* preliminary scan of card deck, for initializing SPECIAL FREQUENCY and EXPIRED queues */
 		for (var i in deck) {
-			/* first, load data to matches list */
-			m = deck[i]['history'].replace('oS', 'O').match(/^[^O]*X/);
-			if (m && deck[i]['rank'] < 3) {
+			var card = deck[i];
+			/* check if expired and add index to EXPIRED queue */
+			var oldness = (nowMils - parseInt(card['last_shown'])) / 1000;
+			if (oldness >= maxNoShowTime) {
+				expiredQueue.push(i);
+			}
+			/* check if 'failed' (having an X not preceded by an O) and add to matches list */
+			m = card['history'].replace('oS', 'O').match(/^[^O]*X/);
+			if (m && card['rank'] < 3) {
 				specialFreq = true;
 				temp = m[0].replace(/x/g, '_').split('').reverse().join(''); /* 'x' can intervene in localCompare() */
-				matches.push([deck[i], temp]);
+				matches.push([card, temp]);
 			}
 		}
 		/* next, sort list by increasing order of consecutive errors */
@@ -110,13 +123,14 @@ function DeckHandler() {
 			return a[ERROR_INDEX].localeCompare(b[ERROR_INDEX]);
 		});
 		console.log('------------');
-		/* now, populate Special queue in reverse order */
+		/* now, populate SPECIAL FREQUENCY queue in reverse order */
 		matches = matches.reverse();
 		for (var i in matches) {
 			console.log(matches[i][DATA_INDEX]['history']);
 			if (!specialQueue.enqueue(matches[i][DATA_INDEX]))
 				break;
 		}
+		console.log("Loaded " + expiredQueue.length + " cards to Expired queue");
 		console.log('Loaded ' + specialQueue.size + ' cards that have not been reviewed after last test');
 	}
 }
@@ -132,41 +146,37 @@ DeckHandler.prototype.getNextCard = function(gameMode) {
 };
 /*get next card in review mode v1*/
 DeckHandler.prototype.getNextCardReviewMode = function() {
+	/*current time, for subsequent calculations*/
+	var nowMils = new Date().getTime();
 	/*0. check for SPECIAL FREQUENCY*/
 	if (specialFreq) {
 		var specialCard = this.checkSpecialFreq();
 		if (specialCard != undefined)
 			return specialCard;
 	}
-	/*1. look for cards that expires the max no show time, show them*/
-	var nowMils = new Date().getTime();
+	/*1. look for LEARN cards, and update status of existing LEARN card */
 	var inLearning = 0;
-	console.log("Trying max no show time mode...");
+	console.log("Trying LEARN mode...");
 	for (var i = 0; i < this.deck.length; i++) {
 		/************************************************/
-		this.checkHistory(i);
+		var card = this.deck[i];
+		this.checkHistory(card);
 		/************************************************/
-		var oldness = (nowMils - parseInt(this.deck[i]['last_shown'])) / 1000;
-		if (this.deck[i]['learning'] == 1) {
-			console.log('Learning card skips: ' + this.deck[i]['lskips'] + ' Rank: ' + this.deck[i]['rank']);
-			if (this.deck[i]['rank'] < L && this.deck[i]['lskips'] < 1) {
+		if (card['learning'] == 1) {
+			console.log('Learning card skips: ' + card['lskips'] + ' Rank: ' + card['rank']);
+			if (card['rank'] < L && card['lskips'] < 1) {
 				return this.setAsNextCard(i, "LEARN logic");
-			} else if (this.deck[i]['lskips']-- > 0) {
+			} else if (card['lskips']-- > 0) {
 				inLearning = 1;
 				break;
 			}
-		} else if (this.deck[i]['last_shown'] == 0 && inLearning == 0) {
-			return this.setAsNextCard(i, "last shown time 0");
-		} else if (oldness >= maxNoShowTime) {
-			console.log("Card " + i + ": Dif=" + oldness + ", maxNoShowTime=" + maxNoShowTime);
-			//check min repeat time - for false safe one can change minRepet time > maxNo show time
-			if (oldness <= minRepeatTime) {
-				continue;
-			}
-			return this.setAsNextCard(i, "maxNoShowTime");
 		}
 	}
-	/*2. if expiry check fails, generate a random number and show a card accordingly*/
+	/*2. pick from EXPIRED queue, if period has reached */
+	if (expiredSkipCount++ % expiredCardPickPeriod == 0 && expiredQueue.length > 0) {
+		return this.setAsNextCard(expiredQueue.pop(), "maxNoShowTime");
+	}
+	/*3. if expiry check fails, generate a random number and show a card accordingly*/
 	/* decide between OLDEST and RANDOM; will alternate between
 	 0 (RANDOM) and 1 (OLDEST). */
 	algoChoice = 1 - algoChoice;
@@ -255,7 +265,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 		return this.setAsNextCard(selectedCardIndex, (algoChoice == 0 ? "RANDOM" : "OLDEST") + " rank match: " + rank + ", Random Number: " + randNum);
 	}
 	console.log("No card for rank " + rank + "\nTrying random rank mode...");
-	/*3. if above fails, get the oldest card from the smallest rank*/
+	/*4. if above fails, get the oldest card from the smallest rank*/
 	var minRank = Number.MAX_VALUE;
 	longestDelay = -1;
 	delay = 0;
@@ -322,7 +332,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 			}
 		}
 	}
-	//if above method fails use random selection
+	/*5. if everything above fails, use random selection*/
 	var randomSelection = true;
 	while (randomSelection) {
 		/*select a card randomly*/
@@ -369,6 +379,24 @@ DeckHandler.prototype.checkSpecialFreq = function() {
 			//one skip cycle complete; return SPECIAL FREQUENCY card
 			//back up card currently being reviewed (in case it gets removed during the variable update)
 			var temp = specialQueue.peek();
+			for (var i = 0; i < this.deck.length; i++) {
+				if (this.deck[i]['learning'] == 1) {
+					if (temp['alternate'] == 1) {
+						this.deck[i]['lskips'] = 0;
+					} else {
+						--this.deck[i]['lskips'];
+					}
+					break;
+				}
+			}
+			//mark chosen card so that it won't be selected in the next non-SPECIAL FREQUENCY attempt(s)
+			var returnCard;
+			for (var i = 0; i < this.deck.length; i++) {
+				if (this.deck[i] == temp) {
+					prevSelectedCardIndex = i; //won't be selected next time
+					returnCard = this.setAsNextCard(i, "Special Frequency (sequence " + (skipIndex + 1) + ", cycle " + (skipCount / (skips[skipIndex][0] + 1)) + ")");
+				}
+			}
 			/*	check if cycle has run the required number of times (i.e. whether the current sequence is complete) */
 			if (skipCount / (skips[skipIndex][0] + 1) == skips[skipIndex][1]) { //one sequence is over
 				skipCount = 0; //reset
@@ -387,23 +415,7 @@ DeckHandler.prototype.checkSpecialFreq = function() {
 					}
 				}
 			}
-			for (var i = 0; i < this.deck.length; i++) {
-				if (this.deck[i]['learning'] == 1) {
-					if (temp['alternate'] == 1) {
-						this.deck[i]['lskips'] = 0;
-					} else {
-						--this.deck[i]['lskips'];
-					}
-					break;
-				}
-			}
-			//mark chosen card so that it won't be selected in the next non-SPECIAL FREQUENCY attempt(s)
-			for (var i = 0; i < this.deck.length; i++) {
-				if (this.deck[i] == temp) {
-					prevSelectedCardIndex = i; //won't be selected next time
-					return this.setAsNextCard(i, "Special Frequency (sequence " + (skipIndex + 1) + ", cycle " + (skipCount / (skips[skipIndex][0] + 1)) + ")");
-				}
-			}
+			return returnCard;
 		}
 	} else { //error; impossible value
 		console.log('Error occurred in SPECIAL FREQUENCY - invalid skipIndex');
@@ -564,8 +576,7 @@ DeckHandler.prototype.handleCardStatus = function(card, ansCorrect, gameMode, hi
 		}
 	}
 };
-DeckHandler.prototype.checkHistory = function(inx) {
-	var card = this.deck[inx];
+DeckHandler.prototype.checkHistory = function(card) {
 	var ch = card['history'].search(/[^-]/);
 	if (ch == -1) {
 		card['learning'] = 1;

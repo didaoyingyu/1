@@ -334,19 +334,13 @@
 				var first_time_card_count = 0;
 				var first_time_correct_Card_cout = 0;
 				// deckId = deckIdIn;
-				var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards_md/" + current_user_id + "/" + deckIds;
+				var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards_md/" + current_user_id;
 				var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandlerMd, loadGameResponseMd, loadGameResponseStatusMd);
-				myRequest.update();
+				myRequest.update("decks=" + JSON.stringify(deckIds), "POST");
 			}
 			function loadGameHandlerMd(loadGameResponseMd, loadGameResponseStatusMd) {
 				if (loadGameResponseStatusMd == 200) {
-					var deckList = loadGameResponseMd.split(']');
-					var responseCleaned = deckList[0];
-					for (var i = 1; i < deckList.length; i++)
-						if (deckList[i].length > 0)
-							responseCleaned += ',' + deckList[i];
-					responseCleaned += ']';
-					cardArray = eval('(' + responseCleaned + ')');
+					cardArray = JSON.parse(loadGameResponseMd);
 					/*add two extra varibles to cards*/
 					for (var i = 0; i < cardArray.length; i++) {
 						cardArray[i]['correct'] = 0;
