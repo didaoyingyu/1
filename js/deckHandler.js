@@ -13,7 +13,7 @@ var prevSelectedCardIndex = -1;
 var prevRandNum = -1;
 /*algorithm alternation: 0 = RANDOM, 1 = OLDEST*/
 var algoChoice = 0;
-/*maxNoShowTime Expired card queue; can grow limitlessly*/
+/*EXPIRED card queue (maxNoShowTime based); can grow limitlessly*/
 var expiredQueue = [];
 /*skip counter for skipping rounds, to show expired cards periodically*/
 var expiredSkipCount = 0;
@@ -105,10 +105,14 @@ function DeckHandler() {
 		/* preliminary scan of card deck, for initializing SPECIAL FREQUENCY and EXPIRED queues */
 		for (var i in deck) {
 			var card = deck[i];
-			/* check if expired and add index to EXPIRED queue */
-			var oldness = (nowMils - parseInt(card['last_shown'])) / 1000;
-			if (oldness >= maxNoShowTime) {
-				expiredQueue.push(i);
+			/* ignore LEARN cards when populating EXPIRED queue */
+			this.checkHistory(card);
+			if (card['learning'] == 0) {
+				/* check if expired and add index to EXPIRED queue */
+				var oldness = (nowMils - parseInt(card['last_shown'])) / 1000;
+				if (oldness >= maxNoShowTime) {
+					expiredQueue.push(i);
+				}
 			}
 			/* check if 'failed' (having an X not preceded by an O) and add to matches list */
 			m = card['history'].replace('oS', 'O').match(/^[^O]*X/);

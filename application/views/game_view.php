@@ -86,9 +86,7 @@
 			}
 			function loadReviewModeParamsHandler(loadRmParamsResponse, loadRmParamsResponseStatus) {
 				if (loadRmParamsResponseStatus == 200) {
-					var responseCleaned = loadRmParamsResponse.split(']')[0] + ']';
-					reviwModeParams = eval('(' + responseCleaned + ')');
-					console.log(reviwModeParams);
+					reviwModeParams = JSON.parse(loadRmParamsResponse);
 					for (var i = 0; i < reviwModeParams.length; i++) {
 						if (reviwModeParams[i]['param_name'] == 'minRepeatTime') {
 							minRepeatTime = parseInt(reviwModeParams[i]['value']);
@@ -122,13 +120,11 @@
 			}
 			function loadDecksHandler(loadDecksResponse, loadDecksResponseStatus) {
 				if (loadDecksResponseStatus == 200) {
-					var responseCleaned = loadDecksResponse.split(']')[0] + ']';
-					deckArray = eval('(' + responseCleaned + ')');
-					currentDeckArray = deckArray;
+					currentDeckArray = JSON.parse(loadDecksResponse);
 					document.getElementById("cardDeckSelectionScreen").style.display = "block";
 					document.getElementById("gameModeScreen").style.display = "none";
 					/*render deck selection view*/
-					renderDeckSelection(deckArray);
+					renderDeckSelection(currentDeckArray);
 				} else {
 					alert("Communication Error! Please check Your Network Connection!\nStatus Code: " + loadGameResponseStatus);
 				}
@@ -167,14 +163,12 @@
 			}
 			function loadGameHandler(loadGameResponse, loadGameResponseStatus) {
 				if (loadGameResponseStatus == 200) {
-					var responseCleaned = loadGameResponse.split(']')[0] + ']';
-					cardArray = eval('(' + responseCleaned + ')');
+					cardArray = JSON.parse(loadGameResponse);
 					/*add two extra varibles to cards*/
 					for (var i = 0; i < cardArray.length; i++) {
 						cardArray[i]['correct'] = 0;
 						cardArray[i]['wrong'] = 0;
 					}
-					console.log(cardArray);
 					deckHander.setDeck(cardArray);
 					document.getElementById("gameScreen").style.display = "block";
 					document.getElementById("gameModeScreen").style.display = "none";
@@ -219,7 +213,6 @@
 						cardArray[i]['correct'] = 0;
 						cardArray[i]['wrong'] = 0;
 					}
-					console.log(cardArray);
 					deckHander.setDeck(cardArray);
 					document.getElementById("gameScreen").style.display = "block";
 					document.getElementById("gameModeScreen").style.display = "none";
@@ -337,7 +330,6 @@
 					correct_total = 0;
 					wrong_total = 0;
 					//   game_results['deck'] = '';
-					console.log(game_results);
 					if (gameMode == 'RW')
 					{
 						$.post(base_url + "/index.php/auth/reviewModeSave", {"data": game_results}, function(res) {
