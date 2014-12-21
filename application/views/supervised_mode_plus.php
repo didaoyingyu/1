@@ -363,7 +363,7 @@
 					data: {user_id: current_user_id, deck_id: deckId, cards: card_to_test},
 					success: function(data) {
 						console.log(data);
-						console.log('card_ids: ' + data['card_ids'] + 'Remaining cards' + data['remain_cards']);
+						console.log('card_ids: ' + data['card_ids'] + ', Remaining cards' + data['remain_cards']);
 						var card_ids = data['card_ids'];
 						var remaining_cards = data['remain_cards'];
 						if (card_ids != '') {

@@ -431,8 +431,7 @@ DeckHandler.prototype.getNextCardSupervisedPlusMode = function() {
 	for (var selectedCardIndex = 0; selectedCardIndex < this.deck.length; selectedCardIndex++) {
 		if (jQuery.inArray(this.deck[selectedCardIndex]['card_id'], pre_cards) == -1) {
 			//add picked card to prev_cards
-			pre_cards[z_count] = this.deck[selectedCardIndex];
-			z_count++;
+			pre_cards.push(this.deck[selectedCardIndex]['card_id']);
 			var historyStr = this.deck[selectedCardIndex]['history'];
 			if (historyStr == null || historyStr == '' || historyStr.match(/[^-]/) == null) {
 				first_time_card_count++;
