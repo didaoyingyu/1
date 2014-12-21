@@ -280,6 +280,8 @@
 				renderAnswer(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
 			}
 			function ansCorrect() {
+				var ansStatus = new Boolean(1);
+				deckHander.handleCardStatus(currentCard, ansStatus, gameMode, historyLength);
 				total_cards++;
 				game_results['deck'][game_count]['ans'] = 'true';
 				game_results['deck'][game_count]['rank'] = currentCard['rank'];
@@ -287,12 +289,12 @@
 				updateQuickReviewLogs(true);
 				game_count++;
 				correct_total++;
-				var ansStatus = new Boolean(1);
-				deckHander.handleCardStatus(currentCard, ansStatus, gameMode, historyLength);
 				saveCard(currentCard);
 				showNextQues();
 			}
 			function ansWrong() {
+				var ansStatus = new Boolean(0);
+				deckHander.handleCardStatus(currentCard, ansStatus, gameMode, historyLength);
 				total_cards++;
 				game_results['deck'][game_count]['ans'] = 'false';
 				game_results['deck'][game_count]['rank'] = currentCard['rank'];
@@ -300,13 +302,12 @@
 				updateQuickReviewLogs(false);
 				game_count++;
 				wrong_total++;
-				var ansStatus = new Boolean(0);
-				deckHander.handleCardStatus(currentCard, ansStatus, gameMode, historyLength);
 				saveCard(currentCard);
 				showNextQues();
 			}
 			function updateQuickReviewLogs(ans) {
 				if (<?php echo $this->ion_auth->user()->row()->review_log_status ?> == '0') {
+					quick_review_log['log']['ans'] = ans;
 					quick_review_log['log']['after_history'] = currentCard['history'];
 					quick_review_log['log']['after_rank'] = currentCard['rank'];
 					$.post("<?php echo base_url(); ?>index.php/auth/save_quick_review_log", {"data": quick_review_log}, function(res) {
