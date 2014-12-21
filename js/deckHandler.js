@@ -107,7 +107,7 @@ function DeckHandler() {
 			var card = deck[i];
 			/* ignore LEARN cards when populating EXPIRED queue */
 			this.checkHistory(card);
-			if (card['learning'] == 0) {
+			if (card['learning'] != 1) {
 				/* check if expired and add index to EXPIRED queue */
 				var oldness = (nowMils - parseInt(card['last_shown'])) / 1000;
 				if (oldness >= maxNoShowTime) {
