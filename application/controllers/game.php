@@ -196,7 +196,7 @@ class game extends CI_Controller {
 		/* Old Buggy Code - $data = json_decode($this->input->post('data'),TRUE,512); */
 		$data = json_decode($this->input->post('data'), TRUE);
 		$this->output->set_content_type('text/html');
-		$this->card->save_user_card($data['record_id'], $data['history'], $data['rank'], $data['last_time'], $data['last_shown'], $data['wrong_twice_or_more_count'], $data['last_date']);
+		$this->card->save_user_card($data['record_id'], $data['history'], $data['test_history'], $data['rank'], $data['last_time'], $data['last_shown'], $data['wrong_twice_or_more_count'], $data['last_date']);
 		$this->output->set_output("DONE");
 	}
 
