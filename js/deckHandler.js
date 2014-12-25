@@ -78,7 +78,7 @@ var r8 = 95; //4
 var r9 = 98; //3
 var r10 = 100; //2 //rand 13+
 /****************************LEARN Logic Variables***************************/
-var learn_correct_first_time = '8'; //First time shown marked right history mark
+var learn_correct_first_time = '5'; //First time shown marked right history mark
 var learn_correct = 'L'; //Answered correctly history mark
 var learn_wrong = '*'; //Answered incorrectly history mark
 var L = 3; //Learning rank maximum
@@ -89,7 +89,7 @@ var learn_skips = {
 	3: 3,
 	4: 4
 }; //Skips to take per rank.  Format:  rank : #_of_skips
-var first_time_correct_rank = 8; //Rank value for learning cards answered correctly on the first try.
+var first_time_correct_rank = 5; //Rank value for learning cards answered correctly on the first try.
 /*******************************************************************************/
 function DeckHandler() {}
 DeckHandler.prototype.setDeck = function(deck) {
