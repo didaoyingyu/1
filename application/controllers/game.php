@@ -135,7 +135,7 @@ class game extends CI_Controller {
 	/* load the card form multiple decks */
 
 	function load_cards_md($user_id) {
-		$deck_id_arr = json_decode($this->input->post('decks'));
+		$deck_id_arr = json_decode($this->input->post('data'));
 		$cardArray = $this->card->load_cards_md($user_id, $deck_id_arr);
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($cardArray));
@@ -197,7 +197,6 @@ class game extends CI_Controller {
 		$data = json_decode($this->input->post('data'), TRUE);
 		$this->output->set_content_type('text/html');
 		$this->card->save_user_card($data['record_id'], $data['history'], $data['test_history'], $data['rank'], $data['last_time'], $data['last_shown'], $data['wrong_twice_or_more_count'], $data['last_date']);
-		$this->output->set_output("DONE");
 	}
 
 	/* edit review mode parameters */
@@ -364,10 +363,8 @@ class game extends CI_Controller {
 			if (!$errormsg) {
 				$this->load->model('card');
 				$cards = $this->card->updateCardsInDeck($decks, $user->id);
-				if ($cards == 1) {
-					echo 'Cards successfully updated';
-				} else {
-					echo 'Something went wrong';
+				if ($cards != 1) {
+					echo "error";
 				}
 			} else {
 				echo $errormsg;
@@ -402,10 +399,8 @@ class game extends CI_Controller {
 			if ($errormsg == "") {
 				$this->load->model('card');
 				$cards = $this->card->addCardsInDeck($decks, $user->id);
-				if ($cards == 1) {
-					echo 'Cards successfully Added';
-				} else {
-					echo 'Something went wrong';
+				if ($cards != 1)  {
+					echo "error";
 				}
 			} else {
 				echo $errormsg;
@@ -595,9 +590,8 @@ class game extends CI_Controller {
 		$cards = $this->card->updateCardUrlInDeck($id);
 		if ($cards == 1) {
 			unlink($path_to_file);
-			echo 'File deleted successfully';
 		} else {
-			echo 'Something went wrong';
+			echo "error";
 		}
 	}
 
@@ -605,10 +599,8 @@ class game extends CI_Controller {
 		$file = $_POST['upload_file'];
 		$base_url = base_url();
 		$path_to_file = "./sound-files/" . $file;
-		if (unlink($path_to_file)) {
-			echo 'File deleted successfully';
-		} else {
-			echo 'errors occured';
+		if (!unlink($path_to_file)) {
+			echo "error";
 		}
 	}
 

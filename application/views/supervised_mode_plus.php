@@ -69,6 +69,10 @@
 			var first_time_correct_Card_cout = 0;
 			//	var no_pre_wrong=0;
 			var total_cards = 0;
+			/*******encode JSON objects for POST************/
+			function preparePost(jsonObj) {
+				return "data=" + JSON.stringify(jsonObj).replace(/&/g, "%26");
+			}
 			/*******JS to contral main game Flow************/
 			function startGame() {
 				/*hide unanted screens*/
@@ -455,7 +459,7 @@
 //				console.log("\tRecord ID:" + card['record_id'] + ", User Id:" + card['user_id']);
 //				console.log("\tQuestion:" + card['question']);
 //				console.log("\tCard Rank: " + card['rank']);
-				myRequest.update('data=' + JSON.stringify(card), 'POST');
+				myRequest.update(preparePost(card), 'POST');
 			}
 			function saveCardHandler(saveCardResponse, saveCardResponseStatus) {
 				if (saveCardResponseStatus == 200) {
@@ -490,7 +494,7 @@
 				// deckId = deckIdIn;
 				var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards_md/" + current_user_id;
 				var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandlerMd, loadGameResponseMd, loadGameResponseStatusMd);
-				myRequest.update("decks=" + JSON.stringify(deckIds), "POST");
+				myRequest.update(preparePost(deckIds), "POST");
 			}
 			function loadGameHandlerMd(loadGameResponseMd, loadGameResponseStatusMd) {
 				if (loadGameResponseStatusMd == 200) {

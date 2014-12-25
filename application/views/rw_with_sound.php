@@ -43,7 +43,6 @@
 			var z_count = 1;
 			var game_results = new Object();
 			var quick_review_log = new Object();
-			quick_review_log['log'] = new Object();
 			var deck_count = 0;
 			var total_time_for_deck = 0;
 			var change_minus = 0;
@@ -59,6 +58,10 @@
 			var first_time_card_count = 0;
 			var first_time_correct_Card_cout = 0;
 			var total_cards = 0;
+			/*******encode JSON objects for POST************/
+			function preparePost(jsonObj) {
+				return "data=" + JSON.stringify(jsonObj).replace(/&/g, "%26");
+			}
 			/*******JS to contral main game Flow************/
 			function startGame() {
 				/*hide unanted screens*/
@@ -136,10 +139,10 @@
 					function renderDeckSelection(deckArray) {
 						var innerHtml = "";
 						for (var i = 0; i < deckArray.length; i++) {
-							innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='javascript:loadGame(" + deckArray[i]['deck_id'] + ")'><p>" + deckArray[i]['deck_name'] + "</p></div></div></div><br/><br/><br/>";
+							innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='loadGame(" + deckArray[i]['deck_id'] + ")'><p>" + deckArray[i]['deck_name'] + "</p></div></div></div><br/><br/><br/>";
 						}
 						/*for multiple deck mode*/
-						innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='javascript:loadGameMultiDeckMode()'><p>Play Multiple Decks</p></div></div></div><br/><br/><br/>";
+						innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='loadGameMultiDeckMode()'><p>Play Multiple Decks</p></div></div></div><br/><br/><br/>";
 						document.getElementById("cardDeckSelectionScreen").innerHTML = innerHtml;
 					}
 					function renderDeckMultiSelection(deckArray) {
@@ -148,7 +151,7 @@
 							innerHtml = innerHtml + "<p><input type='checkbox' id='chk_" + deckArray[i]['deck_id'] + "' name='" + deckArray[i]['deck_id'] + "'>" + deckArray[i]['deck_name'] + "</p><br/>";
 						}
 						/*play multiple deck mode*/
-						innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='javascript:playMultiDeckMode()'><p>Play</p></div></div></div><br/><br/><br/>";
+						innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='playMultiDeckMode()'><p>Play</p></div></div></div><br/><br/><br/>";
 						document.getElementById("cardDeckSelectionScreen").innerHTML = innerHtml;
 					}
 					/*******Load/save game section********/
@@ -195,7 +198,7 @@
 //				console.log("\tRecord ID:" + card['record_id'] + ", User Id:" + card['user_id']);
 //				console.log("\tQuestion:" + card['question']);
 //				console.log("\tCard Rank: " + card['rank']);
-						myRequest.update('data=' + JSON.stringify(card), 'POST');
+						myRequest.update(preparePost(card), 'POST');
 					}
 					function saveCardHandler(saveCardResponse, saveCardResponseStatus) {
 						if (saveCardResponseStatus == 200) {
@@ -209,7 +212,7 @@
 					function loadGameMd(deckIds) {
 						var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards_md/" + userId;
 						var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandlerMd, loadGameResponseMd, loadGameResponseStatusMd);
-						myRequest.update("decks=" + JSON.stringify(deckIds), "POST");
+						myRequest.update(preparePost(deckIds), "POST");
 					}
 					function loadGameHandlerMd(loadGameResponseMd, loadGameResponseStatusMd) {
 						if (loadGameResponseStatusMd == 200) {
@@ -255,6 +258,10 @@
 					function showNextQues() {
 						$("#source_div").html("");
 						currentCard = deckHander.getNextCard(gameMode);
+						game_results['deck'][game_count] = new Object();
+						game_results['deck'][game_count]['deck_id'] = currentCard['deck_id'];
+						game_results['deck'][game_count]['card_id'] = currentCard['card_id'];
+						game_results['deck'][game_count]['history'] = currentCard['history'];
 						var base_url = '<?php echo base_url(); ?>';
 						var answer_upload_file = currentCard['answer_upload_file']
 						$("#source_div").html("<audio loop id='player'><source id='sorce_id' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file + "'></audio>");
@@ -265,6 +272,18 @@
 							avgTime = currentCard['total_time'] / currentCard['play_count'];
 						}
 						renderQuestion(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question']);
+						quick_review_log['before_history'] = game_results['deck'][game_count]['history'];
+						quick_review_log['reason'] = extraInfo.innerHTML;
+						quick_review_log['before_rank'] = currentCard['rank'];
+						quick_review_log['question'] = currentCard['question'];
+						quick_review_log['answer'] = currentCard['answer'];
+						quick_review_log['deck_id'] = currentCard['deck_id'];
+						quick_review_log['card_id'] = currentCard['card_id'];
+						quick_review_log['utp'] = currentCard['utp'];
+						quick_review_log['utp'] = '';
+						new ajaxObject("<?php echo base_url() ?>index.php/auth/get_log_utp", function(res) {
+							quick_review_log['utp'] = res;
+						}).update(preparePost(quick_review_log), "POST");
 					}
 					function showAns() {
 						flip();
@@ -280,54 +299,32 @@
 						totalSeconds = 0;
 						renderAnswer(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
 					}
-					function ansCorrect() {
+					function markAnswer(mark) {
+						var isValid = mark > 0;
+						deckHander.handleCardStatus(currentCard, mark, gameMode, historyLength);
 						total_cards++;
-						game_results['deck'][game_count]['ans'] = 'true';
+						game_results['deck'][game_count]['ans'] = isValid;
 						game_results['deck'][game_count]['rank'] = currentCard['rank'];
-						game_results['deck'][game_count]['reason'] = document.getElementById('extraInfo').innerHTML;
-						updateQuickReviewLogs(true);
-						game_count++;
-						correct_total++;
-						game_results[correct_total]
-						var ansStatus = new Boolean(1);
-						deckHander.handleCardStatus(currentCard, ansStatus, gameMode, historyLength);
-						saveCard(currentCard);
-						updateQuickReviewLogs(true);
-						showNextQues();
-					}
-					function ansWrong() {
-						total_cards++;
-						game_results['deck'][game_count]['ans'] = 'false';
-						game_results['deck'][game_count]['rank'] = currentCard['rank'];
-						game_results['deck'][game_count]['reason'] = document.getElementById('extraInfo').innerHTML;
-						updateQuickReviewLogs(false);
-						game_count++;
-						wrong_total++;
-						var ansStatus = new Boolean(0);
-						deckHander.handleCardStatus(currentCard, ansStatus, gameMode, historyLength);
-						saveCard(currentCard);
-						showNextQues();
-					}
-					function updateQuickReviewLogs(ans) {
-						quick_review_log['log']['before_history'] = game_results['deck'][game_count]['history'];
-						quick_review_log['log']['reason'] = document.getElementById('extraInfo').innerHTML;
-						quick_review_log['log']['before_rank'] = currentCard['rank'];
-						quick_review_log['log']['ans'] = ans;
-						quick_review_log['log']['question'] = currentCard['question'];
-						quick_review_log['log']['answer'] = currentCard['answer'];
-						quick_review_log['log']['deck_id'] = currentCard['deck_id'];
-						quick_review_log['log']['card_id'] = currentCard['card_id'];
-						quick_review_log['log']['utp'] = currentCard['utp'];
-						if (<?php echo $this->ion_auth->user()->row()->review_log_status ?> == '0') {
-							quick_review_log['log']['after_history'] = currentCard['history'];
-							quick_review_log['log']['after_rank'] = currentCard['rank'];
-							var base_url = '<?php echo base_url(); ?>';
-							$.post(base_url + "/index.php/auth/save_quick_review_log", {"data": quick_review_log}, function(res) {
-								if (res != 'success') {
-									alert(res);
+						game_results['deck'][game_count]['reason'] = extraInfo.innerHTML;
+					<?php if ($this->ion_auth->user()->row()->review_log_status == 0) {?>
+						quick_review_log['ans'] = isValid;
+						quick_review_log['after_history'] = currentCard['history'];
+						quick_review_log['after_rank'] = currentCard['rank'];
+						new ajaxObject("<?php echo base_url() ?>index.php/auth/save_quick_review_log", 
+							function(res, status) {
+								if (status != 200) {
+									alert('Quick review log save failed!\n' + res);
 								}
-							});
+							}).update(preparePost(quick_review_log), "POST");
+					<?php }?>
+						game_count++;
+						if (isValid) {
+							correct_total++;
+						} else {
+							wrong_total++;
 						}
+						saveCard(currentCard);
+						showNextQues();
 					}
 					function finishGame() {
 						/* show the deck selection screen */
@@ -344,14 +341,13 @@
 							wrong_total = 0;
 							//   game_results['deck'] = '';
 							console.log(game_results);
-							if (gameMode == 'RW')
-							{
-								$.post(base_url + "/index.php/auth/reviewModeSave", {"data": game_results}, function(res) {
-									if (res != 'success')
-									{
-										alert(res);
-									}
-								});
+							if (gameMode == 'RW') {
+								new ajaxObject("<?php echo base_url() ?>index.php/auth/reviewModeSave", 
+									function(res, status) {
+										if (status != 200) {
+											alert('Review mode save failed!\n' + res);
+										}
+									}).update(preparePost(game_results), "POST");
 							}
 							document.getElementById("gameScreen").style.display = "none";
 							document.getElementById("cardDeckSelectionScreen").style.display = "block";
@@ -390,8 +386,7 @@
 						document.getElementById("aContent").innerHTML = ans;
 					}
 					/***********Timer Functions****************/
-					function startTimer(restart)
-					{
+					function startTimer(restart) {
 						timerIntervalId = setInterval(tick, 1000);
 						if (restart) {
 							totalSeconds = -1;
@@ -402,15 +397,12 @@
 						++totalSeconds;
 						document.getElementById("qTime").innerHTML = "Time:" + getFormatedTime(totalSeconds);
 					}
-					function pad(val)
-					{
+					function pad(val) {
 						var valString = val + "";
-						if (valString.length < 2)
-						{
+						if (valString.length < 2) {
 							return "0" + valString;
 						}
-						else
-						{
+						else {
 							return valString;
 						}
 					}
@@ -428,11 +420,11 @@
 					function keyHandler(e) {
 						if (e.keyCode == e.DOM_VK_LEFT) {		//left arrow
 							showAns();
-							ansCorrect();
+							markAnswer(1);
 						}
 						else if (e.keyCode == e.DOM_VK_RIGHT) {	//right arrow
 							showAns();
-							ansWrong();
+							markAnswer(0);
 						}
 						else if (e.keyCode == e.DOM_VK_UP) {	//up arrow
 							showAns();
@@ -510,8 +502,8 @@
 							Answer
 						</div>
 						<div class="fcardFooterAns">
-							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:ansCorrect();"><p>&#10004;</p></div></div></div> 
-							<div class="buttonHolder"><div class="buttonInner"><div class="button red" onclick="javascript:ansWrong();"><p>&#10007;</p></div></div></div> 
+							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:markAnswer(1);"><p>&#10004;</p></div></div></div> 
+							<div class="buttonHolder"><div class="buttonInner"><div class="button red" onclick="javascript:markAnswer(0);"><p>&#10007;</p></div></div></div> 
 							<div class="clearFloat"></div>
 						</div>
 					</div>
@@ -531,10 +523,10 @@
 				<div class="buttonHolder" style="display:none"><div class="buttonInner"><div class="button green" onclick="javascript:setGameModeAndLoadDecks('STST');"><p>Supervised Test</p></div></div></div>
 				<br/><br/><br/>
 				create new deck
-				<div class='buttonHolder' style="display:none"><div class='buttonInner'><div class='button green' onclick='javascript:newDeck()'><p>New Deck</p></div></div></div>
+				<div class='buttonHolder' style="display:none"><div class='buttonInner'><div class='button green' onclick='newDeck()'><p>New Deck</p></div></div></div>
 				<br/><br/><br/>
 				manage card decks
-				<div class='buttonHolder' style="display:none"><div class='buttonInner'><div class='button green' onclick='javascript:manageDeck()'><p>Manage Deck</p></div></div></div>
+				<div class='buttonHolder' style="display:none"><div class='buttonInner'><div class='button green' onclick='manageDeck()'><p>Manage Deck</p></div></div></div>
 				<br/><br/><br/> 
 			</div>
 			<!-- Card Deck Selection Screen -->

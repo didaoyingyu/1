@@ -863,7 +863,7 @@ class Auth extends CI_Controller {
 
 	function reviewModeSave() {
 		$this->load->model('card');
-		$gameArray = $this->input->post('data');
+		$gameArray = json_decode($this->input->post('data'), true);
 		$decks = $gameArray['deck'];
 		unset($gameArray['deck']);
 		$gameSave = array();
@@ -885,38 +885,34 @@ class Auth extends CI_Controller {
 		foreach ($decksArray AS $key => $option) {
 			$query = $this->db->get_where('card_deck', array('deck_id' => $option));
 			foreach ($query->result() as $row) {
-				$html.=$row->deck_name;
-				$html.=',';
+				$deck_html.=$row->deck_name;
+				$deck_html.=',';
 			}
 			$deck_id = $option;
 		}
-		$gameSave['decks_name'] = $html;
+		$gameSave['decks_name'] = $deck_html;
 		$gameSave['game_date'] = date("Y-m-d H:i:s");
 		$gameSave['cards'] = $decks;
 		$cards = $this->card->saveReportDetailsReviewMode($gameSave, $user->id);
-		if ($cards == 1) {
-			echo 'success';
-		} else {
-			echo 'Something went wrong';
+		if ($cards != 1) {
+			echo "error";
 		}
 	}
 
 	function save_quick_review_log() {
 		$this->load->model('card');
-		$log = $this->input->post('data');
-		$log = $log['log'];
+		$log = json_decode($this->input->post('data'), true);
 		$user = $this->ion_auth->user()->row();
 		$log['user_id'] = $user->id;
 		$review_log = $this->card->save_quick_review_log($log);
-		if ($review_log) {
-			echo "success";
+		if (!$review_log) {
+			echo "error";
 		}
 	}
 
 	function get_log_utp() {
 		$this->load->model('card');
-		$log = $this->input->post('data');
-		$log = $log['log'];
+		$log = json_decode($this->input->post('data'), true);
 		$user = $this->ion_auth->user()->row();
 		$log['user_id'] = $user->id;
 		$review_log = $this->card->get_log_utp($log);
