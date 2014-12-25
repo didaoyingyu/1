@@ -13,98 +13,49 @@
 			<div class="headerText">Quick Review Report</div>
 		</div>
 		<div class="container">
-			<table border="1" style="width:100%" id="table" class="top-margin">
-				<?php ?>
+			<table border="1" style="width:100%;text-align:center" class="top-margin">
 				<thead>
 					<tr>
-						<th>
-							Date
-						</th>
-						<th>
-							Question
-						</th>
-						<th>
-							Answer
-						</th>
-						<th>
-							Deck Name
-						</th>
-						<th >
-							Before History
-						</th>
-						<th>
-							Before Rank
-						</th>
-						<th>
-							Ans
-						</th>
-						<th>
-							Reason
-						</th>
-						<th>
-							Last Seen
-						</th>
-						<th>
-							After History
-						</th>
-						<th>
-							After Rank
-						</th>
+						<th>Date</th>
+						<th>Question</th>
+						<th>Answer</th>
+						<th>Deck Name</th>
+						<th>Before History</th>
+						<th>Before Rank</th>
+						<th>Ans</th>
+						<th>Reason</th>
+						<th>Last Seen</th>
+						<th>After History</th>
+						<th>After Rank</th>
 					</tr>
 				</thead>
-				<tbody>
-					<?php
-					foreach ($logs as $log) {
-						?>
-						<tr>
-							<td>
-								<?php echo $log['itp']; ?>
-							</td>
-							<td>
-								<?php echo $log['question']; ?>
-							</td>
-							<td>
-								<?php echo $log['answer']; ?>
-							</td>
-							<td>
-								<?php echo $log['deck_name']; ?>
-							</td>
-							<td>
-								<?php echo $log['before_history']; ?>
-							</td>
-							<td>
-								<?php echo $log['before_rank']; ?>
-							</td>
-							<td>
-								<?php echo $log['ans']; ?>
-							</td>
-							<td>
-								<?php echo $log['reason']; ?>  
-							</td>
-							<td>
-								<script>
-									var diffDays = '';
-									var date1 = "<?php echo date("Y-m-d\TH:i:s\Z", strtotime($log['itp'])); ?>";
-									var date = "<?php echo date("Y-m-d\TH:i:s\Z", strtotime($log['utp'])); ?>";
-									var date = new Date(date);
-									var date1 = new Date(date1);
-									var timeDiff = Math.abs(date1.getTime() - date.getTime());
-									diffDays = (timeDiff / (1000 * 3600 * 24)).toFixed(5);
-									document.write(diffDays + " Days");
-								</script>
-							</td>
-							<td>
-								<?php echo $log['after_history']; ?>
-							</td>
-							<td>
-								<?php echo $log['after_rank']; ?>
-							</td>
-						</tr>
-						<?php
-					}
-					?> 
-				</tbody>
+				<tbody id="logBody"><tr><td colspan="11">Loading...</td></tr></tbody>
 			</table>
 		</div>
+		<script type="text/javascript">
+			var logData = <?php echo json_encode(array_map(
+				function($log) {
+					$interval = strtotime($log['itp']) - strtotime($log['utp']);
+					$days = floor($interval / 86400);
+					return array($log['itp'], $log['question'], $log['answer'], 
+						$log['deck_name'], $log['before_history'], 
+						$log['before_rank'], $log['ans'], $log['reason'], 
+						"$days, ".gmdate("H:i:s", $interval % 86400), 
+						$log['after_history'], $log['after_rank']);
+				}, $logs)) ?>;
+			var logBody = document.getElementById("logBody");
+			var i = 0;
+			var table = "";
+			for(j in logData) {
+				var row = "<tr>";
+				var rowData = logData[i];
+				for (j in rowData) {
+					row += "<td>" + rowData[j] + "</td>";
+				}
+				row += "</tr>";
+				table += row;
+			}
+			logBody.innerHTML = table;
+		</script>
 	</body>
 </html>
