@@ -217,16 +217,15 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 	var longestDelay = -1;
 	var delay = 0;
 	for (var j = startPoint; j < this.deck.length; j++) {
-		var ch = this.deck[j]['history'].search(/[^-]/);
-		if (ch == -1 || this.deck[j]['learning'] == 1)
-			continue;
-//		console.log("Current Card: " + j);
 		if (j == startPoint) {
 			if (!firstRound) {
 				break;
 			}
 			firstRound = false;
 		}
+		var ch = this.deck[j]['history'].search(/[^-]/);
+		if (ch == -1 || this.deck[j]['learning'] == 1)
+			continue;
 		delay = (nowMils - parseInt(this.deck[j]['last_shown'])) / 1000;
 		if (rank == parseInt(this.deck[j]['rank'])) {
 			if (algoChoice == 0) { //RANDOM
