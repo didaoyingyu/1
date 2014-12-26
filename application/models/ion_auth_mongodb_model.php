@@ -1671,7 +1671,7 @@ class Ion_auth_mongodb_model extends CI_Model {
 		// Define field dictionaries
 		$columns = $collection == 'users' ?
 				// Users collection static schema array
-				array('_id', 'ip_address', 'username', 'password', 'salt', 'email', 'activation_code', 'forgotten_password_code', 'forgotten_password_time', 'remember_code', 'created_on', 'last_login', 'active', 'first_name', 'last_name', 'company', 'phone') :
+				array('_id', 'ip_address', 'username', 'password', 'salt', 'email', 'activation_code', 'forgotten_password_code', 'forgotten_password_time', 'remember_code', 'created_on', 'last_login', 'active', 'first_name', 'last_name') :
 				// Groups collection static schema array
 				array('_id', 'name', 'description');
 		if (is_array($data)) {

@@ -117,16 +117,6 @@ class Migration_Install_ion_auth extends CI_Migration {
 				'type' => 'VARCHAR',
 				'constraint' => '50',
 				'null' => TRUE
-			),
-			'company' => array(
-				'type' => 'VARCHAR',
-				'constraint' => '100',
-				'null' => TRUE
-			),
-			'phone' => array(
-				'type' => 'VARCHAR',
-				'constraint' => '20',
-				'null' => TRUE
 			)
 		));
 		$this->dbforge->add_key('id', TRUE);
@@ -145,9 +135,7 @@ class Migration_Install_ion_auth extends CI_Migration {
 			'last_login' => '1268889823',
 			'active' => '1',
 			'first_name' => 'Admin',
-			'last_name' => 'istrator',
-			'company' => 'ADMIN',
-			'phone' => '0',
+			'last_name' => 'istrator'
 		);
 		$this->db->insert('users', $data);
 		// Drop table 'users_groups' if it exists		
