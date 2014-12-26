@@ -33,8 +33,8 @@
 			</table>
 		<!--</div>-->
 		<script type="text/javascript">
-			var logData = <?php 
-				$filter = function($log) {
+			var logData = <?php echo json_encode(array_map("filter", $logs));
+				function filter($log) {
 					$interval = strtotime($log['itp']) - strtotime($log['utp']);
 					$days = floor($interval / 86400);
 					return array($log['itp'], $log['question'], $log['answer'], 
@@ -42,8 +42,7 @@
 						$log['before_rank'], $log['ans'], $log['reason'], 
 						"$days, ".gmdate("H:i:s", $interval % 86400), 
 						$log['after_history'], $log['after_rank']);
-				};
-				echo json_encode(array_map($filter, $logs)) ?>;
+				} ?>;
 			var logBody = document.getElementById("logBody");
 			var table = "";
 			for(i in logData) {
