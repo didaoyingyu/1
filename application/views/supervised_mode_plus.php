@@ -540,10 +540,10 @@
 			function showNextQues() {
 				$("#source_div").html("");
 				currentCard = deckHander.getNextCard(gameMode);
-				var base_url = '<?php echo base_url(); ?>';
-				//   var answer_upload_file=currentCard['answer_upload_file']
-				//   $("#source_div").html("<audio id='player'><source id='sorce_id' type='audio/mpeg' src='"+base_url+"/sound-files/"+answer_upload_file+"'></audio>");
-				//  $("#sorce_id").attr("src",base_url+"/sound-files/"+currentCard['answer_upload_file'])
+				game_results['deck'][game_count] = new Object();
+				game_results['deck'][game_count]['deck_id'] = currentCard['deck_id'];
+				game_results['deck'][game_count]['card_id'] = currentCard['card_id'];
+				game_results['deck'][game_count]['history'] = currentCard['history'];
 				flipBack();
 				var avgTime = 0;
 				console.log(currentCard);
