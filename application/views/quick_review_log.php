@@ -12,7 +12,7 @@
 		<div class="header">
 			<div class="headerText">Quick Review Report</div>
 		</div>
-		<div class="container">
+		<!--<div class="container">-->
 			<table border="1" style="width:100%;text-align:center" class="top-margin">
 				<thead>
 					<tr>
@@ -31,10 +31,10 @@
 				</thead>
 				<tbody id="logBody"><tr><td colspan="11">Loading...</td></tr></tbody>
 			</table>
-		</div>
+		<!--</div>-->
 		<script type="text/javascript">
-			var logData = <?php echo json_encode(array_map(
-				function($log) {
+			var logData = <?php 
+				$filter = function($log) {
 					$interval = strtotime($log['itp']) - strtotime($log['utp']);
 					$days = floor($interval / 86400);
 					return array($log['itp'], $log['question'], $log['answer'], 
@@ -42,11 +42,11 @@
 						$log['before_rank'], $log['ans'], $log['reason'], 
 						"$days, ".gmdate("H:i:s", $interval % 86400), 
 						$log['after_history'], $log['after_rank']);
-				}, $logs)) ?>;
+				};
+				echo json_encode(array_map($filter, $logs)) ?>;
 			var logBody = document.getElementById("logBody");
-			var i = 0;
 			var table = "";
-			for(j in logData) {
+			for(i in logData) {
 				var row = "<tr>";
 				var rowData = logData[i];
 				for (j in rowData) {
