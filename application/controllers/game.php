@@ -565,13 +565,6 @@ class game extends CI_Controller {
 		$this->load->view('rw_with_sound');
 	}
 
-	function supervised_mode() {
-		if (!$this->ion_auth->logged_in()) {
-			redirect('');
-		}
-		$this->load->view('supervised_mode');
-	}
-
 	/*	 * Load Supervised plus test mode Ashvin Patel 19/jun/2014* */
 
 	function supervised_mode_plus() {
@@ -580,8 +573,6 @@ class game extends CI_Controller {
 		}
 		$this->load->view('supervised_mode_plus');
 	}
-
-	/*	 * * */
 
 	function deleteFileOnEdit() {
 		$file = $_POST['upload_file'];
@@ -633,7 +624,7 @@ class game extends CI_Controller {
 		$this->load->view('deck_report', $cards);
 	}
 
-	function load_stst_plus_privious_result() {
+	function load_stst_plus_previous_result() {
 		if ($this->input->post('userid')) {
 			$user_Id = $this->input->post('userid');
 			$this->load->model('card');

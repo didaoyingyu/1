@@ -91,9 +91,7 @@
 					loadDecks();
 				} else if (gameMode == 'RW') {
 					loadReviewModeParams();
-				}
-				else if (gameMode == 'STST')
-				{
+				} else if (gameMode == 'STST') {
 					// loadSuperVisedModeParams();
 					getUsername();
 				}
@@ -103,22 +101,17 @@
 				var myRequest = new ajaxObject(loadDecksAjaxPath, loadReviewModeParamsHandler, loadRmParamsResponse, loadRmParamsResponseStatus);
 				myRequest.update();
 			}
-			function askPasswordstst()
-			{
+			function askPasswordstst() {
 				$.colorbox({html: "<label>Enter Your Password</label><input type='password' id='password_inp'/><input type='button' value='enter' onclick='sendPassword()' />"});
 			}
-			function sendPassword()
-			{
+			function sendPassword() {
 				var pass = $("#password_inp").val();
 				$.post("<?php echo base_url() ?>index.php/auth/check_password", {'pass': pass}, function(res) {
-					if (res == 'correct')
-					{
+					if (res == 'correct') {
 						//  jQuery('#cboxClose').click();
 						getUsername();
 						//   loadSuperVisedModeParams();
-					}
-					else
-					{
+					} else {
 						alert("You had entered a wrong password/ You are not the admin");
 					}
 				});
@@ -127,24 +120,18 @@
 				var dvWords = res.split(' ');
 				var dvHTML = ''
 				var flag = 0;
-				for (i = 0; i < dvWords.length; i++)
-				{
-					if (dvWords[i].toLowerCase() == 'playing')
-					{
+				for (i = 0; i < dvWords.length; i++) {
+					if (dvWords[i].toLowerCase() == 'playing') {
 						flag = 1;
 					}
 				}
-				if (flag == 1)
-				{
+				if (flag == 1) {
 					return 'yes';
-				}
-				else
-				{
+				} else {
 					return 'no';
 				}
 			}
-			function sendUsername()
-			{
+			function sendUsername() {
 				$("#username_inp").attr("disabled", "disabled");
 				/*$("#card_to_test").attr("disabled","disabled");*/
 				var username = ($("#username_inp").val());
@@ -152,49 +139,45 @@
 				if (username != '') {
 					$.post("<?php echo base_url() ?>index.php/auth/check_username", {'user': username}, function(res) {
 						var result = clickify(res);
-						if (result == 'yes')
-						{
+						if (result == 'yes') {
 //										alert(res);
 							$.colorbox({html: "<p>" + res + "<p>"});
 							$.post("<?php echo base_url() ?>index.php/auth/check_userid", {'user': username}, function(res) {
-								if (res != 'Please check username again' && res != 'not admin')
-								{
+								if (res != 'Please check username again' && res != 'not admin') {
 									game_results['user_id'] = new Object();
 									game_results['user_id'] = res;
 									current_user_id = res;
 									console.log(game_results);
 									//loadSuperVisedModeParams(card_to_test);
 									loadSupervisedPlusPreviousResult(current_user_id);
-								}
-								else
-								{
+								} else {
 									alert(res);
 								}
 							});
 							//jQuery('#cboxClose').click();
 							$(".user_identifier").text("Playing As " + res.split(" ").pop());
-						}
-						else
-						{
+						} else {
 							alert(res);
 							$("#username_inp").removeAttr("disabled");
-							/* $("#card_to_test").attr("disabled",false);*/
 						}
 					});
 				} else {
 					alert('Please check username');
 					$("#username_inp").attr("disabled", false);
-					/* $("#card_to_test").attr("disabled",false);*/
 				}
 			}
 			function getUsername()
 			{
-				$.colorbox({html: "<div class='user_box'><div class='username'><label>Enter your username</label><input type='text' id='username_inp' /></div><input type='button' value='enter' id='username_enter_blur' onclick='sendUsername()' /></div>"});
+				$.colorbox({html: "<div class='user_box'><div class='username'><label>Enter your username</label><select id='username_inp'><?php
+						foreach($this->ion_auth->users()->result() as $user) {
+							echo "<option>".$user->email."</option>";
+						}
+					?></select></div><input type='button' value='enter' id='username_enter_blur' onclick='sendUsername()' /></div>"});
 			}
-			/**load supervised plus mode privious result ASHVIN PATEL 29/JUN/2014**/
+			/**load supervised plus mode previous result ASHVIN PATEL 29/JUN/2014**/
 			function loadSupervisedPlusPreviousResult(current_user_id) {
 				$.ajax({
-					url: "<?php echo base_url() ?>index.php/game/load_stst_plus_privious_result/",
+					url: "<?php echo base_url() ?>index.php/game/load_stst_plus_previous_result/",
 					type: "post",
 					data: {userid: current_user_id},
 					success: function(loadRmParamsResponse, loadRmParamsResponseStatus, xhr) {
@@ -748,8 +731,7 @@
 				document.getElementById("aContent").innerHTML = ans;
 			}
 			/***********Timer Functions****************/
-			function startTimer(restart)
-			{
+			function startTimer(restart) {
 				timerIntervalId = setInterval(tick, 1000);
 				if (restart) {
 					totalSeconds = -1;
@@ -760,15 +742,11 @@
 				++totalSeconds;
 				document.getElementById("qTime").innerHTML = "Time:" + getFormatedTime(totalSeconds);
 			}
-			function pad(val)
-			{
+			function pad(val) {
 				var valString = val + "";
-				if (valString.length < 2)
-				{
+				if (valString.length < 2) {
 					return "0" + valString;
-				}
-				else
-				{
+				} else {
 					return valString;
 				}
 			}
@@ -788,16 +766,13 @@
 				if (e.keyCode == '37') {		//left arrow
 					showAns();
 					ansCorrect();
-				}
-				else if (e.keyCode == '39') {	//right arrow
+				} else if (e.keyCode == '39') {	//right arrow
 					showAns();
 					ansWrong();
-				}
-				else if (e.keyCode == '38') {	//up arrow
+				} else if (e.keyCode == '38') {	//up arrow
 					showAns();
 					finishGame();
-				}
-				else if (e.keyCode == '40') {	//down arrow
+				} else if (e.keyCode == '40') {	//down arrow
 					showAns();
 				}
 			}

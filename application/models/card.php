@@ -430,6 +430,7 @@ class card extends CI_Model {
 				}
 			}
 		}
+		$card_ids_merged2 = [];
 		$xLimit = ceil(count($card_ids) / 2);
 		$checkL1 = 0;
 		foreach ($card_ids as $ci1) {
@@ -594,7 +595,6 @@ class card extends CI_Model {
 			$this->insertDeckCards($user_id, $deck_id);
 		} else {
 			$user_decks = $this->getUserDeck($user_id);
-			//print_r($user_decks);
 			foreach ($user_decks as $deck_id) {
 				$this->insertDeckCards($user_id, $deck_id);
 			}
@@ -653,11 +653,7 @@ class card extends CI_Model {
 		//print_r($userGroupDeck);
 		$userDecks = array_unique(array_merge($user_decks, $userGroupDeck));
 		//print_r($userDecks);
-		if (!empty($userDecks)) {
-			return $userDecks;
-		} else {
-			return 0;
-		}
+		return $userDecks;
 	}
 
 	function getUserGroup($user_id) {
