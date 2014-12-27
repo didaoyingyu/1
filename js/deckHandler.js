@@ -78,18 +78,18 @@ var r8 = 95; //4
 var r9 = 98; //3
 var r10 = 100; //2 //rand 13+
 /****************************LEARN Logic Variables***************************/
-var learn_correct_first_time = '5'; //First time shown marked right history mark
-var learn_correct = 'L'; //Answered correctly history mark
-var learn_wrong = '*'; //Answered incorrectly history mark
+var learnFirstTimeCorrectMark = '5'; //First time shown marked right history mark
+var learnCorrectMark = 'L'; //Answered correctly history mark
+var learnWrongMark = '*'; //Answered incorrectly history mark
 var L = 3; //Learning rank maximum
-var learn_skips = {
+var learnSkips = {
 	0: 1,
 	1: 1,
 	2: 2,
 	3: 3,
 	4: 4
 }; //Skips to take per rank.  Format:  rank : #_of_skips
-var first_time_correct_rank = 5; //Rank value for learning cards answered correctly on the first try.
+var learnFirstTimeCorrectRank = 5; //Rank value for learning cards answered correctly on the first try.
 /*******************************************************************************/
 function DeckHandler() {}
 DeckHandler.prototype.setDeck = function(deck) {
@@ -404,19 +404,28 @@ DeckHandler.prototype.checkSpecialFreq = function() {
 };
 /*get card in test supervisedplus mode*/
 DeckHandler.prototype.getNextCardSupervisedPlusMode = function() {
-	for (var selectedCardIndex = 0; selectedCardIndex < this.deck.length; selectedCardIndex++) {
-		if (jQuery.inArray(this.deck[selectedCardIndex]['card_id'], pre_cards) == -1) {
-			//add picked card to prev_cards
-			pre_cards.push(this.deck[selectedCardIndex]['card_id']);
-			var historyStr = this.deck[selectedCardIndex]['history'];
-			if (historyStr == null || historyStr == '' || historyStr.match(/[^-]/) == null) {
-				first_time_card_count++;
-			}
-			return this.setAsNextCard(selectedCardIndex, "Supervised Plus logic");
+	for (var nextPick = prevSelectedCardIndex + 1; nextPick < this.deck.length; nextPick++) {
+		var card = this.deck[nextPick];
+		/* ignore if LEARN card */
+		this.checkHistory(card);
+		if (card['learning'] != 1) {
+			return this.setAsNextCard(nextPick, "Supervised Plus logic");
 		}
 	}
-	//if nothing found
-	finishSupervisedMode();
+};
+/*reset status values and flags, for new session*/
+DeckHandler.prototype.reset = function() {
+	prevSelectedCardIndex = -1;
+	prevRandNum = -1;
+	algoChoice = 0;
+	expiredSkipCount = 0;
+	expiredQueue = [];
+	specialFreq = false;
+	specialQueue.size = 0;
+	specialQueue.start = 0;
+	specialQueue.end = 0;
+	skipIndex = 0;
+	skipCount = 0;
 };
 /*update a card*/
 DeckHandler.prototype.updateCard = function(card) {
@@ -446,7 +455,7 @@ DeckHandler.prototype.handleCardStatus = function(card, ansCorrect, gameMode, hi
 			if (card['correct'] == correctCountForInc) {
 				rank = rank + rankInc;
 				if (card['learning'] == 1) {
-					card['lskips'] = learn_skips[rank];
+					card['lskips'] = learnSkips[rank];
 				}
 				card['correct'] = 0;
 			}
@@ -470,7 +479,7 @@ DeckHandler.prototype.handleCardStatus = function(card, ansCorrect, gameMode, hi
 					rank = 0;
 				}
 				if (card['learning'] == 1) {
-					card['lskips'] = learn_skips[rank];
+					card['lskips'] = learnSkips[rank];
 				}
 				card['wrong'] = 0;
 			}
@@ -493,14 +502,14 @@ DeckHandler.prototype.handleCardStatus = function(card, ansCorrect, gameMode, hi
 		else if (card['learning'] == 1) {
 			var ch = card['history'].search(/[^-]/);
 			if (ch == -1) {
-				recordChar = (ansCorrect == 1 ? learn_correct_first_time : learn_wrong);
+				recordChar = (ansCorrect == 1 ? learnFirstTimeCorrectMark : learnWrongMark);
 				if (ansCorrect == 1) {
-					card['rank'] = first_time_correct_rank;
+					card['rank'] = learnFirstTimeCorrectRank;
 					card['learning'] = 0;
 					card['lskips'] = 0;
 				}
 			} else
-				recordChar = (ansCorrect == 1 ? learn_correct : learn_wrong);
+				recordChar = (ansCorrect == 1 ? learnCorrectMark : learnWrongMark);
 		} else
 			recordChar = (ansCorrect == 1 ? 'o' : 'x');
 	} else if (gameMode == 'SUP') {

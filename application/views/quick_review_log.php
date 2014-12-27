@@ -10,7 +10,7 @@
 	</head>
 	<body>
 		<div class="header">
-			<div class="headerText">Quick Review Report</div>
+			<div class="headerText">Quick Review Report - <?php echo $user ?></div>
 		</div>
 		<!--<div class="container">-->
 			<table border="1" style="width:100%;text-align:center" class="top-margin">

@@ -19,7 +19,7 @@
 			var userId = <?php echo $this->ion_auth->user()->row()->id ?>;
 			var deckId = 1;
 			var cardArray = null;
-			var deckHander = new DeckHandler();
+			var deckHandler = new DeckHandler();
 			var currentCard;
 			var gameMode = 'TR'; /*default mode is training*/
 			var card_to_test = 0;
@@ -360,6 +360,7 @@
 			}
 			/*******Load/save game section********/
 			function loadGame(deckIdIn) {
+				deckHandler.reset();
 				deckId = deckIdIn;
 				$.ajax({
 					url: '<?php echo base_url('index.php/game/load_plus_mode_cards') ?>',
@@ -437,7 +438,7 @@
 						cardArray[i]['wrong'] = 0;
 					}
 					console.log(cardArray);
-					deckHander.setDeck(cardArray);
+					deckHandler.setDeck(cardArray);
 					$('.plus_mode_test_report').hide();
 					document.getElementById("gameScreen").style.display = "block";
 					document.getElementById("gameModeScreen").style.display = "none";
@@ -505,7 +506,7 @@
 						cardArray[i]['wrong'] = 0;
 					}
 					console.log(cardArray);
-					deckHander.setDeck(cardArray);
+					deckHandler.setDeck(cardArray);
 					document.getElementById("gameScreen").style.display = "block";
 					document.getElementById("gameModeScreen").style.display = "none";
 					document.getElementById("cardDeckSelectionScreen").style.display = "none";
@@ -539,7 +540,11 @@
 			/*********User button clicking event handling**************/
 			function showNextQues() {
 				$("#source_div").html("");
-				currentCard = deckHander.getNextCard(gameMode);
+				currentCard = deckHandler.getNextCard(gameMode);
+				if (!currentCard) { //if nothing found
+					finishSupervisedMode();
+					return;
+				}
 				game_results['deck'][game_count] = new Object();
 				game_results['deck'][game_count]['deck_id'] = currentCard['deck_id'];
 				game_results['deck'][game_count]['card_id'] = currentCard['card_id'];
@@ -588,7 +593,7 @@
 				$(".answer_code").html(Current_history);
 				var ansStatus = new Boolean(1);
 				//alert(currentCard);
-				deckHander.handleCardStatus(currentCard, ansStatus, gameMode, historyLength, variableOk);
+				deckHandler.handleCardStatus(currentCard, ansStatus, gameMode, historyLength, variableOk);
 				saveCard(currentCard);
 				showNextQues();
 			}
@@ -608,7 +613,7 @@
 				Current_history = prev_history + 'X';
 				$(".answer_code").html(Current_history);
 				var ansStatus = new Boolean(0);
-				deckHander.handleCardStatus(currentCard, ansStatus, gameMode, historyLength, variableOk);
+				deckHandler.handleCardStatus(currentCard, ansStatus, gameMode, historyLength, variableOk);
 				saveCard(currentCard);
 				showNextQues();
 			}
@@ -622,7 +627,7 @@
 				Current_history = prev_history + 'K';
 				$(".answer_code").html(Current_history);
 				var ansStatus = 2;
-				deckHander.handleCardStatus(currentCard, ansStatus, gameMode, historyLength, variableOk);
+				deckHandler.handleCardStatus(currentCard, ansStatus, gameMode, historyLength, variableOk);
 				saveCard(currentCard);
 				showNextQues();
 			}
@@ -636,7 +641,7 @@
 				Current_history = prev_history + 'P';
 				$(".answer_code").html(Current_history);
 				var ansStatus = 3;
-				deckHander.handleCardStatus(currentCard, ansStatus, gameMode, historyLength, variableOk);
+				deckHandler.handleCardStatus(currentCard, ansStatus, gameMode, historyLength, variableOk);
 				saveCard(currentCard);
 				showNextQues();
 			}

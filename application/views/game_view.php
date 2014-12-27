@@ -13,38 +13,28 @@
 		<script type="text/javascript">
 			/*******Common JS varible Section***************/
 			var userId = <?php echo $this->ion_auth->user()->row()->id ?>;
-			var deckId = 1;
-			var cardArray = null;
-			var deckHander = new DeckHandler();
+			var deckHandler = new DeckHandler();
 			var currentCard;
-			var gameMode = 'TR'; /*default mode is training*/
+			var gameMode;
 			/*variable for timer function*/
 			var totalSeconds = 0;
-			var questionTimeDiv;
 			var timerIntervalId;
 			/*game history length */
 			var historyLength = 30;
 			/*current deck array*/
 			var currentDeckArray;
-			var pre_cards = new Array();
-			var z_count = 1;
-			var game_results = new Object();
-			var quick_review_log = new Object();
-			var deck_count = 0;
-			var total_time_for_deck = 0;
-			var change_minus = 0;
-			game_results['correct_total'] = new Object();
-			game_results['wrong_total'] = new Object();
-			game_results['deck'] = new Object();
-			game_results['card_count'] = new Object();
-			//	var game_results['user_id'] = new Object();
-			var current_user_id = 0;
-			var game_count = 0;
-			var correct_total = 0;
-			var wrong_total = 0;
-			var first_time_card_count = 0;
-			var first_time_correct_Card_cout = 0;
-			var total_cards = 0;
+			var gameResults = new Object();
+			var quickReviewLog = new Object();
+			var totalDeckTime = 0;
+			gameResults['correct_total'] = new Object();
+			gameResults['wrong_total'] = new Object();
+			gameResults['deck'] = new Object();
+			gameResults['card_count'] = new Object();
+			//	var gameResults['user_id'] = new Object();
+			var gameCount = 0;
+			var correctTotal = 0;
+			var wrongTotal = 0;
+			var totalCards = 0;
 			/*******encode JSON objects for POST************/
 			function preparePost(jsonObj) {
 				return "data=" + JSON.stringify(jsonObj).replace(/&/g, "%26");
@@ -58,10 +48,9 @@
 			}
 			/*******Set Game Mode and Load Card Decks************/
 			function loadGameMode(gameModeIn, doLoadDecks) {
+				deckHandler.reset();
 				gameMode = gameModeIn;
-				if (gameMode == 'TR' && doLoadDecks) {
-					loadDecks();
-				} else if (gameMode == 'RW') {
+				if (gameMode == 'RW') {
 					loadReviewModeParams();
 					if (doLoadDecks) {
 						loadDecks();
@@ -133,24 +122,21 @@
 			}
 			/*******Load/save game section********/
 			function loadGame(deckIdIn) {
-				card_ids = new Array();
-				pre_cards = new Array();
-				game_results = new Object();
-				game_results['correct_total'] = new Object();
-				game_results['wrong_total'] = new Object();
-				game_results['deck'] = new Object();
-				game_results['card_count'] = new Object();
-				deckId = deckIdIn;
-				new ajaxObject("<?php echo base_url() ?>index.php/game/load_cards/" + userId + "/" + deckId, 
+				gameResults = new Object();
+				gameResults['correct_total'] = new Object();
+				gameResults['wrong_total'] = new Object();
+				gameResults['deck'] = new Object();
+				gameResults['card_count'] = new Object();
+				new ajaxObject("<?php echo base_url() ?>index.php/game/load_cards/" + userId + "/" + deckIdIn, 
 					function(data, status) {
 						if (status == 200) {
-							cardArray = JSON.parse(data);
+							var cardArray = JSON.parse(data);
 							/*add two extra varibles to cards*/
 							for (var i = 0; i < cardArray.length; i++) {
 								cardArray[i]['correct'] = 0;
 								cardArray[i]['wrong'] = 0;
 							}
-							deckHander.setDeck(cardArray);
+							deckHandler.setDeck(cardArray);
 							gameScreen.style.display = "block";
 							modeScreen.style.display = "none";
 							deckScreen.style.display = "none";
@@ -181,13 +167,13 @@
 				new ajaxObject("<?php echo base_url() ?>index.php/game/load_cards_md/" + userId, 
 					function(data, status) {
 						if (status == 200) {
-							cardArray = JSON.parse(data);
+							var cardArray = JSON.parse(data);
 							/*add two extra varibles to cards*/
 							for (var i = 0; i < cardArray.length; i++) {
 								cardArray[i]['correct'] = 0;
 								cardArray[i]['wrong'] = 0;
 							}
-							deckHander.setDeck(cardArray);
+							deckHandler.setDeck(cardArray);
 							gameScreen.style.display = "block";
 							modeScreen.style.display = "none";
 							deckScreen.style.display = "none";
@@ -221,35 +207,36 @@
 			}
 			/*********User button clicking event handling**************/
 			function showNextQues() {
-				currentCard = deckHander.getNextCard(gameMode);
-				game_results['deck'][game_count] = new Object();
-				game_results['deck'][game_count]['deck_id'] = currentCard['deck_id'];
-				game_results['deck'][game_count]['card_id'] = currentCard['card_id'];
-				game_results['deck'][game_count]['history'] = currentCard['history'];
+				currentCard = deckHandler.getNextCard(gameMode);
+				gameResults['deck'][gameCount] = new Object();
+				gameResults['deck'][gameCount]['deck_id'] = currentCard['deck_id'];
+				gameResults['deck'][gameCount]['card_id'] = currentCard['card_id'];
+				gameResults['deck'][gameCount]['history'] = currentCard['history'];
 				flipBack();
 				var avgTime = 0;
 				if (parseInt(currentCard['play_count']) != 0) {
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
 				renderQuestion(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question']);
-				quick_review_log['before_history'] = game_results['deck'][game_count]['history'];
-				quick_review_log['reason'] = extraInfo.innerHTML;
-				quick_review_log['before_rank'] = currentCard['rank'];
-				quick_review_log['question'] = currentCard['question'];
-				quick_review_log['answer'] = currentCard['answer'];
-				quick_review_log['deck_id'] = currentCard['deck_id'];
-				quick_review_log['card_id'] = currentCard['card_id'];
-				quick_review_log['utp'] = currentCard['utp'];
-				quick_review_log['utp'] = '';
+				quickReviewLog['before_history'] = gameResults['deck'][gameCount]['history'];
+				quickReviewLog['reason'] = extraInfo.innerHTML;
+				quickReviewLog['before_rank'] = currentCard['rank'];
+				quickReviewLog['question'] = currentCard['question'];
+				quickReviewLog['answer'] = currentCard['answer'];
+				quickReviewLog['deck_id'] = currentCard['deck_id'];
+				quickReviewLog['card_id'] = currentCard['card_id'];
+				quickReviewLog['utp'] = currentCard['utp'];
+				quickReviewLog['utp'] = '';
 				new ajaxObject("<?php echo base_url() ?>index.php/auth/get_log_utp", function(res) {
-					quick_review_log['utp'] = res;
-				}).update(preparePost(quick_review_log), "POST");
+					quickReviewLog['utp'] = res;
+				}).update(preparePost(quickReviewLog), "POST");
 			}
 			function showAns() {
 				flip();
 				/*stop the time up timer and get it value*/
 				clearInterval(timerIntervalId);
 				currentCard['last_time'] = totalSeconds;
+				totalDeckTime += totalSeconds;
 				var timeTakenForQues = getFormatedTime(totalSeconds);
 				var avgTime = 0;
 				if (parseInt(currentCard['play_count']) != 0) {
@@ -260,50 +247,50 @@
 			}
 			function markAnswer(mark) {
 				var isValid = mark > 0;
-				deckHander.handleCardStatus(currentCard, mark, gameMode, historyLength);
-				total_cards++;
-				game_results['deck'][game_count]['ans'] = isValid;
-				game_results['deck'][game_count]['rank'] = currentCard['rank'];
-				game_results['deck'][game_count]['reason'] = extraInfo.innerHTML;
+				deckHandler.handleCardStatus(currentCard, mark, gameMode, historyLength);
+				totalCards++;
+				gameResults['deck'][gameCount]['ans'] = isValid;
+				gameResults['deck'][gameCount]['rank'] = currentCard['rank'];
+				gameResults['deck'][gameCount]['reason'] = extraInfo.innerHTML;
 			<?php if ($this->ion_auth->user()->row()->review_log_status == 0) {?>
-				quick_review_log['ans'] = isValid;
-				quick_review_log['after_history'] = currentCard['history'];
-				quick_review_log['after_rank'] = currentCard['rank'];
+				quickReviewLog['ans'] = isValid;
+				quickReviewLog['after_history'] = currentCard['history'];
+				quickReviewLog['after_rank'] = currentCard['rank'];
 				new ajaxObject("<?php echo base_url() ?>index.php/auth/save_quick_review_log", 
 					function(res, status) {
 						if (status != 200) {
 							alert('Quick review log save failed!\n' + res);
 						}
-					}).update(preparePost(quick_review_log), "POST");
+					}).update(preparePost(quickReviewLog), "POST");
 			<?php }?>
-				game_count++;
+				gameCount++;
 				if (isValid) {
-					correct_total++;
+					correctTotal++;
 				} else {
-					wrong_total++;
+					wrongTotal++;
 				}
 				saveCard(currentCard);
 				showNextQues();
 			}
 			function finishGame() {
 				/* show the deck selection screen */
-				game_results['card_count'] = total_cards;
-				total_cards = 0;
+				gameResults['card_count'] = totalCards;
+				totalCards = 0;
 				clearInterval(timerIntervalId);
 				if (confirm("Do you really want to finish this game?")) {
-					game_results['total_time'] = total_time_for_deck;
-					total_time_for_deck = 0;
-					game_results['correct_total'] = correct_total;
-					game_results['wrong_total'] = wrong_total;
-					correct_total = 0;
-					wrong_total = 0;
+					gameResults['total_time'] = totalDeckTime;
+					totalDeckTime = 0;
+					gameResults['correct_total'] = correctTotal;
+					gameResults['wrong_total'] = wrongTotal;
+					correctTotal = 0;
+					wrongTotal = 0;
 					if (gameMode == 'RW') {
 						new ajaxObject("<?php echo base_url() ?>index.php/auth/reviewModeSave", 
 							function(res, status) {
 								if (status != 200) {
 									alert('Review mode save failed!\n' + res);
 								}
-							}).update(preparePost(game_results), "POST");
+							}).update(preparePost(gameResults), "POST");
 					}
 					gameScreen.style.display = "none";
 					modeScreen.style.display = "block";
@@ -472,13 +459,9 @@
 			<div class="gameModeScreen" id="gameModeScreen">
 				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReview();"><p>Quick Review</p></div></div></div> 
 				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:loadGameMode('TR', true);"><p>Training Mode</p></div></div></div> 
-				<br/><br/><br/>
 				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:loadGameMode('RW', true);"><p>Review Mode</p></div></div></div> 
 				<br/><br/><br/>
 				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/rw_with_sound" style="text-decoration:none;color:black"><p>Review Mode With Sound</p></a></div></div> 
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/supervised_mode" style="text-decoration:none;color:black" ><p>Supervised Test</p></a></div></div>
 				<br/><br/><br/>
 				<!--create new deck-->
 				<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='newDeck()'><p>New Deck</p></div></div></div>

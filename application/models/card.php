@@ -287,13 +287,14 @@ class card extends CI_Model {
 		/* check wheather the user previouly plid the selection */
 		$this->addUserCardIfNot($user_id, $deck_id);
 		/* send card deck to the user */
-		$this->db->select('*');
-		$this->db->from('user_card as uc');
-		$this->db->join('card as c', ' uc.card_id = c.card_id');
+		$this->db->select('*')
+			->from('user_card as uc')
+			->where('uc.user_id', $user_id)
+			->where('uc.history RLIKE', '\'[^-]+\'', false)
+			->join('card as c', ' uc.card_id = c.card_id');
 		if ($deck_id != '' || $deck_id != 0 || $deck_id != null) {
 			$this->db->where('uc.deck_id ', $deck_id);
 		}
-		$this->db->where('uc.user_id', $user_id);
 		//$this->db->where('REPLACE(uc.history, "-", "") LIKE "X%"');
 		$this->db->order_by('rank');
 		$query = $this->db->get();
@@ -358,13 +359,14 @@ class card extends CI_Model {
 				}
 			}
 		}
-		$this->db->select('*');
-		$this->db->from('user_card as uc');
-		$this->db->join('card as c', ' uc.card_id = c.card_id');
+		$this->db->select('*')
+			->from('user_card as uc')
+			->where('uc.user_id', $user_id)
+			->where('uc.history RLIKE', '\'[^-]+\'', false)
+			->join('card as c', ' uc.card_id = c.card_id');
 		if ($deck_id != '' || $deck_id != 0 || $deck_id != null) {
 			$this->db->where('uc.deck_id ', $deck_id);
 		}
-		$this->db->where('uc.user_id', $user_id);
 		//$this->db->where('REPLACE(uc.history, "-", "") LIKE "X%"');
 		$this->db->order_by('last_date');
 		$query2 = $this->db->get();

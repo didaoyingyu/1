@@ -87,6 +87,8 @@ class game extends CI_Controller {
 
 	function quick_review_log($user_Id) {
 		$this->load->model('card');
+		$user = $this->ion_auth->user($user_Id)->row();
+		$data['user'] = $user->first_name.' '.$user->last_name;
 		$data['logs'] = $this->card->get_quick_review_log($user_Id);
 		$this->load->view('quick_review_log', $data);
 	}
