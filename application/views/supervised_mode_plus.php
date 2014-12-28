@@ -877,22 +877,29 @@
 				<div class='buttonHolder' style="display:none"><div class='buttonInner'><div class='button green' onclick='javascript:manageDeck()'><p>Manage Deck</p></div></div></div>
 				<br/><br/><br/>
 			</div>
-			<!--Show previous test and review session result ASHVIN PATEL 20/JUN/2014-->
-			<div class="plus_mode_test_report">
+			<div class="start_test_area">
+				<div class='card'>
+					<label>Enter cards want to test this time</label>
+					<input type='text' id='card_to_test' />
+					<input type="button" value="Start Test Auto" onClick="loadSuperVisedModeParams('automatic')">
+					<input type="button" value="Start Test Manual" onClick="loadSuperVisedModeParams('manual')" />
+				</div>
 			</div>
+			<!--Show previous test and review session result ASHVIN PATEL 20/JUN/2014-->
+			<div class="plus_mode_test_report"></div>
 			<!-- Card Deck Selection Screen -->
 			<div class="cardDeckSelectionScreen" id="cardDeckSelectionScreen">
 			</div>
 		</div>
+		<script>
+			$(document).ready(function() {
+				clickOnSuperVisedButton();
+			});
+			function clickOnSuperVisedButton()
+			{
+				startGame();
+				$("#sound_button_loading").trigger('click');
+			}
+		</script>
 	</body>
 </html>
-<script>
-	$(document).ready(function() {
-		clickOnSuperVisedButton();
-	});
-	function clickOnSuperVisedButton()
-	{
-		startGame();
-		$("#sound_button_loading").trigger('click');
-	}
-</script>

@@ -225,10 +225,13 @@
 				quickReviewLog['answer'] = currentCard['answer'];
 				quickReviewLog['deck_id'] = currentCard['deck_id'];
 				quickReviewLog['card_id'] = currentCard['card_id'];
-				quickReviewLog['utp'] = currentCard['utp'];
-				quickReviewLog['utp'] = '';
-				new ajaxObject("<?php echo base_url() ?>index.php/auth/get_log_utp", function(res) {
-					quickReviewLog['utp'] = res;
+				new ajaxObject("<?php echo base_url() ?>index.php/auth/get_log_utp", function(res, status) {
+					if (status != 200 || res == "0") {
+						alert('UTP retrieval failed!\n' + res);
+					} else {
+						console.log("utp=" + res);
+						quickReviewLog['utp'] = res;
+					}
 				}).update(preparePost(quickReviewLog), "POST");
 			}
 			function showAns() {
