@@ -430,7 +430,7 @@ class card extends CI_Model {
 				}
 			}
 		}
-		$card_ids_merged2 = [];
+		$card_ids_merged2 = array();
 		$xLimit = ceil(count($card_ids) / 2);
 		$checkL1 = 0;
 		foreach ($card_ids as $ci1) {
