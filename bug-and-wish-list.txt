@@ -34,6 +34,8 @@ The LAST SHOWN and UTP should be the same (last shown seems to take local comput
 
 3) Add a maxnoshowtime report similar to the quick review log which shows what happens each time a maxnoshowtime card is shown.  This will allow me to analyze how long the maxnoshowtime should be as I want maxnoshowtime to be as big as possible to avoid wasting user's review time.  (This wouldn't really be useful until AFTER the user specific maxnoshowtime feature is added)
 
+4) Add "TEST HISTORY" to review mode so it is shown same way as it is shown during the Supervised Test
+
 
 
 -----  COMPLEX ?  -----
@@ -41,12 +43,14 @@ The LAST SHOWN and UTP should be the same (last shown seems to take local comput
 
 1) Create a simple interface to add sound clips to both questions and answers (current code only allows sound for answer by manually creating mp3 on local machine and then upload the mp3 manually 1 by 1 - very time consuming)
 
+2) Change SUPERVISED TEST mode to separate the UN TESTED cards into 2 categories : 1) Untouched cards (cards that wont be tested) 2) Ready to Test (cards that have never been tested before but have been LEARNED)
 
-2) Change variables in deckhandler and review mode parameters to be USER SPECIFIC instead of UNIVERSAL ie Special Frequency, Learn, Maxnoshowtime unique to each user. Perhaps added to the user table and editable through the MANAGE USER menu
+
+3) Change variables in deckhandler and review mode parameters to be USER SPECIFIC instead of UNIVERSAL ie Special Frequency, Learn, Maxnoshowtime unique to each user. Perhaps added to the user table and editable through the MANAGE USER menu
 
 
-3) Make maxnoshowtime directly related to rank (ie higher the rank the higher the maxnoshowtime)
+4) Make maxnoshowtime directly related to rank (ie higher the rank the higher the maxnoshowtime)
 
-4) Create a GROUP report page to show all data related to all users inside the same group.  This will allow me to easily compare students in the same class's performance
+5) Create a GROUP report page to show all data related to all users inside the same group.  This will allow me to easily compare students in the same class's performance
 
-5) During review mode the user can see statistics re their cards ie what is the low/high/average rank of ALL their cards as well as view the statistics of other users in the same group/class.  The results of the last test can be displayed in order of mark (like a leaderboard) in hopes of creating a competition like atmosphere among the students.  Even perhaps adding some sort of "point" system
+6) During review mode the user can see statistics re their cards ie what is the low/high/average rank of ALL their cards as well as view the statistics of other users in the same group/class.  The results of the last test can be displayed in order of mark (like a leaderboard) in hopes of creating a competition like atmosphere among the students.  Even perhaps adding some sort of "point" system
