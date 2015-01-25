@@ -39,7 +39,7 @@
 									</th>
 									<th>Prev X   
 									</th>
-									<th>Chnage   
+									<th>Change   
 									</th>
 									<th>To date   
 									</th>
@@ -91,7 +91,26 @@
 									<?= $card->current_true_prex ?>/<?= $card->prex ?>
 								</td>
 								<td>
-									+<?= $card->change_plus ?>-<?= $card->change_minus ?>
+                                                                        <?php /*	+<?= $card->change_plus ?>-<?= $card->change_minus ?> */ ?>
+                                                                        <?php
+                                                                                $total_cards = $card->prex + $card->prexx + $card->new_card_count;
+                                                                                $totalcard_attend = $total_cards;
+                                                                                $total_cards = $total_cards - $card->wrong_total;
+                                                                                if($total_cards < 0)
+                                                                                {
+                                                                                    echo "+0".$total_cards; 
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    //echo "+".$card->change_plus."-".$card->wrong_total;
+                                                                                    if($card->change_plus > $card->wrong_total && $totalcard_attend != $card->card_count )
+                                                                                    {
+                                                                                        echo "+".($card->change_plus - $card->wrong_total)."-0";
+                                                                                    }
+                                                                                    else
+                                                                                        echo "+".$card->change_plus."-0";
+                                                                                }
+                                                                        ?>
 								</td>
 								<td>
 									<?= $card->correct_to_date_card_count ?>/<?= $card->TotalCardCount ?>

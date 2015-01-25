@@ -1,6 +1,6 @@
 **** KNOWN BUGS *****
 
-1) The TO DATE and CHANGE figures displayed after each test are inaccurate.  TO DATE should be how many user cards TEST HISTORY's start with "O" / TOTAL CARDS (due to the unbelievable complexity of the code created by the original dev, the Supervised Test Plus mode MAY need to be re-coded from scratch as debugging may not be possible)
+** FIXED ** 1) The TO DATE and CHANGE figures displayed after each test are inaccurate.  TO DATE should be how many user cards TEST HISTORY's start with "O" / TOTAL CARDS (due to the unbelievable complexity of the code created by the original dev, the Supervised Test Plus mode MAY need to be re-coded from scratch as debugging may not be possible)
 
 2) The UTP updating is intermittant
 
