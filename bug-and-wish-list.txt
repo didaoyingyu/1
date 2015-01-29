@@ -1,0 +1,74 @@
+**** KNOWN BUGS *****
+
+** FIXED ** 1) The TO DATE and CHANGE figures displayed after each test are inaccurate.  TO DATE should be how many user cards TEST HISTORY's start with "O" / TOTAL CARDS (due to the unbelievable complexity of the code created by the original dev, the Supervised Test Plus mode MAY need to be re-coded from scratch as debugging may not be possible)
+
+2) The UTP updating is intermittant
+
+Check links below for evidence :
+
+http://didaoyingyu.org/game/cards/index2.php?id=20&order=ASC&column=utp
+http://didaoyingyu.org/game/cards/index2.php?id=21&order=ASC&column=utp
+http://didaoyingyu.org/game/cards/index2.php?id=22&order=ASC&column=utp
+http://didaoyingyu.org/game/cards/index2.php?id=24&order=ASC&column=utp
+
+Any cards with very high ELAPSED TIME show the intermittant bug
+The LAST SHOWN and UTP should be the same (last shown seems to take local computer time whereas UTP is server time)
+
+
+
+3) The review mode summary logs aren't being logged for each users. Some users NEVER have a summary log despite using software. This bug seems to be user related which makes me think the problem is due to their computer or browser.
+
+
+
+***** UPGRADES / ENHANCEMENTS *****
+
+
+-----  EASY ? -----
+
+
+
+1) Add deckhandler rule to prevent the repeating of the same card twice in a row
+
+2) Add deckhandler rule to prevent Special Frequency cards being picked with the random number ie SF cards should be isolated from the rest of the cards until they exit the SF (currently SF cards are being picked because of their low rank causing the SF frequency to be higher than specified making it hard for me to know what actual SF is effective) - SF cards that are waiting in the queue can still be picked
+
+
+3) Add a maxnoshowtime report similar to the quick review log which shows what happens each time a maxnoshowtime card is shown.  This will allow me to analyze how long the maxnoshowtime should be as I want maxnoshowtime to be as big as possible to avoid wasting user's review time.  (This wouldn't really be useful until AFTER the user specific maxnoshowtime feature is added)
+
+4) Add "TEST HISTORY" to review mode so it is shown same way as it is shown during the Supervised Test
+
+5) REVERSE REVIEW - a mode whereby the user can see the ANSWER first and QUESTION second.  This would mean creating more entries in USER CARD table as this reverse mode would need its own history rank etc as if they were completely different cards
+
+6) Deleting cards in the MODIFY DECKS module should also delete said cards from the USER CARD table for every user.  Currently I have to go into the user card table and delete entries manually. MODIFY DECKS only deletes the cards from the CARD table
+
+7) Add user name to the top of the MISTAKES REPORT and the REVIEW REPORT the same way it exists at the top of the QUICK REVIEW LOG
+
+8) Change quick review log "answer" to true/false instead of 1/0 to make it easy to search for mistakes by searching for "false" (see #10 for a new mistakes log for this)
+
+9) Add the upgraded Mistake Report to the git (it was lost during the merge) - Upgraded Mistake report shows History and rank at time of mistake (supervised test mistake)
+
+10) Create a new MISTAKES log/table that isolates all the mistakes in the review report for eacy analytics.  It will log the card details at the time of just before the mistake  (this will be most useful AFTER the user specific paramters feature is added as this log will help me tweak user-specific settings to reduce mistakes)
+
+
+
+-----  COMPLEX ?  -----
+
+
+1) Create a simple interface to add sound clips to both questions and answers (current code only allows sound for answer by manually creating mp3 on local machine and then upload the mp3 manually 1 by 1 - very time consuming)
+
+2) Change SUPERVISED TEST mode to separate the UN TESTED cards into 2 categories : 1) Untouched cards (cards that wont be tested) 2) Ready to Test (cards that have never been tested before but have been LEARNED)
+
+
+3) Change variables in deckhandler and review mode parameters to be USER SPECIFIC instead of UNIVERSAL ie Special Frequency, Learn, Maxnoshowtime unique to each user. Perhaps added to the user table and editable through the MANAGE USER menu
+
+
+4) Make maxnoshowtime directly related to rank (ie higher the rank the higher the maxnoshowtime)
+
+5) Create a GROUP report page to show all data related to all users inside the same group.  This will allow me to easily compare students in the same class's performance.  It could group together their weekly tests, with the best at the top.
+
+6) During review mode the user can see statistics re their cards ie what is the low/high/average rank of ALL their cards as well as view the statistics of other users in the same group/class.  The results of the last test can be displayed in order of mark (like a leaderboard) in hopes of creating a competition like atmosphere among the students.  Even perhaps adding some sort of "point" system
+
+7) Add the 2 buttons to the Supervised Test ie OK and P.  P is a toggle for noting pronunciation problems.  Any selection of P must also be accompanied by a RIGHT, WRONG or OK.  History will reflect the selection of P, or perhaps add a separate history logging P problems.  Review mode can be upgraded to prompt the user for them to take care of their pronunciation for the current card as it was flagged as bad pronunciation during the last test.  OK will have its variable for rank increase/decrease (different from RIGHT and WRONG).  OK cards should enter SF queue but at the very back - Prev X cards have higher priority.  P cards would have 2nd priority and OK cards last priority.  OK cards will likely be cards answered correctly but just slowly
+
+8) CARD STATS - edit card table so each card has stats that help deckhandler to know what cards to show when, as well as which cards to test and when. Eg Test stats (what % of tests is this particular card being marked wrong = difficulty level of card). Simple 1 word cards will likely be hardly ever forgotten so no need to test them so often or show them in the review mode so often. Also review mode stats ie % of review shows user marked self wrong (perhaps after learn mode ? no need to record learning mistakes only review/forgetting mistakes ?)
+
+9) REMOTE SUPERVISED TEST - I log in at my PC and user logs in at their pc and supervised test is conducted remotely using telephone or skype to hear the students answers.

@@ -794,9 +794,14 @@ class Auth extends CI_Controller {
 		}
 		$getCorrectOnly = $this->card->getCorrectOnlyCount($user_Id, $html1);
 		$cards['cardCount'] = $this->card->neverTestedCards($user_Id);
-		$correct_to_date_card_count = $cards['cardCount']['O'];
-		$correct_to_date_card_count = $correct_to_date_card_count + $getCorrectOnly[0]->total_count;
-		$gameSave['correct_to_date_card_count'] = $correct_to_date_card_count;
+		// Below code comment by Vishal 
+                /*$correct_to_date_card_count = $cards['cardCount']['O'];
+		$correct_to_date_card_count = $correct_to_date_card_count + $getCorrectOnly[0]->total_count;*/
+                // Code write by vishal start
+                $correct_to_date_card_count = $cards['cardCount']['O'];
+                $correct_to_date_card_count =  $correct_to_date_card_count;
+		// Code write by vishal end
+                $gameSave['correct_to_date_card_count'] = $correct_to_date_card_count;
 		$gameSave['new_card_count'] = $new_card_count;
 		$gameSave['new_card_correct_count'] = $new_card_correct_count;
 		$gameSave['current_true_prex'] = $current_true_prex;
