@@ -18,6 +18,10 @@ The LAST SHOWN and UTP should be the same (last shown seems to take local comput
 
 3) The review mode summary logs aren't being logged for each users. Some users NEVER have a summary log despite using software. This bug seems to be user related which makes me think the problem is due to their computer or browser.
 
+4) LEARN logic has been seen to introduce a SECOND card into the LEARN frequency before the first card has been learned
+
+http://awesomescreenshot.com/0944b8m1f4
+
 
 
 ***** UPGRADES / ENHANCEMENTS *****
