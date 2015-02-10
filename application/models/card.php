@@ -1191,26 +1191,26 @@ class card extends CI_Model {
 
 	public function getAllErrors($user_name) {
 //********/
-		$sql = "SELECT ssc.history,ssc.rank,ssc.itp,ssc.last_shown,ssc.utp,cd.deck_name,
-					ss.game_date,
-				 c.question,
-				 c.answer,
-					cd.deck_id
-		FROM supervised_session_cards ssc
-		INNER JOIN supervised_session ss
-		ON ss.id=ssc.supervised_session_id
-		INNER JOIN card c
-		ON c.card_id=ssc.card_id
-		INNER JOIN card_deck cd
-		ON cd.deck_id=ssc.deck_id
-		INNER JOIN users u
-		ON u.id=ss.user_id
-		WHERE u.email = ?
-		AND ssc.ans='false'
-		ORDER BY ss.game_date DESC,cd.deck_name ";
-		$query = $this->db->query($sql, array($user_name))->result();
-		return $query;
-	}
+        $sql = "SELECT ssc.history,ssc.rank,ssc.itp,ssc.last_shown,ssc.utp,cd.deck_name,
+                    ss.game_date,
+                 c.question,
+                 c.answer,
+                    cd.deck_id
+        FROM supervised_session_cards ssc
+        INNER JOIN supervised_session ss
+        ON ss.id=ssc.supervised_session_id
+        INNER JOIN card c
+        ON c.card_id=ssc.card_id
+        INNER JOIN card_deck cd
+        ON cd.deck_id=ssc.deck_id
+        INNER JOIN users u
+        ON u.id=ss.user_id
+        WHERE u.email = ?
+        AND ssc.ans='false'
+        ORDER BY ss.game_date DESC,cd.deck_name ";
+        $query = $this->db->query($sql, array($user_name))->result();
+        return $query;
+    }
 
 	public function save_quick_review_log($data) {
 		$data['reason'] = str_replace('&gt;&gt;', '', $data['reason']);
