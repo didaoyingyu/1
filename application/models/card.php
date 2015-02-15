@@ -848,7 +848,7 @@ class card extends CI_Model {
 //		INNER JOIN card_deck d ON d.deck_id=cid.deck_id
 //
 //		WHERE cid.deck_id = $id";
-			$sql = "SELECT a.card_id, a.created_user_id, a.question, a.answer, a.answer_upload_file, a.created_date,
+			$sql = "SELECT a.card_id, a.created_user_id, a.question, a.answer, a.answer_upload_file, a.question_upload_file, a.created_date,
 	b.deck_name, b.deck_id, c.id FROM card a
 	INNER JOIN card_in_deck c ON a.card_id = c.card_id
 	INNER JOIN card_deck b ON c.deck_id = b.deck_id WHERE c.deck_id = $id";
@@ -997,11 +997,16 @@ class card extends CI_Model {
 		return $query;
 	}
 
-	public function updateCardUrlInDeck($id) {
+	public function updateCardUrlInDeck($id, $type) {
 		$this->db->trans_begin();
 		try {
 			$insert = array();
-			$insert['answer_upload_file'] = '';
+			if ($type == "q"){
+				$insert['question_upload_file'] = '';
+			}
+			else{
+				$insert['answer_upload_file'] = '';
+			}
 			$this->db->update('card', $insert, array('card_id' => $id));
 			$this->db->trans_commit();
 			return 1;
@@ -1032,6 +1037,9 @@ class card extends CI_Model {
 							if (isset($data['answer_upload_file'])) {
 								$insert['answer_upload_file'] = $data['answer_upload_file'];
 							}
+							if (isset($data['question_upload_file'])) {
+								$insert['question_upload_file'] = $data['question_upload_file'];
+							}
 							// $wherestr = " id='$id' ";
 							$this->db->update('card', $insert, array('card_id' => $id));
 						} else if ($data['action'] == 'delete') {
@@ -1046,6 +1054,9 @@ class card extends CI_Model {
 						$item['answer'] = $data['answer'];
 						if (isset($data['answer_upload_file'])) {
 							$item['answer_upload_file'] = $data['answer_upload_file'];
+						}
+						if (isset($data['question_upload_file'])) {
+							$item['question_upload_file'] = $data['question_upload_file'];
 						}
 						$this->db->insert('card', $item);
 						$card_id = $this->db->insert_id();

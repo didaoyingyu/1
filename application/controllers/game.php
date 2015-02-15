@@ -447,11 +447,12 @@ class game extends CI_Controller {
 	function upload_sound_on_new_row_in_edit() {
 		$status = "";
 		$msg = "";
-		if (empty($_POST['id'])) {
+		if (empty($_POST['id']) || empty($_POST['type'])) {
 			$status = "error";
-			$msg = "Id not passed";
+			$msg = "Id or type not passed";
 		} else {
 			$name_id = $_POST['id'];
+			$name_type = $_POST['type'];
 		}
 		$file_element_name = $name_id . "file_name_";
 		if ($status != "error") {
@@ -487,13 +488,14 @@ class game extends CI_Controller {
 	function upload_sound() {
 		$status = "";
 		$msg = "";
-		if (empty($_POST['id'])) {
+		if (empty($_POST['id']) || empty($_POST['type'])) {
 			$status = "error";
 			$msg = "Id not passed";
 		} else {
 			$name_id = $_POST['id'];
+			$name_type = $_POST['type'];
 		}
-		$file_element_name = "file_name_" . $name_id;
+		$file_element_name = $name_type . "_file_name_" . $name_id;
 		if ($status != "error") {
 			$config['upload_path'] = './sound-files/';
 			$config['allowed_types'] = 'mp3';
@@ -527,7 +529,7 @@ class game extends CI_Controller {
 	function upload_sound_from_cerate() {
 		$status = "";
 		$msg = "";
-		$file_element_name = "file_name_" + $id;
+		$file_element_name = "file_name_" . $id;
 		if ($status != "error") {
 			$config['upload_path'] = './sound-files/';
 			$config['allowed_types'] = 'mp3';
@@ -577,10 +579,11 @@ class game extends CI_Controller {
 	function deleteFileOnEdit() {
 		$file = $_POST['upload_file'];
 		$id = $_POST['id'];
+		$type = $_POST['type'];
 		$base_url = base_url();
 		$path_to_file = "./sound-files/" . $file;
 		$this->load->model('card');
-		$cards = $this->card->updateCardUrlInDeck($id);
+		$cards = $this->card->updateCardUrlInDeck($id, $type);
 		if ($cards == 1) {
 			unlink($path_to_file);
 		} else {
