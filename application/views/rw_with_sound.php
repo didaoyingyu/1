@@ -256,17 +256,22 @@
 					}
 					/*********User button clicking event handling**************/
 					function showNextQues() {
-						$("#source_div").html("");
+						$("#source_div_a").html("");
+						$("#source_div_q").html("");
 						currentCard = deckHander.getNextCard(gameMode);
 						game_results['deck'][game_count] = new Object();
 						game_results['deck'][game_count]['deck_id'] = currentCard['deck_id'];
 						game_results['deck'][game_count]['card_id'] = currentCard['card_id'];
 						game_results['deck'][game_count]['history'] = currentCard['history'];
 						var base_url = '<?php echo base_url(); ?>';
-						var answer_upload_file = currentCard['answer_upload_file']
-						$("#source_div").html("<audio loop id='player'><source id='sorce_id' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file + "'></audio>");
-						$("#sorce_id").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file'])
+						var question_upload_file = currentCard['question_upload_file'];
+						var answer_upload_file = currentCard['answer_upload_file'];
+						$("#source_div_a").html("<audio loop id='player_a'><source id='sorce_id_a' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file + "'></audio>");
+						$("#source_div_q").html("<audio loop id='player_q'><source id='sorce_id_q' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file + "'></audio>");
+						$("#sorce_id_a").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file']);
+						$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
 						flipBack();
+						document.getElementById('player_a').play();
 						var avgTime = 0;
 						if (parseInt(currentCard['play_count']) != 0) {
 							avgTime = currentCard['total_time'] / currentCard['play_count'];
@@ -287,7 +292,7 @@
 					}
 					function showAns() {
 						flip();
-						document.getElementById('player').play();
+						document.getElementById('player_a').play();
 						/*stop the time up timer and get it value*/
 						clearInterval(timerIntervalId);
 						currentCard['last_time'] = totalSeconds;
@@ -439,7 +444,9 @@
 		</script>
 	</head>
 	<body onload="startGame()">
-		<div id="source_div">
+		<div id="source_div_a">
+		</div>
+		<div id="source_div_q">
 		</div>
 		<!--	  
 		<audio controls="controls">
