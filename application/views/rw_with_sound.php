@@ -271,7 +271,7 @@
 						$("#sorce_id_a").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file']);
 						$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
 						flipBack();
-						document.getElementById('player_a').play();
+						document.getElementById('player_q').play();
 						var avgTime = 0;
 						if (parseInt(currentCard['play_count']) != 0) {
 							avgTime = currentCard['total_time'] / currentCard['play_count'];
@@ -292,6 +292,7 @@
 					}
 					function showAns() {
 						flip();
+						document.getElementById('player_q').pause();
 						document.getElementById('player_a').play();
 						/*stop the time up timer and get it value*/
 						clearInterval(timerIntervalId);
