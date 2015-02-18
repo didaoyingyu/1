@@ -212,6 +212,7 @@ class game extends CI_Controller {
 		$this->form_validation->set_rules('wrongCountForDesc', 'Wrong Count per decrement', 'required|numeric');
 		$this->form_validation->set_rules('avgExceedRankDesc', 'Average Exeed Rand Decrement', 'required|numeric');
 		$this->form_validation->set_rules('avgExceedPercentage', 'Average Exceed presentage', 'required|numeric');
+		$this->form_validation->set_rules('AudioLoopResetInterval', 'Audio Loop Reset Interval', 'required|numeric');
 		if ($this->form_validation->run() == FALSE) {
 			$rmParams = $this->card->load_rm_params();
 			$rmParamArr = array();
@@ -230,7 +231,8 @@ class game extends CI_Controller {
 				'correctCountForInc' => $this->input->post('correctCountForInc'),
 				'wrongCountForDesc' => $this->input->post('wrongCountForDesc'),
 				'avgExceedRankDesc' => $this->input->post('avgExceedRankDesc'),
-				'avgExceedPercentage' => $this->input->post('avgExceedPercentage')
+				'avgExceedPercentage' => $this->input->post('avgExceedPercentage'),
+				'AudioLoopResetInterval' => $this->input->post('AudioLoopResetInterval')
 			);
 			$this->card->save_rm_params($data);
 			$rmParams = $this->card->load_rm_params();

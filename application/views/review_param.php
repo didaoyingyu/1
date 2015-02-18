@@ -71,7 +71,8 @@
 								<input type="text" name="avgExceedRankDesc" id="avgExceedRankDesc" value="<?php echo set_value('avgExceedRankDesc', $avgExceedRankDesc); ?>"/>
 							</td>
 							<td>
-								&nbsp;
+								<p>Audio Loop Reset Interval (in ms)<span class="required" id="AudioLoopResetInterval"></span></p>
+								<input type="text" name="AudioLoopResetInterval" id="AudioLoopResetInterval" value="<?php echo set_value('AudioLoopResetInterval', $AudioLoopResetInterval); ?>"/>
 							</td>
 						</tr>
 						<tr>
