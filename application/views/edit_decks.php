@@ -168,6 +168,9 @@
 			    recorder = new Recorder(input);
 			    console.log('Recorder initialised.');
 			}
+			$('button').click(function(e){
+				e.preventDefault();
+			});
 			function startRecording(button,type) {
 			    recorder && recorder.record();
 			    button.disabled = true;
