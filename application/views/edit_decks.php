@@ -173,21 +173,23 @@
 				audio = document.createElement('audio');
 				$('button').click(function(e){
 					e.preventDefault();
-					var button_name = $(this).attr('name');
-					if (audio.paused){
-						audio.setAttribute('src', button_name);
-						audio.play();
-					}
-					else if (!audio.paused && button_name == $(audio).attr('src')){
-						audio.pause();
-						audio.currentTime = 0;
-					}
-					else if (!audio.paused && button_name != $(audio).attr('src')){
-						audio.pause();
-						setTimeout(function(){
+					if ($(this).hasClass('upload_link')){
+						var button_name = $(this).attr('name');
+						if (audio.paused){
 							audio.setAttribute('src', button_name);
 							audio.play();
-						}, 100);
+						}
+						else if (!audio.paused && button_name == $(audio).attr('src')){
+							audio.pause();
+							audio.currentTime = 0;
+						}
+						else if (!audio.paused && button_name != $(audio).attr('src')){
+							audio.pause();
+							setTimeout(function(){
+								audio.setAttribute('src', button_name);
+								audio.play();
+							}, 100);
+						}
 					}
 				});
 				audio.addEventListener('pause', button_paused);
