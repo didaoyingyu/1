@@ -346,12 +346,12 @@
 					}
 					function finishGame() {
 						/* show the deck selection screen */
+						document.getElementById('player_q').pause();
+						document.getElementById('player_a').pause();
 						game_results['card_count'] = total_cards;
 						total_cards = 0;
 						clearInterval(timerIntervalId);
 						if (confirm("Do you really want to finish this game?")) {
-							document.getElementById('player_q').pause();
-							document.getElementById('player_a').pause();
 							var base_url = '<?php echo base_url(); ?>';
 							game_results['total_time'] = total_time_for_deck;
 							total_time_for_deck = 0;
