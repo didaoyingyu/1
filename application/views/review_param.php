@@ -71,8 +71,8 @@
 								<input type="text" name="avgExceedRankDesc" id="avgExceedRankDesc" value="<?php echo set_value('avgExceedRankDesc', $avgExceedRankDesc); ?>"/>
 							</td>
 							<td>
-								<p>Audio Loop Reset Interval (in ms)<span class="required" id="AudioLoopResetInterval"></span></p>
-								<input type="text" name="AudioLoopResetInterval" id="AudioLoopResetInterval" value="<?php echo set_value('AudioLoopResetInterval', $AudioLoopResetInterval); ?>"/>
+								<p>Question Audio Loop Reset Interval (in ms)<span class="required" id="Q_AudioLoopResetInterval"></span></p>
+								<input type="text" name="Q_AudioLoopResetInterval" id="Q_AudioLoopResetInterval" value="<?php echo set_value('Q_AudioLoopResetInterval', $Q_AudioLoopResetInterval); ?>"/>
 							</td>
 						</tr>
 						<tr>
@@ -81,7 +81,8 @@
 								<input type="text" name="avgExceedPercentage" id="avgExceedPercentage" value="<?php echo set_value('avgExceedPercentage', $avgExceedPercentage); ?>"/>
 							</td>
 							<td>
-								&nbsp; 
+								<p>Answer Audio Loop Reset Interval (in ms)<span class="required" id="A_AudioLoopResetInterval"></span></p>
+								<input type="text" name="A_AudioLoopResetInterval" id="A_AudioLoopResetInterval" value="<?php echo set_value('A_AudioLoopResetInterval', $A_AudioLoopResetInterval); ?>"/>
 							</td>
 						</tr>
 					</table>

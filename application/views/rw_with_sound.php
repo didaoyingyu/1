@@ -109,8 +109,10 @@
 							avgExceedRankDesc = parseInt(reviwModeParams[i]['value']);
 						} else if (reviwModeParams[i]['param_name'] == 'avgExceedPercentage') {
 							avgExceedPercentage = parseInt(reviwModeParams[i]['value']);
-						} else if (reviwModeParams[i]['param_name'] == 'AudioLoopResetInterval') {
-							AudioLoopResetInterval = parseInt(reviwModeParams[i]['value']);
+						} else if (reviwModeParams[i]['param_name'] == 'Q_AudioLoopResetInterval') {
+							Q_AudioLoopResetInterval = parseInt(reviwModeParams[i]['value']);
+						} else if (reviwModeParams[i]['param_name'] == 'A_AudioLoopResetInterval') {
+							A_AudioLoopResetInterval = parseInt(reviwModeParams[i]['value']);
 						}
 					}
 					/*start game*/
@@ -274,11 +276,12 @@
 						$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
 						flipBack();
 						document.getElementById('player_q').play();
-						document.getElementById('player_q').addEventListener("ended",function(){
-																						setTimeout(function(){
-																							document.getElementById('player_q').play();
-																						}, AudioLoopResetInterval);
-																					});
+						loop = function(){
+											setTimeout(function(){
+												document.getElementById('player_q').play();
+											}, Q_AudioLoopResetInterval);
+										}
+						document.getElementById('player_q').addEventListener("ended",loop);
 						var avgTime = 0;
 						if (parseInt(currentCard['play_count']) != 0) {
 							avgTime = currentCard['total_time'] / currentCard['play_count'];
@@ -299,13 +302,15 @@
 					}
 					function showAns() {
 						flip();
+						loop = function(){
+											setTimeout(function(){
+												document.getElementById('player_a').play();
+											}, A_AudioLoopResetInterval);
+										}
+						document.getElementById('player_q').removeEventListener("ended", loop);
 						document.getElementById('player_q').pause();
 						document.getElementById('player_a').play();
-						document.getElementById('player_a').addEventListener("ended",function(){
-																						setTimeout(function(){
-																							document.getElementById('player_a').play();
-																						}, AudioLoopResetInterval);
-																					});
+						document.getElementById('player_a').addEventListener("ended", loop);
 						/*stop the time up timer and get it value*/
 						clearInterval(timerIntervalId);
 						currentCard['last_time'] = totalSeconds;
@@ -318,6 +323,8 @@
 						renderAnswer(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
 					}
 					function markAnswer(mark) {
+						document.getElementById('player_a').removeEventListener("ended", loop);
+						document.getElementById('player_a').pause();
 						var isValid = mark > 0;
 						deckHander.handleCardStatus(currentCard, mark, gameMode, historyLength);
 						total_cards++;
@@ -346,8 +353,10 @@
 					}
 					function finishGame() {
 						/* show the deck selection screen */
-						document.getElementById('player_q').pause();
+						document.getElementById('player_a').removeEventListener("ended", loop);
 						document.getElementById('player_a').pause();
+						document.getElementById('player_q').removeEventListener("ended", loop);
+						document.getElementById('player_q').pause();
 						game_results['card_count'] = total_cards;
 						total_cards = 0;
 						clearInterval(timerIntervalId);
