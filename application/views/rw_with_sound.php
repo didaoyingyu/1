@@ -276,11 +276,11 @@
 						$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
 						flipBack();
 						document.getElementById('player_q').play();
-						window.loop = function(){
-											setTimeout(function(){
+						window.loop = 	function(){
+											window.loop_q = setTimeout(function(){
 												document.getElementById('player_q').play();
 											}, Q_AudioLoopResetInterval);
-										}
+										};
 						document.getElementById('player_q').addEventListener("ended",loop);
 						var avgTime = 0;
 						if (parseInt(currentCard['play_count']) != 0) {
@@ -300,16 +300,19 @@
 							quick_review_log['utp'] = res;
 						}).update(preparePost(quick_review_log), "POST");
 					}
-					function showAns() {
+					function showAns() {						
 						flip();
 						document.getElementById('player_q').removeEventListener("ended", loop);
+						if(typeof loop_q !== "undefined"){
+							clearTimeout(loop_q);
+						}
 						document.getElementById('player_q').pause();
 						document.getElementById('player_a').play();
-						window.loop = function(){
-											setTimeout(function(){
+						window.loop = 	function(){
+											window.loop_a = setTimeout(function(){
 												document.getElementById('player_a').play();
 											}, A_AudioLoopResetInterval);
-										}
+										};
 						document.getElementById('player_a').addEventListener("ended", loop);
 						/*stop the time up timer and get it value*/
 						clearInterval(timerIntervalId);
@@ -324,6 +327,9 @@
 					}
 					function markAnswer(mark) {
 						document.getElementById('player_a').removeEventListener("ended", loop);
+						if(typeof loop_a !== "undefined"){
+							clearTimeout(loop_a);
+						}
 						document.getElementById('player_a').pause();
 						var isValid = mark > 0;
 						deckHander.handleCardStatus(currentCard, mark, gameMode, historyLength);
@@ -354,8 +360,14 @@
 					function finishGame() {
 						/* show the deck selection screen */
 						document.getElementById('player_a').removeEventListener("ended", loop);
+						if(typeof loop_a !== "undefined"){
+							clearTimeout(loop_a);
+						}
 						document.getElementById('player_a').pause();
 						document.getElementById('player_q').removeEventListener("ended", loop);
+						if(typeof loop_q !== "undefined"){
+							clearTimeout(loop_q);
+						}
 						document.getElementById('player_q').pause();
 						game_results['card_count'] = total_cards;
 						total_cards = 0;
