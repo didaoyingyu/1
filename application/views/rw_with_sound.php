@@ -276,7 +276,7 @@
 						$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
 						flipBack();
 						document.getElementById('player_q').play();
-						loop = function(){
+						window.loop = function(){
 											setTimeout(function(){
 												document.getElementById('player_q').play();
 											}, Q_AudioLoopResetInterval);
@@ -302,14 +302,14 @@
 					}
 					function showAns() {
 						flip();
-						loop = function(){
+						document.getElementById('player_q').removeEventListener("ended", loop);
+						document.getElementById('player_q').pause();
+						document.getElementById('player_a').play();
+						window.loop = function(){
 											setTimeout(function(){
 												document.getElementById('player_a').play();
 											}, A_AudioLoopResetInterval);
 										}
-						document.getElementById('player_q').removeEventListener("ended", loop);
-						document.getElementById('player_q').pause();
-						document.getElementById('player_a').play();
 						document.getElementById('player_a').addEventListener("ended", loop);
 						/*stop the time up timer and get it value*/
 						clearInterval(timerIntervalId);
