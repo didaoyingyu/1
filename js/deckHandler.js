@@ -68,15 +68,15 @@ var skipIndex = 0; //index of current skip sequence
 var skipCount = 0; //how many times the current skip sequence has run
 /*frequency constants based on rank*/
 var r1 = 40; //40
-var r2 = 55; //15
-var r3 = 65; //10
-var r4 = 73; //8
-var r5 = 80; //7
-var r6 = 86; //6
-var r7 = 91; //5
-var r8 = 95; //4
-var r9 = 98; //3
-var r10 = 100; //2 //rand 13+
+var r2 = 55; //15 55
+var r3 = 65; //10 65
+var r4 = 73; //8 73
+var r5 = 80; //7 80
+var r6 = 86; //6  86
+var r7 = 91; //5 91
+var r8 = 95; //4 95
+var r9 = 98; //3 98
+var r10 = 100; //2 //rand 13+ 100
 /****************************LEARN Logic Variables***************************/
 var learnFirstTimeCorrectMark = '5'; //First time shown marked right history mark
 var learnCorrectMark = 'L'; //Answered correctly history mark
@@ -181,7 +181,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 	/*i. get the psuod randoma number*/
 	var randNum;
 	do {
-		randNum = parseInt(Math.random() * 100 + 1);
+		randNum = parseInt(Math.random() * 100);
 	}
 	while (randNum == prevRandNum); //pick something different from previous
 	prevRandNum = randNum;
