@@ -212,6 +212,8 @@ class game extends CI_Controller {
 		$this->form_validation->set_rules('wrongCountForDesc', 'Wrong Count per decrement', 'required|numeric');
 		$this->form_validation->set_rules('avgExceedRankDesc', 'Average Exeed Rand Decrement', 'required|numeric');
 		$this->form_validation->set_rules('avgExceedPercentage', 'Average Exceed presentage', 'required|numeric');
+		$this->form_validation->set_rules('Q_AudioLoopResetInterval', 'Question Audio Loop Reset Interval', 'required|numeric');
+		$this->form_validation->set_rules('A_AudioLoopResetInterval', 'Answer Audio Loop Reset Interval', 'required|numeric');
 		if ($this->form_validation->run() == FALSE) {
 			$rmParams = $this->card->load_rm_params();
 			$rmParamArr = array();
@@ -230,7 +232,9 @@ class game extends CI_Controller {
 				'correctCountForInc' => $this->input->post('correctCountForInc'),
 				'wrongCountForDesc' => $this->input->post('wrongCountForDesc'),
 				'avgExceedRankDesc' => $this->input->post('avgExceedRankDesc'),
-				'avgExceedPercentage' => $this->input->post('avgExceedPercentage')
+				'avgExceedPercentage' => $this->input->post('avgExceedPercentage'),
+				'Q_AudioLoopResetInterval' => $this->input->post('Q_AudioLoopResetInterval'),
+				'A_AudioLoopResetInterval' => $this->input->post('A_AudioLoopResetInterval')
 			);
 			$this->card->save_rm_params($data);
 			$rmParams = $this->card->load_rm_params();
@@ -368,6 +372,9 @@ class game extends CI_Controller {
 				if ($cards != 1) {
 					echo "error";
 				}
+				else {
+					echo 'Cards successfully updated';
+				}
 			} else {
 				echo $errormsg;
 			}
@@ -444,90 +451,44 @@ class game extends CI_Controller {
 		return (is_array($object));
 	}
 
-	function upload_sound_on_new_row_in_edit() {
-		$status = "";
-		$msg = "";
-		if (empty($_POST['id'])) {
-			$status = "error";
-			$msg = "Id not passed";
-		} else {
-			$name_id = $_POST['id'];
-		}
-		$file_element_name = $name_id . "file_name_";
-		if ($status != "error") {
-			$config['upload_path'] = './sound-files/';
-			$config['allowed_types'] = 'mp3';
-			$config['max_size'] = 1024 * 8;
-			$config['encrypt_name'] = TRUE;
-			$this->load->library('upload', $config);
-			if (!($this->upload->do_upload($file_element_name))) {
-				$status = 'error';
-				$msg = $this->upload->display_errors('', '');
-			} else {
-				//	  $new_file_name = date("dmyhis")."_". rand( 100 , 999 )."_". rand( 100 , 999 );
-				$data = $this->upload->data();
-				// $file_id = $this->files_model->insert_file($new_file_name, $_POST['id']);
-				//   if($file_id)
-				//   {
-				$status = "success";
-				$msg = "File successfully uploaded_-_-0909//^%*(" . $data['file_name'];
-				//	}
-				//	else
-				//	 {
-//			unlink($data['full_path']);
-//			$status = "error";
-//			$msg = "Something went wrong when saving the file, please try again.";
-				//	 }
-			}
-			@unlink($_FILES[$file_element_name]);
-		}
-		echo json_encode(array('status' => $status, 'msg' => $msg));
-	}
-
 	function upload_sound() {
 		$status = "";
 		$msg = "";
-		if (empty($_POST['id'])) {
+		if (empty($_POST['id']) || empty($_POST['type']) || empty($_POST['data'])) {
+			if (empty($_POST['id'])){
+				$empty = 'id';
+			}
+			elseif (empty($_POST['type'])){
+				$empty = 'type';
+			}
+			elseif (empty($_POST['data'])){
+				$empty = 'data';
+			}
 			$status = "error";
-			$msg = "Id not passed";
+			$msg = $empty." not passed";
 		} else {
 			$name_id = $_POST['id'];
+			$name_type = $_POST['type'];
+			$data = substr($_POST['data'], strpos($_POST['data'], ",") + 1);
+			$decodedData = base64_decode($data);
+			$file_element_name = md5($name_type . "_file_name_" . $name_id).".mp3";
 		}
-		$file_element_name = "file_name_" . $name_id;
 		if ($status != "error") {
-			$config['upload_path'] = './sound-files/';
-			$config['allowed_types'] = 'mp3';
-			$config['max_size'] = 1024 * 8;
-			$config['encrypt_name'] = TRUE;
-			$this->load->library('upload', $config);
-			if (!($this->upload->do_upload($file_element_name))) {
-				$status = 'error';
-				$msg = $this->upload->display_errors('', '');
-			} else {
-				//	  $new_file_name = date("dmyhis")."_". rand( 100 , 999 )."_". rand( 100 , 999 );
-				$data = $this->upload->data();
-				// $file_id = $this->files_model->insert_file($new_file_name, $_POST['id']);
-				//   if($file_id)
-				//   {
+			$fp = fopen('./sound-files/'.$file_element_name, 'wb');
+			$fwrite = fwrite($fp, $decodedData);
+			if ($fwrite == true){
 				$status = "success";
-				$msg = "File successfully uploaded_-_-0909//^%*(" . $data['file_name'];
-				//	}
-				//	else
-				//	 {
-//			unlink($data['full_path']);
-//			$status = "error";
-//			$msg = "Something went wrong when saving the file, please try again.";
-				//	 }
+				$msg = "File successfully uploaded_-_-0909//^%*(" . $file_element_name;
 			}
-			@unlink($_FILES[$file_element_name]);
-		}
+			fclose($fp);
+			}
 		echo json_encode(array('status' => $status, 'msg' => $msg));
 	}
 
 	function upload_sound_from_cerate() {
 		$status = "";
 		$msg = "";
-		$file_element_name = "file_name_" + $id;
+		$file_element_name = "file_name_" . $id;
 		if ($status != "error") {
 			$config['upload_path'] = './sound-files/';
 			$config['allowed_types'] = 'mp3';
@@ -577,12 +538,14 @@ class game extends CI_Controller {
 	function deleteFileOnEdit() {
 		$file = $_POST['upload_file'];
 		$id = $_POST['id'];
+		$type = $_POST['type'];
 		$base_url = base_url();
 		$path_to_file = "./sound-files/" . $file;
 		$this->load->model('card');
-		$cards = $this->card->updateCardUrlInDeck($id);
+		$cards = $this->card->updateCardUrlInDeck($id, $type);
 		if ($cards == 1) {
 			unlink($path_to_file);
+			echo "File deleted successfully";
 		} else {
 			echo "error";
 		}
@@ -594,6 +557,9 @@ class game extends CI_Controller {
 		$path_to_file = "./sound-files/" . $file;
 		if (!unlink($path_to_file)) {
 			echo "error";
+		}
+		else {
+			echo "File deleted successfully";
 		}
 	}
 

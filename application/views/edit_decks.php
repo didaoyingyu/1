@@ -6,8 +6,14 @@
 		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 		<meta content="utf-8" http-equiv="encoding">
 		<link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
+		<script>
+		var config = {
+     		base: "<?php echo base_url(); ?>"
+ 		};
+ 		</script>
 		<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.js"></script>
 		<script src="<?php echo base_url() ?>js/ajaxfileupload.js"></script>
+		<script src="<?php echo base_url() ?>js/recordmp3.js"></script>
 		<script>
 			function getValuesOnTrOnQ(obj)
 			{
@@ -54,7 +60,7 @@
 							Question
 						</th>
 						<th>
-							||
+							Attachments
 						</th>
 						<th >
 							Answer
@@ -73,14 +79,38 @@
 							if ($card->answer_upload_file != '') {
 								echo 'data-answer_upload_file="' . $card->answer_upload_file . '"';
 							}
+							if ($card->question_upload_file != ''){
+								echo 'data-question_upload_file="' . $card->question_upload_file . '"';
+							}
 							?>>
 								<td>
 									<input type='text' value='<?= $card->question ?>' onChange='getValuesOnTrOnQ(this)' />
 								</td>
-								<td class='center-align'>
-									||
+								<td>
+								<?php
+									if ($card->question_upload_file != '') {
+										$url = base_url();
+										?>
+									<button onclick="startRecording(this,'q');">Record</button>
+									<button class="sound_file q" style="display:none;" name="q_file_name_<?= $card->card_id ?>" onclick="stopRecording(this, <?= $card->card_id ?>, 'q');" id="q_file_name_<?= $card->card_id ?>" disabled>Stop</button>
+									<button class="upload_link q" name="<?php echo $url . "/sound-files/" . $card->question_upload_file; ?>">Start Listening</button>
+									<div class="delete_file_button q" style="float:right;cursor:pointer" onClick="deleteFile(<?= $card->card_id ?>, this, 'q')">x</div> 
+									<span class="upload_bar q" style="display:none">Encoding...</span>
+								<!--								<a class="upload_link" style="display:none">Nothing To display</a>-->
+								<?php
+								} else {
+								?>
+									<!--								 <a href='<?php echo $url . "/sound-files/" . $card->answer_upload_file; ?>' style="display:none">See Mp3</a>-->
+									<button onclick="startRecording(this, 'q');">Record</button>
+									<button class="sound_file q" name="q_file_name_<?= $card->card_id ?>" onclick="stopRecording(this, <?= $card->card_id ?>, 'q');" id="q_file_name_<?= $card->card_id ?>" disabled>Stop</button>
+									<span class="upload_bar q" style="display:none">Encoding...</span>
+									<button class="upload_link q" style="display:none">Nothing To display</button>
+									<div class="delete_file_button q" style="float:right;cursor:pointer;display:none" onClick="deleteFileOnNewUpload(<?= $card->card_id ?>, this, 'q')">x</div> 
+								<?php
+								}
+								?>
 								</td>
-								<td >
+								<td>
 									<input type='text' value='<?= $card->answer ?>' onChange='getValuesOnTrOnA(this)' />
 								</td>
 								<td>
@@ -88,19 +118,21 @@
 									if ($card->answer_upload_file != '') {
 										$url = base_url();
 										?>
-										<a class="upload_link" href='<?php echo $url . "/sound-files/" . $card->answer_upload_file; ?>'>See Mp3</a>
-										<div class="delete_file_button" style="float:right;cursor:pointer" onClick="deleteFile(<?= $card->card_id ?>, this)">x</div> 
-										<input type='file' class="sound_file" name="file_name_<?= $card->card_id ?>" id="file_name_<?= $card->card_id ?>" onChange="uploadFiles(<?= $card->card_id ?>, this)" style="display:none" />
-								<marquee class="upload_bar" style="display:none">Uploading</marquee>
+									<button onclick="startRecording(this,'a');">Record</button>
+									<button class="sound_file a" style="display:none;" name="a_file_name_<?= $card->card_id ?>" onclick="stopRecording(this, <?= $card->card_id ?>, 'a');" id="a_file_name_<?= $card->card_id ?>" disabled>Stop</button>
+									<button class="upload_link a" name="<?php echo $url . "/sound-files/" . $card->answer_upload_file; ?>">Start Listening</button>
+									<div class="delete_file_button a" style="float:right;cursor:pointer" onClick="deleteFile(<?= $card->card_id ?>, this, 'a')">x</div> 
+									<span class="upload_bar a" style="display:none">Encoding...</span>
 								<!--								<a class="upload_link" style="display:none">Nothing To display</a>-->
 								<?php
 							} else {
 								?>
 								<!--								 <a href='<?php echo $url . "/sound-files/" . $card->answer_upload_file; ?>' style="display:none">See Mp3</a>-->
-								<input type='file' class="sound_file" name="file_name_<?= $card->card_id ?>" id="file_name_<?= $card->card_id ?>" onChange="uploadFiles(<?= $card->card_id ?>, this)" />
-								<marquee class="upload_bar" style="display:none">Uploading</marquee>
-								<a class="upload_link" style="display:none">Nothing To display</a>
-								<div class="delete_file_button" style="float:right;cursor:pointer;display:none" onClick="deleteFileOnNewUpload(<?= $card->card_id ?>, this)">x</div> 
+									<button onclick="startRecording(this, 'a');">Record</button>
+									<button class="sound_file a" name="a_file_name_<?= $card->card_id ?>" onclick="stopRecording(this, <?= $card->card_id ?>, 'a');" id="a_file_name_<?= $card->card_id ?>" disabled>Stop</button>
+									<span class="upload_bar a" style="display:none">Encoding...</span>
+									<button class="upload_link a" style="display:none">Nothing To display</button>
+									<div class="delete_file_button a" style="float:right;cursor:pointer;display:none" onClick="deleteFileOnNewUpload(<?= $card->card_id ?>, this, 'a')">x</div>
 								<?php
 							}
 							?>
@@ -122,6 +154,104 @@
 					getNewRow()">Add New Row</a>
 		</div>
 		<script>
+			var audio_context;
+			var recorder;
+
+			function startUserMedia(stream) {
+				var input = audio_context.createMediaStreamSource(stream);
+			    console.log('Media stream created.' );
+				console.log("input sample rate " +input.context.sampleRate);
+			    
+			    //input.connect(audio_context.destination);
+			    //console.log('Input connected to audio context destination.');
+			    
+			    recorder = new Recorder(input);
+			    console.log('Recorder initialised.');
+			}
+
+			$(document).ready(function(){
+				audio = document.createElement('audio');
+				$('button').click(function(e){
+					e.preventDefault();
+					if ($(this).hasClass('upload_link')){
+						var button_name = $(this).attr('name');
+						if (audio.paused){
+							audio.setAttribute('src', button_name);
+							audio.play();
+						}
+						else if (!audio.paused && button_name == $(audio).attr('src')){
+							audio.pause();
+							audio.currentTime = 0;
+						}
+						else if (!audio.paused && button_name != $(audio).attr('src')){
+							audio.pause();
+							setTimeout(function(){
+								audio.setAttribute('src', button_name);
+								audio.play();
+							}, 100);
+						}
+					}
+				});
+				audio.addEventListener('pause', button_paused);
+				audio.addEventListener('play', button_unpaused);
+				function button_paused(){
+					$('button[name ="' + $(audio).attr('src') + '"]').html('Start Listening');
+				}
+				function button_unpaused(){
+					$('button[name ="' + $(audio).attr('src') + '"]').html('Stop Listening');
+				}
+			});
+
+
+			function startRecording(button,type) {
+			    recorder && recorder.record();
+			    button.disabled = true;
+			    var tr = $(button).parents('tr').first();
+			    $(tr).find('.sound_file.'+type).show();
+			    $(tr).find('.upload_link.'+type).hide();
+			    $(tr).find('.delete_file_button.'+type).hide();
+			    button.nextElementSibling.disabled = false;
+			    console.log('Recording...');
+			}
+			function stopRecording(button, id, type) {
+			    recorder && recorder.stop();
+			    button.disabled = true;
+			    button.previousElementSibling.disabled = false;
+			    console.log('Stopped recording.');
+				var base_url = '<?php echo base_url(); ?>';
+				obj = "#"+$(button).attr("id");
+				var tr = $(obj).parents('tr').first();
+				$(tr).find('.sound_file.'+type).hide();
+				$(tr).find('.upload_bar.'+type).show();
+				$(tr).attr('data-unchanged', 'changed');
+			    createDownloadLink($(button).prop('outerHTML'), id, type);
+			    recorder.clear();
+			}
+			function createDownloadLink(obj, id, type) {
+				recorder && recorder.exportWAV(function(blob){},'',obj,id,type);
+			}
+			window.onload = function init() {
+			try {
+			    // webkit shim
+			    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+			    navigator.getUserMedia = ( navigator.getUserMedia ||
+			                    navigator.webkitGetUserMedia ||
+			                    navigator.mozGetUserMedia ||
+			                    navigator.msGetUserMedia);
+			    window.URL = window.URL || window.webkitURL;
+			    
+			    audio_context = new AudioContext;
+			    console.log('Audio context set up.');
+			    console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+			} catch (e) {
+			
+			}
+			    
+			navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+			    console.log('No live audio input: ' + e);
+			});
+			};
+
 			function incrementCount()
 			{
 				var hidden_count = $("#hidden_count").val();
@@ -148,8 +278,34 @@
 										)
 								.attr("class", "last")
 								.append($('<td>')
-										.text('||')
-										.addClass('center-align')
+										.append($("<button>")
+												.html('Record')
+												.attr('onClick', 'startRecording(this, "q");')
+												)
+										.append($("<button>")
+												.html("Stop")
+												.attr("class", "sound_file q")
+												.attr("name", "q_file_name_" + hidden_count)
+												.attr("onClick", "stopRecording(this, " + hidden_count + ", 'q');")
+												.attr("id", "q_file_name_" + hidden_count)
+												.prop('disabled', true)
+												)
+										.append($("<span>")
+												.text('Encoding...')
+												.attr('class', 'upload_bar q')
+												.attr('style', 'display:none')
+												)
+										.append($("<button>")
+												.text('Nothing To display')
+												.attr('class', 'upload_link q')
+												.attr('style', 'display:none')
+												)
+										.append($("<div>")
+												.text('x')
+												.attr('class', 'delete_file_button')
+												.attr('style', 'float:right;display:none;cursor:pointer')
+												.attr('onClick', 'deleteFileOnNewUpload(' + hidden_count + ',this, "q")')
+												)
 										)
 								.append($('<td>')
 										.append($("<input>")
@@ -158,28 +314,33 @@
 												)
 										)
 								.append($('<td>')
-										.append($("<input>")
-												.attr('type', 'file')
-												.attr('class', 'sound_file')
-												.attr('onChange', 'uploadFilesOnNewRow(' + hidden_count + ',this)')
-												.attr("name", hidden_count + "file_name_")
-												.attr("id", hidden_count + "file_name_")
+										.append($("<button>")
+												.html('Record')
+												.attr('onClick', 'startRecording(this, "a");')
 												)
-										.append($("<marquee>")
-												.text('Uploading')
-												.attr('class', 'upload_bar')
+										.append($("<button>")
+												.html("Stop")
+												.attr("class", "sound_file a")
+												.attr("name", "a_file_name_" + hidden_count)
+												.attr("onClick", "stopRecording(this, " + hidden_count + ", 'a');")
+												.attr("id", "a_file_name_" + hidden_count)
+												.prop('disabled', true)
+												)
+										.append($("<span>")
+												.text('Encoding...')
+												.attr('class', 'upload_bar a')
 												.attr('style', 'display:none')
 												)
-										.append($("<a>")
+										.append($("<button>")
 												.text('Nothing To display')
-												.attr('class', 'upload_link')
+												.attr('class', 'upload_link a')
 												.attr('style', 'display:none')
 												)
 										.append($("<div>")
 												.text('x')
 												.attr('class', 'delete_file_button')
 												.attr('style', 'float:right;display:none;cursor:pointer')
-												.attr('onClick', 'deleteFileOnNewUpload(' + hidden_count + ',this)')
+												.attr('onClick', 'deleteFileOnNewUpload(' + hidden_count + ',this, "a")')
 												)
 										).append($('<td>')
 								.append($('<button>')
@@ -192,137 +353,104 @@
 								)
 								)
 			}
-			function deleteFile(id, obj)
+			function deleteFile(id, obj, type)
 			{
 				var con = confirm("Are you sure you want to delete this?");
 				if (con)
 				{
 					var tr = $(obj).parents('tr').first();
-					var upload_file = $(tr).attr('data-answer_upload_file')
+					if (type == "a"){
+						var upload_file = $(tr).attr('data-answer_upload_file');
+					}
+					else{
+						var upload_file = $(tr).attr('data-question_upload_file');
+					}
 					var base_url = '<?php echo base_url(); ?>';
-					$.post(base_url + "/index.php/game/deleteFileOnEdit", {"upload_file": upload_file, "id": id}, function(res) {
+					$.post(base_url + "/index.php/game/deleteFileOnEdit", {"upload_file": upload_file, "id": id, "type":type}, function(res) {
 						alert(res);
 						if (res == 'File deleted successfully') {
-							location.reload();
+							$(tr).find('.upload_link.'+type).html('');
+							$(tr).find('.upload_link.'+type).hide();
+							$(tr).find('.delete_file_button.'+type).hide();
+							$(tr).find('.sound_file.'+type).show();
+							if (type == 'a'){
+								$(tr).removeAttr("data-answer_upload_file");
+							}
+							else{
+								$(tr).removeAttr("data-question_upload_file");
+							}
 						}
 					});
 				}
 			}
-			function deleteFileOnNewUpload(id, obj)
+			function deleteFileOnNewUpload(id, obj, type)
 			{
 				var con = confirm("Are you sure you want to delete this?");
 				if (con)
 				{
 					var tr = $(obj).parents('tr').first();
-					var upload_file = $(tr).attr('data-answer_upload_file')
+					if (type == "a"){
+						var upload_file = $(tr).attr('data-answer_upload_file');
+					}
+					else{
+						var upload_file = $(tr).attr('data-question_upload_file');
+					}
 					var base_url = '<?php echo base_url(); ?>';
 					$.post(base_url + "/index.php/game/deleteFile", {"upload_file": upload_file}, function(res) {
 						alert(res);
 						if (res == 'File deleted successfully') {
-							$(tr).find('.upload_link').html('');
-							$(tr).find('.upload_link').hide();
-							$(tr).find('.delete_file_button').hide();
-							$(tr).find('.sound_file').show();
-							$(tr).removeAttr("data-answer_upload_file");
+							$(tr).find('.upload_link.'+type).html('');
+							$(tr).find('.upload_link.'+type).hide();
+							$(tr).find('.delete_file_button.'+type).hide();
+							$(tr).find('.sound_file.'+type).show();
+							if (type == 'a'){
+								$(tr).removeAttr("data-answer_upload_file");
+							}
+							else{
+								$(tr).removeAttr("data-question_upload_file");
+							}
 						}
 					});
 				}
 			}
-			function uploadFilesOnNewRow(id, obj)
+			function uploadFiles(id, obj, type, data)
 			{
+				obj = "#"+$(obj).attr("id");
 				var base_url = '<?php echo base_url(); ?>';
-				$(obj).hide();
 				var tr = $(obj).parents('tr').first();
-				//  $('.upload_bar').show();
-				$(tr).find('.upload_bar').show();
-				$(tr).attr('data-unchanged', 'changed');
-				//   var now = new Date();
-				//	var date_now =new Date();
-				//	  var outStr = now.getHours()+now.getMinutes()+now.getSeconds()+date_now.getFullYear()+(date_now.getMonth()+1)+date_now.getDate()+Math.floor(Math.random()*6)+Math.floor(Math.random()*6);
-				//   var outStr=outStr+date_now.getFullYear();
-				//  alert(outStr);
-				//  alert(date_now.getFullYear());
-				//   $(obj).attr("name",outStr);
-				//   $(obj).attr("id",outStr);
-				//  alert(outStr);
-				$.ajaxFileUpload({
-					url: base_url + "/index.php/game/upload_sound_on_new_row_in_edit",
-					secureuri: false,
-					fileElementId: $(tr).find('.sound_file').attr('name'),
+				$.ajax({
+					url: config.base + "/index.php/game/upload_sound",
 					dataType: 'json',
+					type: 'POST',
 					data: {
-						'id': id
+						'id': id,
+						'type': type,
+						'data': data
 					},
 					success: function(data, status)
 					{
+
 						if (data.status != 'error')
 						{
 							var message = data.msg;
 							var array_msg = message.split("_-_-0909//^%*(");
-							$(tr).find('.upload_bar').hide();
-							$(tr).attr("data-answer_upload_file", array_msg[1]);
-							$(tr).find('.upload_link').html("See mp3");
-							$(tr).find('.upload_link').attr("href", base_url + "sound-files/" + array_msg[1]);
-							$(tr).find(".upload_link").show();
-							$(tr).find(".delete_file_button").show();
-							//   
-							//   $(tr).find(".upload_link").show();
+							$(tr).find('.upload_bar.'+type).hide();
+							if (type == 'a'){
+								$(tr).attr("data-answer_upload_file", array_msg[1]);
+							}
+							else{
+								$(tr).attr("data-question_upload_file", array_msg[1]);
+							}
+							$(tr).find('.upload_link.'+type).html("Start Listening");
+							$(tr).find('.upload_link.'+type).attr("name", base_url + "sound-files/" + array_msg[1]);
+							$(tr).find(".upload_link."+type).show();
+							$(tr).find(".delete_file_button."+type).show();
 						}
 						else
 						{
 							alert(data.msg);
-							$(tr).find('.upload_bar').hide();
-							$(tr).find('.sound_file').show();
-						}
-					}
-				});
-				return false;
-			}
-			function uploadFiles(id, obj)
-			{
-				var base_url = '<?php echo base_url(); ?>';
-				$(obj).hide();
-				var tr = $(obj).parents('tr').first();
-				//  $('.upload_bar').show();
-				$(tr).find('.upload_bar').show();
-				$(tr).attr('data-unchanged', 'changed');
-				//   var now = new Date();
-				//	var date_now =new Date();
-				//	  var outStr = now.getHours()+now.getMinutes()+now.getSeconds()+date_now.getFullYear()+(date_now.getMonth()+1)+date_now.getDate()+Math.floor(Math.random()*6)+Math.floor(Math.random()*6);
-				//   var outStr=outStr+date_now.getFullYear();
-				//  alert(outStr);
-				//  alert(date_now.getFullYear());
-				//   $(obj).attr("name",outStr);
-				//   $(obj).attr("id",outStr);
-				//  alert(outStr);
-				$.ajaxFileUpload({
-					url: base_url + "/index.php/game/upload_sound",
-					secureuri: false,
-					fileElementId: $(tr).find('.sound_file').attr('name'),
-					dataType: 'json',
-					data: {
-						'id': id
-					},
-					success: function(data, status)
-					{
-						if (data.status != 'error')
-						{
-							var message = data.msg;
-							var array_msg = message.split("_-_-0909//^%*(");
-							$(tr).find('.upload_bar').hide();
-							$(tr).attr("data-answer_upload_file", array_msg[1]);
-							$(tr).find('.upload_link').html("See mp3");
-							$(tr).find('.upload_link').attr("href", base_url + "sound-files/" + array_msg[1]);
-							$(tr).find(".upload_link").show();
-							$(tr).find(".delete_file_button").show();
-							//   
-							//   $(tr).find(".upload_link").show();
-						}
-						else
-						{
-							alert(data.msg);
-							$(tr).find('.upload_bar').hide();
-							$(tr).find('.sound_file').show();
+							$(tr).find('.upload_bar.'+type).hide();
+							$(tr).find('.sound_file.'+type).show();
 						}
 					}
 				});
@@ -358,6 +486,7 @@
 						"question", "answer",
 						"unchanged",
 						"action",
+						"question_upload_file",
 						"answer_upload_file"
 						);
 				data['items'] = getPostData("#table", fields).length > 0 ? getPostData("#table", fields) : null;
