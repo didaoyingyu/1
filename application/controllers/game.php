@@ -452,37 +452,37 @@ class game extends CI_Controller {
 	}
 
 	function upload_sound() {
-		$status = "";
-		$msg = "";
-		if (empty($_POST['id']) || empty($_POST['type']) || empty($_POST['data'])) {
-			if (empty($_POST['id'])){
-				$empty = 'id';
-			}
-			elseif (empty($_POST['type'])){
-				$empty = 'type';
-			}
-			elseif (empty($_POST['data'])){
-				$empty = 'data';
-			}
-			$status = "error";
-			$msg = $empty." not passed";
-		} else {
-			$name_id = $_POST['id'];
-			$name_type = $_POST['type'];
-			$data = substr($_POST['data'], strpos($_POST['data'], ",") + 1);
-			$decodedData = base64_decode($data);
-			$file_element_name = md5($name_type . "_file_name_" . $name_id).".mp3";
-		}
-		if ($status != "error") {
-			$fp = fopen('./sound-files/'.$file_element_name, 'wb');
-			$fwrite = fwrite($fp, $decodedData);
-			if ($fwrite == true){
-				$status = "success";
-				$msg = "File successfully uploaded_-_-0909//^%*(" . $file_element_name;
-			}
-			fclose($fp);
-			}
-		echo json_encode(array('status' => $status, 'msg' => $msg));
+		  $status = "";
+  $msg = "";
+  if (empty($_POST['id']) || empty($_POST['type']) || empty($_POST['data'])) {
+   if (empty($_POST['id'])){
+    $empty = 'id';
+   }
+   elseif (empty($_POST['type'])){
+    $empty = 'type';
+   }
+   elseif (empty($_POST['data'])){
+    $empty = 'data';
+   }
+   $status = "error";
+   $msg = $empty." not passed";
+  } else {
+   $name_id = $_POST['id'];
+   $name_type = $_POST['type'];
+   $data = substr($_POST['data'], strpos($_POST['data'], ",") + 1);
+   $decodedData = base64_decode($data);
+   $file_element_name = $name_type . '_' . $name_id . ".mp3";
+  }
+  if ($status != "error") {
+   $fp = fopen('./sound-files/'.$file_element_name, 'wb');
+   $fwrite = fwrite($fp, $decodedData);
+   if ($fwrite == true){
+    $status = "success";
+    $msg = "File successfully uploaded_-_-0909//^%*(" . $file_element_name;
+   }
+   fclose($fp);
+   }
+  echo json_encode(array('status' => $status, 'msg' => $msg));
 	}
 
 	function upload_sound_from_cerate() {
