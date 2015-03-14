@@ -91,14 +91,27 @@
 									<?= $card->current_true_prex ?>/<?= $card->prex ?>
 								</td>
 								<td>
-                                                                        +<?php  echo $card->change_plus ?>-<?= $card->change_minus ?>
+                                                                        <!-- +<?php  echo $card->change_plus ?>-<?= $card->change_minus ?>-->
                                                                         <?php
-                                                                        /*        $total_cards = $card->prex + $card->prexx + $card->new_card_count;
+                                                                                $total_cards = $card->prex + $card->prexx + $card->new_card_count;
                                                                                 $totalcard_attend = $total_cards;
                                                                                 $total_cards = $total_cards - $card->wrong_total;
                                                                                 if($total_cards < 0)
                                                                                 {
-                                                                                    echo "+0".$total_cards; 
+                                                                                	if(($card->prex + $card->prexx + $card->new_card_count) > 0)
+                                                                                	{
+                                                                                		echo "+".$card->change_plus."-".$card->change_minus;
+                                                                                	}
+                                                                                	else
+                                                                                	{	
+                                                                                    		echo "+0".$total_cards;
+                                                                                    	} 
+                                                                                    /*echo "+0".$total_cards;
+                                                                                    echo "A";
+                                                                                    echo "<br>prex ".$card->prex."<br>prexx ".$card->prexx."<br> newcard ".$card->new_card_count;
+                                                                                    echo "<br> total wrong ".$card->wrong_total;
+                                                                                    echo "<br> plush ".$card->change_plus;
+                                                                                    echo "<br> min ".$card->change_minus;*/
                                                                                 }
                                                                                 else
                                                                                 {
@@ -108,10 +121,13 @@
                                                                                         echo "+".($card->change_plus - $card->wrong_total)."-0";
                                                                                     }
                                                                                     else
-                                                                                        echo "+".$card->change_plus."-0";
+                                                                                    	if($card->new_card_count > 0)
+                                                                                        	echo "+".$card->change_plus."-0";
+                                                                                        else
+                                                                                        	echo "+".$card->change_plus."-".$card->change_minus;
                                                                                 }
                                                                         
-                                                                        */?>
+                                                                        ?>
                                                                         
 								</td>
 								<td>
