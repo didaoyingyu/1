@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Flash Card Game</title>
+		<title>Flash Card Game-Sound</title>
 		<meta name="viewport" content="width=device-width" />
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 		<link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
+		<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.js"></script>
 		<!-- Ultimate Ajax Stript info: http://www.hunlock.com/blogs/The_Ultimate_Ajax_Object -->
 		<script type="text/javascript" src="<?php echo base_url() ?>js/uajax.js"></script>
 		<!-- Card handling logic -->
@@ -229,13 +230,40 @@
 			}
 			/*********User button clicking event handling**************/
 			function showNextQues() {
+				//$("#source_div_a").html("");
+				//$("#source_div_q").html("");
+				var track = document.getElementById("quickReviewValue").value;
+				
 				currentCard = deckHandler.getNextCard(gameMode);
 				gameResults['deck'][gameCount] = new Object();
 				gameResults['deck'][gameCount]['deck_id'] = currentCard['deck_id'];
 				gameResults['deck'][gameCount]['card_id'] = currentCard['card_id'];
 				gameResults['deck'][gameCount]['history'] = currentCard['history'];
+				if(track == 1)
+				{
+				}
+				else
+				{
+					var base_url = '<?php echo base_url(); ?>';
+					var question_upload_file = currentCard['question_upload_file'];
+					var answer_upload_file = currentCard['answer_upload_file'];
+					$("#source_div_a").html("<audio id='player_a'><source id='sorce_id_a' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file + "'></audio>");
+					$("#source_div_q").html("<audio id='player_q'><source id='sorce_id_q' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file + "'></audio>");
+					$("#sorce_id_a").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file']);
+					$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
+					document.getElementById('player_q').play();
+					window.loop = 	function(){
+										window.loop_q = setTimeout(function(){
+											document.getElementById('player_q').play();
+										}, Q_AudioLoopResetInterval);
+									};
+					document.getElementById('player_q').addEventListener("ended",loop);
+						
+				}
+				
 				flipBack();
 				var avgTime = 0;
+				
 				if (parseInt(currentCard['play_count']) != 0) {
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
@@ -258,6 +286,27 @@
 			}
 			function showAns() {
 				flip();
+				var track = document.getElementById("quickReviewValue").value;
+				if(track == 1)
+				{
+				}
+				else
+				{
+					document.getElementById('player_q').removeEventListener("ended", loop);
+					if(typeof loop_q !== "undefined"){
+								clearTimeout(loop_q);
+							}
+					document.getElementById('player_q').pause();
+					document.getElementById('player_a').play();
+					window.loop = 	function(){
+										window.loop_a = setTimeout(function(){
+											document.getElementById('player_a').play();
+										}, A_AudioLoopResetInterval);
+									};
+					document.getElementById('player_a').addEventListener("ended", loop);
+					
+				}
+				
 				/*stop the time up timer and get it value*/
 				clearInterval(timerIntervalId);
 				currentCard['last_time'] = totalSeconds;
@@ -271,7 +320,20 @@
 				renderAnswer(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
 			}
 			function markAnswer(mark) {
+				var track = document.getElementById("quickReviewValue").value;
+				if(track == 1)
+				{
+				}
+				else
+				{
+					document.getElementById('player_a').removeEventListener("ended", loop);
+					if(typeof loop_a !== "undefined"){
+							clearTimeout(loop_a);
+						}
+					document.getElementById('player_a').pause();
+				}
 				var isValid = mark > 0;
+				
 				deckHandler.handleCardStatus(currentCard, mark, gameMode, historyLength);
 				totalCards++;
 				gameResults['deck'][gameCount]['ans'] = isValid;
@@ -299,6 +361,25 @@
 			}
 			function finishGame() {
 				/* show the deck selection screen */
+				var track = document.getElementById("quickReviewValue").value;
+				if(track == 1)
+				{
+				}
+				else
+				{
+				
+					document.getElementById('player_a').removeEventListener("ended", loop);
+					if(typeof loop_a !== "undefined"){
+						clearTimeout(loop_a);
+					}
+					document.getElementById('player_a').pause();
+					document.getElementById('player_q').removeEventListener("ended", loop);
+		
+					if(typeof loop_q !== "undefined"){
+						clearTimeout(loop_q);
+					}
+					document.getElementById('player_q').pause();
+				}
 				gameResults['card_count'] = totalCards;
 				totalCards = 0;
 				clearInterval(timerIntervalId);
@@ -412,6 +493,9 @@
 			}
 			/** NEW QUICK REVIEW **/
 			function quickReview() {
+			
+				document.getElementById("quickReviewValue").value = 1;
+				
 				loadGameMode('RW', false);
 				new ajaxObject("<?php echo base_url() ?>index.php/game/load_decks_id/<?php echo $this->ion_auth->user()->row()->id ?>", 
 					function(response, status) {
@@ -441,7 +525,12 @@
 			document.addEventListener('keyup', keyHandler, false);
 		</script>
 	</head>
-	<body onload="startGame()">
+	<body onload="quickReviewSound()">
+	
+	<div id="source_div_a">
+		</div>
+		<div id="source_div_q">
+		</div>
 		<div class="container">
 			<!-- Header Section -->
 			<div class="header">
@@ -530,6 +619,7 @@
 			<!-- Card Deck Selection Screen -->
 			<div class="cardDeckSelectionScreen" id="cardDeckSelectionScreen">
 			</div>
+			<input type="hidden" value="0" id="quickReviewValue">
 		</div>
 		<script type="text/javascript">
 			function ui(id) {

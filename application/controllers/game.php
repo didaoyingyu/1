@@ -1,3 +1,4 @@
+
 <?php
 
 /*
@@ -107,6 +108,13 @@ class game extends CI_Controller {
 		$this->output->set_output(json_encode($cardArray));
 	}
 
+
+	function load_cards_quick($user_id, $deck_id) {
+		$deckArray = $this->card->load_decks($userId);
+		$this->output->set_content_type('application/json');
+		$this->output->set_output(json_encode($deckArray));
+	}
+
 	/*	 * Load plus mode cards Ashvin Patel 19/jun/2014* */
 
 	function load_plus_mode_cards() {
@@ -139,6 +147,13 @@ class game extends CI_Controller {
 	function load_cards_md($user_id) {
 		$deck_id_arr = json_decode($this->input->post('data'));
 		$cardArray = $this->card->load_cards_md($user_id, $deck_id_arr);
+		$this->output->set_content_type('application/json');
+		$this->output->set_output(json_encode($cardArray));
+	}
+	/*"add ability for user to create new decks and edit personal decks"*/
+	function load_cards_md_sound($user_id) {
+		$deck_id_arr = json_decode($this->input->post('data'));
+		$cardArray = $this->card->load_cards_md_sound($user_id, $deck_id_arr);
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($cardArray));
 	}
@@ -188,6 +203,14 @@ class game extends CI_Controller {
 			foreach ($deckArray as $dec_res) {
 				$ids[] = $dec_res->deck_id;
 			}
+		$this->output->set_content_type('application/json');
+		$this->output->set_output(json_encode($ids));
+	}
+
+	/* load the decks with sound in the db */
+	/*"add ability for user to create new decks and edit personal decks"*/
+	function load_decks_sound_id($userId) {
+		$ids = $this->card->load_cards_sound($userId);
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($ids));
 	}
@@ -320,12 +343,12 @@ class game extends CI_Controller {
 
 	/*	 * */
 	/* delete decks */
-
 	function delete_decks($deckId) {
 		/* check whether the admin */
 		if (!$this->ion_auth->is_admin()) {
 			/* redirect(''); */
 		}
+	
 		if (isset($deckId)) {
 			if ($deckId >= 0) {
 				$this->db->where('deck_id', $deckId);
@@ -336,6 +359,51 @@ class game extends CI_Controller {
 		}
 		/* load all decks */
 		$allDecksArr = $this->card->load_decks(-1);
+		$allDecks = array();
+		$allDecks['allDecks'] = $allDecksArr;
+		$this->load->view('delete_decks', $allDecks);
+	}
+
+	/*"add ability for user to create new decks and edit personal decks"*/	/* check user modify card deck */
+	function user_delete_decks1($deckId,$userId) {
+		
+		/* check whether the admin */
+		if (!$this->ion_auth->is_admin()) {
+			/* redirect(''); */
+		}
+	
+		if (isset($deckId)) {
+			if ($deckId >= 0) {
+				$this->db->where('deck_id', $deckId);
+				$this->db->delete('user_card');
+				$this->db->where('deck_id', $deckId);
+				$this->db->delete('card_deck');
+			}
+		}
+		/* load all decks */
+		$allDecksArr = $this->card->load_decks_modify($userId);
+		$allDecks = array();
+		$allDecks['allDecks'] = $allDecksArr;
+		$this->load->view('delete_decks', $allDecks);
+	}
+
+	function user_delete_decks($deckId,$userId) {
+		
+		/* check whether the admin */
+		if (!$this->ion_auth->is_admin()) {
+			/* redirect(''); */
+		}
+	
+		if (isset($deckId)) {
+			if ($deckId >= 0) {
+				$this->db->where('deck_id', $deckId);
+				$this->db->delete('user_card');
+				$this->db->where('deck_id', $deckId);
+				$this->db->delete('card_deck');
+			}
+		}
+		/* load all decks */
+		$allDecksArr = $this->card->load_decks($userId);
 		$allDecks = array();
 		$allDecks['allDecks'] = $allDecksArr;
 		$this->load->view('delete_decks', $allDecks);
@@ -403,7 +471,7 @@ class game extends CI_Controller {
 					}
 				}
 			} else {
-				$errormsg = " No questions or answers in Table ";
+				$errormsg .= " No questions or answers in Table ";
 			}
 			if ($errormsg == "") {
 				$this->load->model('card');
@@ -517,6 +585,14 @@ class game extends CI_Controller {
 			@unlink($_FILES[$file_element_name]);
 		}
 		echo json_encode(array('status' => $status, 'msg' => $msg));
+	}
+
+	function quick_with_sound($userId) {
+		if (!$this->ion_auth->logged_in()) {
+			redirect('');
+		}
+
+		$this->load->view('quick_with_sound');
 	}
 
 	function rw_with_sound() {

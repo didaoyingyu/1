@@ -1,5 +1,0 @@
-Ques1||Ans1
-Ques2||Ans2
-Ques3||Ans3
-Ques4||Ans4
-Ques5||Ans5

@@ -7,7 +7,8 @@
 		<script language="javascript">
 			function deleteDeck(deckId) {
 				if (confirm("Do you want to delete this deck? \n Note: All the information related will be deleted and this action cannot be undone!")) {
-					window.location = "<?php echo base_url() ?>index.php/game/delete_decks/" + deckId;
+					var userId = document.getElementById("userId").value;	
+					window.location = "<?php echo base_url() ?>index.php/game/user_delete_decks1/"+deckId+"/"+userId;
 				}
 			}
 			function editDeck(deckId) {
@@ -22,12 +23,15 @@
 				<div class="headerText">Modify Card Deck</div>
 				<div class="logOut">
 					<?php
+					$userId = "";		
 					if ($this->ion_auth->logged_in()) {
 						$user = $this->ion_auth->user()->row();
 						$userName = $user->first_name;
+						$userId = $user->id;
 						echo "Logg out: " . anchor('game/logout', $userName);
 					}
 					?>
+					<input type="hidden" value="<?php echo $userId; ?>" id="userId">
 				</div>
 				<div class="clearFloat"></div>
 			</div>

@@ -7,9 +7,9 @@ class card extends CI_Model {
 		parent::__construct();
 	}
 
-	/* return arry of card decks in the database */
+	/* return arry of card decks in the database   "add ability for user to create new decks and edit personal decks" */
 
-	function load_decks($userId) {
+	function load_decks1($userId) {
 		if ($userId == -1) {
 			$this->db->select('*');
 			$this->db->from('card_deck');
@@ -53,6 +53,229 @@ class card extends CI_Model {
 		}
 		$query = $this->db->get(); //echo $this->db->last_query();
 		return $query->result();
+	}
+
+	/*"add ability for user to create new decks and edit personal decks"*/
+	function load_decks_sound($userId) {
+		if ($userId == -1) {
+			$this->db->select('*');
+			$this->db->from('card_deck');
+			$query = $this->db->get();
+			return $query->result();
+		}
+		/* get the admin users */
+		/* $this->db->select('*');
+		  $this->db->from('users_groups');
+		  $this->db->where('group_id','1');
+		  $adminUsersQry = $this->db->get();
+		  $adminUsers = $adminUsersQry->result();
+		 */
+		$this->db->select('*');
+		$this->db->from('users_groups');
+		$this->db->where('user_id', $userId);
+		$adminUsersQry = $this->db->get();
+		$adminUsers = $adminUsersQry->result();
+		//Getting decks by assigned groups
+		$deck_id_array = $this->get_assigned_groups_decks_by_user($userId);
+		$deck_id_array_by_user = $this->get_assigned_decks_by_user($userId);
+		if (!is_array($deck_id_array_by_user)) {
+			$deck_id_array_by_user = array();
+		}
+		if (!is_array($deck_id_array)) {
+			$deck_id_array = array();
+		}
+		//Merge array
+		array_merge($deck_id_array, $deck_id_array_by_user);
+		// print_r($adminUsers); die;
+		/* get the cards from admin user and the logged user */
+		$this->db->select('*');
+		$this->db->from('card_deck');
+		$this->db->where('created_user_id', $userId);
+		if (!empty($deck_id_array)) {
+			$this->db->or_where_in('deck_id', $deck_id_array);
+		}
+		foreach ($adminUsers as $user) {
+			//Commented on 12-06-2014 Because it is showing every deck to each user.
+			$this->db->or_where('created_user_id', $user->user_id);
+		}
+		$query = $this->db->get(); //echo $this->db->last_query();
+		return $query->result();
+	}
+
+	
+	function load_decks($userId) {
+		
+		if ($userId == -1) {
+			$this->db->select('*');
+			$this->db->from('card_deck');
+			$query = $this->db->get();
+			return $query->result();
+		}
+		
+		if($userId == 1)
+		{
+			$this->db->select('*');
+			$this->db->from('users_groups');
+		//	$this->db->where('user_id', $userId);
+			$adminUsersQry = $this->db->get();
+			$adminUsers = $adminUsersQry->result();
+			//Getting decks by assigned groups
+			$deck_id_array = $this->get_assigned_groups_decks_by_user($userId);
+			$deck_id_array_by_user = $this->get_assigned_decks_by_user($userId);
+			if (!is_array($deck_id_array_by_user)) {
+				$deck_id_array_by_user = array();
+			}
+			if (!is_array($deck_id_array)) {
+				$deck_id_array = array();
+			}
+			//Merge array
+			array_merge($deck_id_array, $deck_id_array_by_user);
+			// print_r($adminUsers); die;
+			/* get the cards from admin user and the logged user */
+			$this->db->select('*');
+			$this->db->from('card_deck');
+			//$this->db->where('created_user_id', $userId);
+			if (!empty($deck_id_array)) {
+				$this->db->or_where_in('deck_id', $deck_id_array);
+			}
+			foreach ($adminUsers as $user) {
+				//Commented on 12-06-2014 Because it is showing every deck to each user.
+				$this->db->or_where('created_user_id', $user->user_id);
+			}
+			$query = $this->db->get(); //echo $this->db->last_query();
+			return $query->result();
+		}
+		else
+		{
+			$this->db->select('*');
+			$this->db->from('users_groups');
+			$this->db->where('user_id', $userId);
+			$adminUsersQry = $this->db->get();
+			$adminUsers = $adminUsersQry->result();
+			//Getting decks by assigned groups
+			$deck_id_array = $this->get_assigned_groups_decks_by_user($userId);
+			$deck_id_array_by_user = $this->get_assigned_decks_by_user($userId);
+			if (!is_array($deck_id_array_by_user)) {
+				$deck_id_array_by_user = array();
+			}
+			if (!is_array($deck_id_array)) {
+				$deck_id_array = array();
+			}
+			//Merge array
+			array_merge($deck_id_array, $deck_id_array_by_user);
+			// print_r($adminUsers); die;
+			/* get the cards from admin user and the logged user */
+			$this->db->select('*');
+			$this->db->from('card_deck');
+			$this->db->where('created_user_id', $userId);
+			//print_r($deck_id_array);
+			if (!empty($deck_id_array)) {
+				$this->db->or_where_in('deck_id', $deck_id_array);
+			}
+			foreach ($adminUsers as $user) {
+				//Commented on 12-06-2014 Because it is showing every deck to each user.
+				$this->db->or_where('created_user_id', $user->user_id);
+			}
+			$query = $this->db->get(); //echo $this->db->last_query();
+			return $query->result();
+		}
+		/* get the admin users */
+		/* $this->db->select('*');
+		  $this->db->from('users_groups');
+		  $this->db->where('group_id','1');
+		  $adminUsersQry = $this->db->get();
+		  $adminUsers = $adminUsersQry->result();
+		 */
+		
+	}
+
+	/* load user deck   "add ability for user to create new decks and edit personal decks"*/
+	function load_decks_modify($userId) {
+		
+		
+
+		if ($userId == -1) {
+			$this->db->select('*');
+			$this->db->from('card_deck');
+			$query = $this->db->get();
+			return $query->result();
+		}
+		
+		if($userId == 1)
+		{
+			$this->db->select('*');
+			$this->db->from('users_groups');
+		//	$this->db->where('user_id', $userId);
+			$adminUsersQry = $this->db->get();
+			$adminUsers = $adminUsersQry->result();
+			//Getting decks by assigned groups
+			$deck_id_array = $this->get_assigned_groups_decks_by_user($userId);
+			$deck_id_array_by_user = $this->get_assigned_decks_by_user($userId);
+			if (!is_array($deck_id_array_by_user)) {
+				$deck_id_array_by_user = array();
+			}
+			if (!is_array($deck_id_array)) {
+				$deck_id_array = array();
+			}
+			//Merge array
+			array_merge($deck_id_array, $deck_id_array_by_user);
+			// print_r($adminUsers); die;
+			/* get the cards from admin user and the logged user */
+			$this->db->select('*');
+			$this->db->from('card_deck');
+			//$this->db->where('created_user_id', $userId);
+			if (!empty($deck_id_array)) {
+				$this->db->or_where_in('deck_id', $deck_id_array);
+			}
+			foreach ($adminUsers as $user) {
+				//Commented on 12-06-2014 Because it is showing every deck to each user.
+				$this->db->or_where('created_user_id', $user->user_id);
+			}
+			$query = $this->db->get(); //echo $this->db->last_query();
+			return $query->result();
+		}
+		else
+		{
+			$this->db->select('*');
+			$this->db->from('users_groups');
+			$this->db->where('user_id', $userId);
+			$adminUsersQry = $this->db->get();
+			$adminUsers = $adminUsersQry->result();
+			//Getting decks by assigned groups
+			$deck_id_array = $this->get_assigned_groups_decks_by_user($userId);
+			$deck_id_array_by_user = $this->get_assigned_decks_by_user($userId);
+			if (!is_array($deck_id_array_by_user)) {
+				$deck_id_array_by_user = array();
+			}
+			if (!is_array($deck_id_array)) {
+				$deck_id_array = array();
+			}
+			//Merge array
+			array_merge($deck_id_array, $deck_id_array_by_user);
+			// print_r($adminUsers); die;
+			/* get the cards from admin user and the logged user */
+			$this->db->select('*');
+			$this->db->from('card_deck');
+			$this->db->where('created_user_id', $userId);
+			//print_r($deck_id_array);
+			if (!empty($deck_id_array)) {
+				//$this->db->or_where_in('deck_id', $deck_id_array);
+			}
+			foreach ($adminUsers as $user) {
+				//Commented on 12-06-2014 Because it is showing every deck to each user.
+				//$this->db->or_where('created_user_id', $user->user_id);
+			}
+			$query = $this->db->get(); //echo $this->db->last_query();
+			return $query->result();
+		}
+		/* get the admin users */
+		/* $this->db->select('*');
+		  $this->db->from('users_groups');
+		  $this->db->where('group_id','1');
+		  $adminUsersQry = $this->db->get();
+		  $adminUsers = $adminUsersQry->result();
+		 */
+		
 	}
 
 	/*	 * Load Decks for plus mode parameters Ashvin Patel 19/jun/2014* */
@@ -259,6 +482,48 @@ class card extends CI_Model {
 		//echo $str = $this->db->last_query();
 		// die();
 		return $query->result();
+	}
+
+	/*"add ability for user to create new decks and edit personal decks"*/
+	function load_cards_sound($user_id) {
+		if ($deck_id == -1) {
+			$this->db->select('*,cd.deck_name');
+			$this->db->from('user_card');
+			$this->db->join('card', ' user_card.card_id = card.card_id');
+			$this->db->join('card_deck cd', 'cd.deck_id = user_card.deck_id'); /* show DONE msg */
+			$this->db->where('user_card.user_id', $user_id); /* show DONE msg */
+			$query = $this->db->get(); /* Show DONE msg */
+			return $query->result();
+		}
+		/* check wheather the user previouly plid the selection */
+		$this->db->select('*');
+		$this->db->from('user_card');
+		$this->db->join('card', ' user_card.card_id = card.card_id');
+		$this->db->where('user_card.user_id', $user_id);
+		if ($this->db->count_all_results() <= 0) {
+			/* first time for this card set */
+			$this->db->select('*');
+			$this->db->from('card_in_deck');
+			$query = $this->db->get();
+			$cardInDeck = $query->result();
+			/* add card to the user card table */
+			foreach ($cardInDeck as $card) {
+				$this->db->set('user_id', $user_id);
+				$this->db->set('card_id', $card->card_id);
+				$this->db->insert('user_card');
+			}
+		}
+		/* send card deck to the user */
+		$this->db->select('*');
+		$this->db->from('user_card');
+		$this->db->join('card', ' user_card.card_id = card.card_id');
+		$this->db->where('user_card.user_id', $user_id);
+		$query = $this->db->get();
+		$query->result();
+		//echo $str = $this->db->last_query();
+		// die();
+		return $query->result();
+		
 	}
 
 	/*	 * Load plus mode cards Ashvin Patel 19/jun/2014* */
@@ -738,6 +1003,20 @@ class card extends CI_Model {
 		} else {
 			return NULL;
 		}
+	}
+
+		/*"add ability for user to create new decks and edit personal decks"*/
+	function load_cards_md_sound($user_id, $deck_id_arr) {
+			
+		$this->db->select('*');
+		$this->db->from('user_card');
+		$this->db->join('card', ' user_card.card_id = card.card_id');
+		$this->db->where('user_card.user_id', $user_id);
+		//$this->db->where('card.question_upload_file != ', 'NULL' );
+		$query = $this->db->get();
+		
+		return $query->result();
+			
 	}
 
 	/* save a card infomation user did some action on it */

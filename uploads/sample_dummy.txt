@@ -1,5 +1,0 @@
-dummy_question 1||dummy_answer 1
-dummy_question 2||dummy_answer 2
-dummy_question 3||dummy_answer 3
-dummy_question 4||dummy_answer 4
-				
