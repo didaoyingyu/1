@@ -74,6 +74,7 @@
 						<?php
 						$i = 1;
 						foreach ($allCards['complete_cards'] as $card) {
+
 							?>
 							<tr data-id='<?= $card->card_id ?>' data-unchanged='unchanged' data-question='<?= $card->question ?>' data-answer='<?= $card->answer ?>' data-action='active' <?php
 							if ($card->answer_upload_file != '') {
@@ -84,7 +85,7 @@
 							}
 							?>>
 								<td>
-									<input type='text' value='<?= $card->question ?>' onChange='getValuesOnTrOnQ(this)' />
+									<input type='text' value='<?= htmlspecialchars($card->question,ENT_QUOTES) ?>' onChange='getValuesOnTrOnQ(this)' />
 								</td>
 								<td>
 								<?php
@@ -111,7 +112,7 @@
 								?>
 								</td>
 								<td>
-									<input type='text' value='<?= $card->answer ?>' onChange='getValuesOnTrOnA(this)' />
+									<input type='text' value='<?=  htmlspecialchars($card->answer,ENT_QUOTES)  ?> ' onChange='getValuesOnTrOnA(this)' />
 								</td>
 								<td>
 									<?php

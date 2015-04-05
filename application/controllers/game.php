@@ -1,6 +1,4 @@
-
 <?php
-
 /*
   This is the main controler of the Game
   The flow of the game is as follows
@@ -13,9 +11,9 @@
   7. game data/summary view
  */
 
-class game extends CI_Controller {
+class game extends CI_Controller{
 
-	function __construct() {
+	function __construct(){
 		parent::__construct();
 		$this->load->model('card');
 		$this->load->helper('language');
@@ -109,6 +107,13 @@ class game extends CI_Controller {
 	}
 
 
+	function load_cards_re($user_id, $deck_id) {
+		$cardArray = $this->card->load_cards_re($user_id, $deck_id);
+		$this->output->set_content_type('application/json');
+		$this->output->set_output(json_encode($cardArray));
+	}
+
+
 	function load_cards_quick($user_id, $deck_id) {
 		$deckArray = $this->card->load_decks($userId);
 		$this->output->set_content_type('application/json');
@@ -147,6 +152,12 @@ class game extends CI_Controller {
 	function load_cards_md($user_id) {
 		$deck_id_arr = json_decode($this->input->post('data'));
 		$cardArray = $this->card->load_cards_md($user_id, $deck_id_arr);
+		$this->output->set_content_type('application/json');
+		$this->output->set_output(json_encode($cardArray));
+	}
+	function load_cards_md_re($user_id) {
+		$deck_id_arr = json_decode($this->input->post('data'));
+		$cardArray = $this->card->load_cards_md_re($user_id, $deck_id_arr);
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($cardArray));
 	}
@@ -197,7 +208,7 @@ class game extends CI_Controller {
 	/*	 * * */
 	/* load the decks in the db */
 
-	function load_decks_id($userId) {
+	function load_decks_id($userId){
 		$deckArray = $this->card->load_decks($userId);
 		$this->output->set_content_type('application/json');
 			foreach ($deckArray as $dec_res) {
@@ -222,6 +233,13 @@ class game extends CI_Controller {
 		$data = json_decode($this->input->post('data'), TRUE);
 		$this->output->set_content_type('text/html');
 		$this->card->save_user_card($data['record_id'], $data['history'], $data['test_history'], $data['rank'], $data['last_time'], $data['last_shown'], $data['wrong_twice_or_more_count'], $data['last_date']);
+	}
+
+	function save_user_card_re() {
+		/* Old Buggy Code - $data = json_decode($this->input->post('data'),TRUE,512); */
+		$data = json_decode($this->input->post('data'), TRUE);
+		$this->output->set_content_type('text/html');
+		$this->card->save_user_card_re($data['record_id'], $data['history'], $data['test_history'], $data['rank'], $data['last_time'], $data['last_shown'], $data['wrong_twice_or_more_count'], $data['last_date']);
 	}
 
 	/* edit review mode parameters */
@@ -595,11 +613,26 @@ class game extends CI_Controller {
 		$this->load->view('quick_with_sound');
 	}
 
+	function quick_reverse_with_sound($userId) {
+		if (!$this->ion_auth->logged_in()) {
+			redirect('');
+		}
+
+		$this->load->view('quick_reverse_with_sound');
+	}
+
 	function rw_with_sound() {
 		if (!$this->ion_auth->logged_in()) {
 			redirect('');
 		}
 		$this->load->view('rw_with_sound');
+	}
+
+	function reverse_with_sound() {
+		if (!$this->ion_auth->logged_in()) {
+			redirect('');
+		}
+		$this->load->view('reverse_with_sound');
 	}
 
 	/*	 * Load Supervised plus test mode Ashvin Patel 19/jun/2014* */

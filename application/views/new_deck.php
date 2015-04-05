@@ -23,7 +23,7 @@
 			</div>
 			<div class="genaricFormHolder">
 				<?php echo $error; ?>
-				<?php echo form_open_multipart('deck/new_deck'); ?>
+				<?php echo form_open_multipart('deck/new_deck_upload'); ?>
 				<p>Deck Name</p>
 				<input type="text" name="deck_name"/>
 				<p><input type="file" name="userfile" size="20" /></p>

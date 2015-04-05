@@ -128,7 +128,7 @@
 				gameResults['wrong_total'] = new Object();
 				gameResults['deck'] = new Object();
 				gameResults['card_count'] = new Object();
-				new ajaxObject("<?php echo base_url() ?>index.php/game/load_cards/" + userId + "/" + deckIdIn, 
+				new ajaxObject("<?php echo base_url() ?>index.php/game/load_cards_re/" + userId + "/" + deckIdIn, 
 					function(data, status) {
 						if (status == 200) {
 							var cardArray = JSON.parse(data);
@@ -156,7 +156,7 @@
 //				console.log("\tRecord ID:" + card['record_id'] + ", User Id:" + card['user_id']);
 //				console.log("\tQuestion:" + card['question']);
 //				console.log("\tCard Rank: " + card['rank']);
-				new ajaxObject("<?php echo base_url() ?>index.php/game/save_user_card", 
+				new ajaxObject("<?php echo base_url() ?>index.php/game/save_user_card_re", 
 					function(response, status) {
 						if (status != 200) {
 							alert("Communication Error! Please check Your Network Connection!\nStatus Code: " + status);
@@ -165,7 +165,7 @@
 			}
 			/*********Load Game multiple deck mode*********************/
 			function loadGameMd(deckIds) {
-				new ajaxObject("<?php echo base_url() ?>index.php/game/load_cards_md/" + userId, 
+				new ajaxObject("<?php echo base_url() ?>index.php/game/load_cards_md_re/" + userId, 
 					function(data, status) {
 						if (status == 200) {
 							var cardArray = JSON.parse(data);
@@ -247,10 +247,10 @@
 					var base_url = '<?php echo base_url(); ?>';
 					var question_upload_file = currentCard['question_upload_file'];
 					var answer_upload_file = currentCard['answer_upload_file'];
-					$("#source_div_a").html("<audio id='player_a'><source id='sorce_id_a' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file + "'></audio>");
-					$("#source_div_q").html("<audio id='player_q'><source id='sorce_id_q' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file + "'></audio>");
-					$("#sorce_id_a").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file']);
-					$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
+					$("#source_div_q").html("<audio id='player_a'><source id='sorce_id_a' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file + "'></audio>");
+					$("#source_div_a").html("<audio id='player_q'><source id='sorce_id_q' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file + "'></audio>");
+					$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file']);
+					$("#sorce_id_a").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
 					document.getElementById('player_q').play();
 					window.loop = 	function(){
 										window.loop_q = setTimeout(function(){
@@ -267,7 +267,7 @@
 				if (parseInt(currentCard['play_count']) != 0) {
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
-				renderQuestion(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question']);
+				renderQuestion(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['answer']);
 				quickReviewLog['before_history'] = gameResults['deck'][gameCount]['history'];
 				quickReviewLog['reason'] = extraInfo.innerHTML;
 				quickReviewLog['before_rank'] = currentCard['rank'];
@@ -275,7 +275,7 @@
 				quickReviewLog['answer'] = currentCard['answer'];
 				quickReviewLog['deck_id'] = currentCard['deck_id'];
 				quickReviewLog['card_id'] = currentCard['card_id'];
-				new ajaxObject("<?php echo base_url() ?>index.php/auth/get_log_utp", function(res, status) {
+				new ajaxObject("<?php echo base_url() ?>index.php/auth/get_log_utp_re", function(res, status) {
 					if (status != 200 || res == "0") {
 						alert('UTP retrieval failed!\n' + res);
 					} else {
@@ -291,7 +291,7 @@
 				{
 				}
 				else
-				{
+				{/*
 					document.getElementById('player_q').removeEventListener("ended", loop);
 					if(typeof loop_q !== "undefined"){
 								clearTimeout(loop_q);
@@ -304,7 +304,7 @@
 										}, A_AudioLoopResetInterval);
 									};
 					document.getElementById('player_a').addEventListener("ended", loop);
-					
+					*/
 				}
 				
 				/*stop the time up timer and get it value*/
@@ -317,7 +317,7 @@
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
 				totalSeconds = 0;
-				renderAnswer(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
+				renderAnswer(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['question']);
 			}
 			function markAnswer(mark) {
 				var track = document.getElementById("quickReviewValue").value;
@@ -325,12 +325,13 @@
 				{
 				}
 				else
-				{
+				{/*
 					document.getElementById('player_a').removeEventListener("ended", loop);
 					if(typeof loop_a !== "undefined"){
 							clearTimeout(loop_a);
 						}
 					document.getElementById('player_a').pause();
+					*/
 				}
 				var isValid = mark > 0;
 				
@@ -367,7 +368,7 @@
 				}
 				else
 				{
-				
+				/*
 					document.getElementById('player_a').removeEventListener("ended", loop);
 					if(typeof loop_a !== "undefined"){
 						clearTimeout(loop_a);
@@ -379,6 +380,8 @@
 						clearTimeout(loop_q);
 					}
 					document.getElementById('player_q').pause();
+					
+					*/
 				}
 				gameResults['card_count'] = totalCards;
 				totalCards = 0;
@@ -567,7 +570,7 @@
 							Content
 						</div>
 						<div class="fcardFooterQues">
-							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="showAns()"><p>Answer</p></div></div></div>
+							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="showAns()"><p>Question</p></div></div></div>
 							<div class="buttonHolder"><div class="buttonInner"><div class="button" onclick="finishGame()"><p>Finish</p></div></div></div>
 							<div class="clearFloat"></div>
 						</div>
@@ -597,18 +600,21 @@
 			<!--QuickView not redirect same page-->
 			<!-- Game mode and extra functions selector Screen -->
 			<div class="gameModeScreen" id="gameModeScreen">
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReview();"><p style="color:#000">Quick Review</p></div></div></div> 
+				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReview();"><p class="black">Quick Review</p></div></div></div> 
 				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:loadGameMode('RW', true);"><p style="color:#fff">Review Mode</p></div></div></div> 
+				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:loadGameMode('RW', true);"><p>Review Mode</p></div></div></div> 
 				<br/><br/><br/>
 				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p>Quick Review With Sound</p></a></div></div>
 				<br/><br/><br/>
 				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/rw_with_sound" style="text-decoration:none;color:#fff"><p>Review Mode With Sound</p></a></div></div> 
+				<!-- <div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReviewSound();"><p>Quick Review With Sound</p></div></div></div>  -->
 				<br/><br/><br/>
 				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_reverse_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p>Quick Reverse With Sound</p></a></div></div>
 				<br/><br/><br/>
+				
 				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/reverse_with_sound" style="text-decoration:none;color:#fff"><p>Reverse Mode With sound</p></a></div></div> 
 				<br/><br/><br/>
+
 				<!--create new deck-->
 				<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='newDeck()'><p>Create New Deck</p></div></div></div>
 				<br/><br/><br/>

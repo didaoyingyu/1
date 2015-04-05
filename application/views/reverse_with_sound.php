@@ -168,10 +168,11 @@
 						game_results['deck'] = new Object();
 						game_results['card_count'] = new Object();
 						deckId = deckIdIn;
-						var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards/" + userId + "/" + deckId;
+						var loadGameAjaxPath = "<?php echo base_url() ?>index.php/game/load_cards_re/" + userId + "/" + deckId;
 						var myRequest = new ajaxObject(loadGameAjaxPath, loadGameHandler, loadGameResponse, loadGameResponseStatus);
 						myRequest.update();
 					}
+					
 					function loadGameHandler(loadGameResponse, loadGameResponseStatus) {
 						if (loadGameResponseStatus == 200) {
 							var responseCleaned = loadGameResponse.split(']')[0] + ']';
@@ -181,18 +182,20 @@
 								cardArray[i]['correct'] = 0;
 								cardArray[i]['wrong'] = 0;
 							}
-							console.log(cardArray);
 							deckHander.setDeck(cardArray);
 							document.getElementById("gameScreen").style.display = "block";
 							document.getElementById("gameModeScreen").style.display = "none";
 							document.getElementById("cardDeckSelectionScreen").style.display = "none";
+							
 							showNextQues();
+							
+							
 						} else {
 							alert("Communication Error! Please check Your Network Connection!\nStatus Code: " + loadGameResponseStatus);
 						}
 					}
 					function saveCard(card) {
-						var saveCardAjaxPath = "<?php echo base_url() ?>index.php/game/save_user_card";
+						var saveCardAjaxPath = "<?php echo base_url() ?>index.php/game/save_user_card_re";
 						var myRequest = new ajaxObject(saveCardAjaxPath, saveCardHandler, saveCardResponse, saveCardResponseStatus);
 						/*set last shown time*/
 						var time = new Date();
@@ -264,16 +267,17 @@
 						$("#source_div_q").html("");
 						currentCard = deckHander.getNextCard(gameMode);
 						game_results['deck'][game_count] = new Object();
+						//console.log(game_results['deck'][game_count]['deck_id'] = currentCard['deck_id']);
 						game_results['deck'][game_count]['deck_id'] = currentCard['deck_id'];
 						game_results['deck'][game_count]['card_id'] = currentCard['card_id'];
 						game_results['deck'][game_count]['history'] = currentCard['history'];
 						var base_url = '<?php echo base_url(); ?>';
 						var question_upload_file = currentCard['question_upload_file'];
 						var answer_upload_file = currentCard['answer_upload_file'];
-						$("#source_div_a").html("<audio id='player_a'><source id='sorce_id_a' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file + "'></audio>");
-						$("#source_div_q").html("<audio id='player_q'><source id='sorce_id_q' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file + "'></audio>");
-						$("#sorce_id_a").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file']);
-						$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
+						$("#source_div_q").html("<audio id='player_a'><source id='sorce_id_a' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file + "'></audio>");
+						$("#source_div_a").html("<audio id='player_q'><source id='sorce_id_q' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file + "'></audio>");
+						$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file']);
+						$("#sorce_id_a").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
 						flipBack();
 						document.getElementById('player_q').play();
 						window.loop = 	function(){
@@ -286,7 +290,7 @@
 						if (parseInt(currentCard['play_count']) != 0) {
 							avgTime = currentCard['total_time'] / currentCard['play_count'];
 						}
-						renderQuestion(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question']);
+						renderQuestion(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['answer']);
 						quick_review_log['before_history'] = game_results['deck'][game_count]['history'];
 						quick_review_log['reason'] = extraInfo.innerHTML;
 						quick_review_log['before_rank'] = currentCard['rank'];
@@ -296,12 +300,13 @@
 						quick_review_log['card_id'] = currentCard['card_id'];
 						quick_review_log['utp'] = currentCard['utp'];
 						quick_review_log['utp'] = '';
-						new ajaxObject("<?php echo base_url() ?>index.php/auth/get_log_utp", function(res) {
+						new ajaxObject("<?php echo base_url() ?>index.php/auth/get_log_utp_re", function(res) {
 							quick_review_log['utp'] = res;
 						}).update(preparePost(quick_review_log), "POST");
 					}
 					function showAns() {						
 						flip();
+						
 						document.getElementById('player_q').removeEventListener("ended", loop);
 						if(typeof loop_q !== "undefined"){
 							clearTimeout(loop_q);
@@ -315,6 +320,7 @@
 										};
 						document.getElementById('player_a').addEventListener("ended", loop);
 						/*stop the time up timer and get it value*/
+		
 						clearInterval(timerIntervalId);
 						currentCard['last_time'] = totalSeconds;
 						var timeTakenForQues = getFormatedTime(totalSeconds);
@@ -323,18 +329,16 @@
 							avgTime = currentCard['total_time'] / currentCard['play_count'];
 						}
 						totalSeconds = 0;
-						renderAnswer(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
+						renderAnswer(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['question']);
 					}
 					function markAnswer(mark) {
-					/*	document.getElementById('player_a').removeEventListener("ended", loop);
-						if(typeof loop_a !== "undefined"){
-							clearTimeout(loop_a);
-						}
-						document.getElementById('player_a').pause();
-						*/
+					//	document.getElementById('player_a').removeEventListener("ended", loop);
+					//	if(typeof loop_a !== "undefined"){
+					//		clearTimeout(loop_a);
+				//		}
+					//	document.getElementById('player_a').pause();
 						var isValid = mark > 0;
 						console.log("isValid "+isValid+ " mark="+mark);
-						
 						deckHander.handleCardStatus(currentCard, mark, gameMode, historyLength);
 						total_cards++;
 						game_results['deck'][game_count]['ans'] = isValid;
@@ -344,7 +348,7 @@
 						quick_review_log['ans'] = isValid;
 						quick_review_log['after_history'] = currentCard['history'];
 						quick_review_log['after_rank'] = currentCard['rank'];
-						new ajaxObject("<?php echo base_url() ?>index.php/auth/save_quick_review_log", 
+						new ajaxObject("<?php echo base_url() ?>index.php/auth/save_quick_review_log_re", 
 							function(res, status) {
 								if (status != 200) {
 									alert('Quick review log save failed!\n' + res);
@@ -362,17 +366,16 @@
 					}
 					function finishGame() {
 						/* show the deck selection screen */
-						/*document.getElementById('player_a').removeEventListener("ended", loop);
-						if(typeof loop_a !== "undefined"){
-							clearTimeout(loop_a);
-						}
-						document.getElementById('player_a').pause();
-						document.getElementById('player_q').removeEventListener("ended", loop);
-						if(typeof loop_q !== "undefined"){
-							clearTimeout(loop_q);
-						}
-						document.getElementById('player_q').pause();
-						*/
+					//	document.getElementById('player_a').removeEventListener("ended", loop);
+					//	if(typeof loop_a !== "undefined"){
+					//		clearTimeout(loop_a);
+					//	}
+					//	document.getElementById('player_a').pause();
+					//	document.getElementById('player_q').removeEventListener("ended", loop);
+					//	if(typeof loop_q !== "undefined"){
+					//		clearTimeout(loop_q);
+					//	}
+					//	document.getElementById('player_q').pause();
 						game_results['card_count'] = total_cards;
 						total_cards = 0;
 						clearInterval(timerIntervalId);
@@ -485,8 +488,10 @@
 	</head>
 	<body onload="startGame()">
 		<div id="source_div_a">
+			<audio id='player_a'><source id='sorce_id_a' type='audio/mpeg' src=''></audio>
 		</div>
 		<div id="source_div_q">
+			<audio id='player_q'><source id='sorce_id_q' type='audio/mpeg' src=''></audio>
 		</div>
 		<!--	  
 		<audio controls="controls">
@@ -516,6 +521,7 @@
 			<!-- Flash card section -->
 			<div class="fcardHodler" id="gameScreen">
 				<div class="fcardFlipper">
+					
 					<!-- Question Card -->
 					<div class="fcardQues" id="fcardQues">
 						<div class="fcardHeadder">
@@ -530,7 +536,7 @@
 							Content
 						</div>
 						<div class="fcardFooterQues">
-							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="showAns()"><p>Answer</p></div></div></div>
+							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="showAns()"><p>Question</p></div></div></div>
 							<div class="buttonHolder"><div class="buttonInner"><div class="button" onclick="finishGame()"><p>Finish</p></div></div></div>
 							<div class="clearFloat"></div>
 						</div>

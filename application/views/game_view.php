@@ -508,14 +508,21 @@
 			<!--QuickView not redirect same page-->
 			<!-- Game mode and extra functions selector Screen -->
 			<div class="gameModeScreen" id="gameModeScreen">
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReview();"><p>Quick Review</p></div></div></div> 
+				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReview();"><p><span class="black">Quick Review</span></p></div></div></div> 
 				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p>Quick Review With Sound</p></a></div></div>
+				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:loadGameMode('RW', true);"><p><span class="white">Review Mode</span></p></div></div></div> 
+				<br/><br/><br/>
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p><span class="black">Quick Review With Sound</span></p></a></div></div>
+				
+				<br/><br/><br/>
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/rw_with_sound" style="text-decoration:none;color:black"><p><span class="white">Review Mode With Sound</span></p></a></div></div> 
+				
+				<br/><br/><br/>
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_reverse_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p><span class="black">Quick Reverse With Sound</span></p></a></div></div>
+				<br/><br/><br/>
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/reverse_with_sound" style="text-decoration:none;color:black"><p><span class="white">Reverse Mode With sound</span></p></a></div></div> 
+				
 				<!-- <div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReviewSound();"><p>Quick Review With Sound</p></div></div></div>  -->
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:loadGameMode('RW', true);"><p>Review Mode</p></div></div></div> 
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/rw_with_sound" style="text-decoration:none;color:black"><p>Review Mode With Sound</p></a></div></div> 
 				<br/><br/><br/>
 				<!--create new deck-->
 				<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='newDeck()'><p>Create New Deck</p></div></div></div>

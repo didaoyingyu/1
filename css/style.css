@@ -255,6 +255,12 @@ body, html{
 .red:hover{
 	background-color: #FA5858 !important;
 }
+.black{
+	color:#000;
+}
+.white{
+	color:#FFF;
+}
 .yellow{
 	background: rgb(255,48,25); /* Old browsers */
 	background: -moz-linear-gradient(top, rgba(228, 200, 0, 1) 0%, rgba(185, 134, 0, 1) 100%); /* FF3.6+ */

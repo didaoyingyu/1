@@ -883,12 +883,35 @@ class Auth extends CI_Controller {
 		}
 	}
 
+	function save_quick_review_log_re() {
+		$this->load->model('card');
+		$log = json_decode($this->input->post('data'), true);
+		$user = $this->ion_auth->user()->row();
+		$log['user_id'] = $user->id;
+		$review_log = $this->card->save_quick_review_log_re($log);
+		if (!$review_log) {
+			echo "error";
+		}
+	}
+
 	function get_log_utp() {
 		$this->load->model('card');
 		$log = json_decode($this->input->post('data'), true);
 		$user = $this->ion_auth->user()->row();
 		$log['user_id'] = $user->id;
 		$review_log = $this->card->get_log_utp($log);
+		if ($review_log) {
+			echo $review_log;
+		}
+	}
+	
+
+	function get_log_utp_re() {
+		$this->load->model('card');
+		$log = json_decode($this->input->post('data'), true);
+		$user = $this->ion_auth->user()->row();
+		$log['user_id'] = $user->id;
+		$review_log = $this->card->get_log_utp_re($log);
 		if ($review_log) {
 			echo $review_log;
 		}

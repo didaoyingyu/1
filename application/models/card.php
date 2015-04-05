@@ -179,13 +179,6 @@ class card extends CI_Model {
 			$query = $this->db->get(); //echo $this->db->last_query();
 			return $query->result();
 		}
-		/* get the admin users */
-		/* $this->db->select('*');
-		  $this->db->from('users_groups');
-		  $this->db->where('group_id','1');
-		  $adminUsersQry = $this->db->get();
-		  $adminUsers = $adminUsersQry->result();
-		 */
 		
 	}
 
@@ -477,6 +470,50 @@ class card extends CI_Model {
 		$this->db->join('card', ' user_card.card_id = card.card_id');
 		$this->db->where('user_card.deck_id ', $deck_id);
 		$this->db->where('user_card.user_id', $user_id);
+		$query = $this->db->get();
+		$query->result();
+		//echo $str = $this->db->last_query();
+		// die();
+		return $query->result();
+	}
+
+	function load_cards_re($user_id, $deck_id) {
+		if ($deck_id == -1) {
+			$this->db->select('*,cd.deck_name');
+			$this->db->from('reverse_user_card');
+			$this->db->join('card', ' reverse_user_card.card_id = card.card_id');
+			$this->db->join('card_deck cd', 'cd.deck_id = reverse_user_card.deck_id'); /* show DONE msg */
+			$this->db->where('reverse_user_card.user_id', $user_id); /* show DONE msg */
+			$query = $this->db->get(); /* Show DONE msg */
+			return $query->result();
+		}
+		/* check wheather the user previouly plid the selection */
+		$this->db->select('*');
+		$this->db->from('reverse_user_card');
+		$this->db->join('card', ' reverse_user_card.card_id = card.card_id');
+		$this->db->where('reverse_user_card.deck_id ', $deck_id);
+		$this->db->where('reverse_user_card.user_id', $user_id);
+		if ($this->db->count_all_results() <= 0) {
+			/* first time for this card set */
+			$this->db->select('*');
+			$this->db->from('card_in_deck');
+			$this->db->where('deck_id ', $deck_id); /* Show DONE msg */
+			$query = $this->db->get();
+			$cardInDeck = $query->result();
+			/* add card to the user card table */
+			foreach ($cardInDeck as $card) {
+				$this->db->set('user_id', $user_id);
+				$this->db->set('deck_id', $deck_id);
+				$this->db->set('card_id', $card->card_id);
+				$this->db->insert('reverse_user_card');
+			}
+		}
+		/* send card deck to the user */
+		$this->db->select('*');
+		$this->db->from('reverse_user_card');
+		$this->db->join('card', ' reverse_user_card.card_id = card.card_id');
+		$this->db->where('reverse_user_card.deck_id ', $deck_id);
+		$this->db->where('reverse_user_card.user_id', $user_id);
 		$query = $this->db->get();
 		$query->result();
 		//echo $str = $this->db->last_query();
@@ -1005,6 +1042,53 @@ class card extends CI_Model {
 		}
 	}
 
+	function load_cards_md_re($user_id, $deck_id_arr) {
+		if (sizeof($deck_id_arr) > 0) {
+			foreach ($deck_id_arr as $deck_id) {
+				/* check wheather the user previouly plid the selection */
+				$this->db->select('*');
+				$this->db->from('reverse_user_card');
+				$this->db->join('card', ' reverse_user_card.card_id = card.card_id');
+				$this->db->where('reverse_user_card.deck_id ', $deck_id);
+				$this->db->where('reverse_user_card.user_id', $user_id);
+				if ($this->db->count_all_results() <= 0) {
+					/* first time for this card set */
+					$this->db->select('*');
+					$this->db->from('card_in_deck');
+					$this->db->where('deck_id ', $deck_id);
+					$query = $this->db->get();
+					$cardInDeck = $query->result();
+					/* add card to the user card table */
+					foreach ($cardInDeck as $card) {
+						$this->db->set('user_id', $user_id);
+						$this->db->set('deck_id', $deck_id);
+						$this->db->set('card_id', $card->card_id);
+						$this->db->insert('reverse_user_card');
+					}
+				}
+			}
+			/* load the cards */
+			$this->db->select('*');
+			$this->db->from('reverse_user_card');
+			$this->db->join('card', ' reverse_user_card.card_id = card.card_id');
+			$this->db->where('reverse_user_card.user_id', $user_id);
+			//$this->db->where('reverse_user_card.deck_id ', $deck_id_arr[0]); /*simple hack which is OK*/
+			if ($deck_id_arr) {
+				$this->db->where_in('reverse_user_card.deck_id ', $deck_id_arr);
+			}
+			/*
+			  foreach($deck_id_arr as $deck_id){
+			  //send card deck to the user
+			  $this->db->or_where('reverse_user_card.deck_id ', $deck_id);
+			  }
+			 */
+			$query = $this->db->get();
+			return $query->result();
+		} else {
+			return NULL;
+		}
+	}
+
 		/*"add ability for user to create new decks and edit personal decks"*/
 	function load_cards_md_sound($user_id, $deck_id_arr) {
 			
@@ -1035,7 +1119,66 @@ class card extends CI_Model {
 		$this->db->update('user_card');
 	}
 
+
+	function save_user_card_re($record_id, $history, $test_history, $rank, $time, $last_shown, $wrong_twice_or_more_count, $last_date) {
+		$this->db->where('record_id', $record_id);
+		$this->db->set('history', $history);
+		$this->db->set('test_history', $test_history);
+		$this->db->set('rank', $rank);
+		$this->db->set('last_time', $time);
+		$this->db->set('last_shown', $last_shown);
+		$this->db->set('wrong_twice_or_more_count', $wrong_twice_or_more_count);
+		$this->db->set('total_time', 'total_time +' . (int) $time, FALSE); //false is used to tell not to escape time as well as below 1
+		$this->db->set('play_count', 'play_count + 1', FALSE);
+		$this->db->set('last_date', $last_date);
+		$this->db->update('reverse_user_card');
+	}
+
 	/* save a card deck */
+
+	function save_deck_upload($deck_name, $deck, $user_id) {
+
+		/* check the name for duplications */
+		$this->db->from('card_deck');
+		$this->db->where('deck_name', $deck_name);
+		if ($this->db->count_all_results() > 0)
+		{
+			/* deck name allready exist */
+			return false;
+		}
+		else 
+		{
+			/* save the deck and return true */
+			/* 1. save the deck name */
+			$this->db->set('deck_name', $deck_name);
+			$this->db->set('created_user_id', $user_id);
+			$this->db->insert('card_deck');
+			$deckId = $this->db->insert_id();
+			/* 2. save each question and add entry to 'card_in_deck' table */
+	
+			$ss = count($deck);
+			for($i=0;$i<$ss;$i++)
+			{
+				
+					$question =  $deck[$i]['q'];
+					$anwser = $deck[$i]['a'];
+					
+				
+					$this->db->set('created_user_id', $user_id);
+					$this->db->set('question', $question);
+					$this->db->set('answer', $anwser);
+					$this->db->insert('card');
+					$cardId = $this->db->insert_id();
+					/* insert record to card in deck */
+					$this->db->set('deck_id', $deckId);
+					$this->db->set('card_id', $cardId);
+					$this->db->insert('card_in_deck');
+				
+			}
+			return true;
+		}
+	}
+
 
 	function save_deck($deck_name, $deck, $user_id) {
 		/* check the name for duplications */
@@ -1054,6 +1197,9 @@ class card extends CI_Model {
 			/* 2. save each question and add entry to 'card_in_deck' table */
 			foreach ($deck as $question => $anwser) {
 				if (strlen($question) > 0 && strlen($anwser) > 0) {
+				
+
+					
 					$this->db->set('created_user_id', $user_id);
 					$this->db->set('question', $question);
 					$this->db->set('answer', $anwser);
@@ -1527,9 +1673,47 @@ class card extends CI_Model {
 		}
 	}
 
+	public function save_quick_review_log_re($data) {
+		$data['reason'] = str_replace('&gt;&gt;', '', $data['reason']);
+		$deck_name = $this->db->select("deck_name")->from("card_deck")->where("deck_id", $data['deck_id'])->get()->row_array();
+		$data['deck_name'] = $deck_name['deck_name'];
+		if (isset($data['reason'])) {
+			$utp = $this->db->select("utp")->from("reverse_user_card")
+							->where("user_id", $data['user_id'])
+							->where("deck_id", $data['deck_id'])
+							->where("card_id", $data['card_id'])
+							->get()->row_array();
+			$this->db->set('utp', 'NOW()', FALSE)
+					->where("user_id", $data['user_id'])
+					->where("deck_id", $data['deck_id'])
+					->where("card_id", $data['card_id'])
+					->update('reverse_user_card');
+			//print_r($utp);
+			//$data['utp'] = $utp['utp'];
+			$this->db->insert('reverse_quick_review_log', $data);
+			//print_r($this->db->last_query());
+			return $this->db->insert_id();
+		} else {
+			return FALSE;
+		}
+	}
+
 	public function get_log_utp($data) {
 		if (isset($data['reason'])) {
 			$utp = $this->db->select("utp")->from("user_card")
+							->where("user_id", $data['user_id'])
+							->where("deck_id", $data['deck_id'])
+							->where("card_id", $data['card_id'])
+							->get()->row_array();
+			return $utp['utp'];
+		} else {
+			return FALSE;
+		}
+	}
+
+	public function get_log_utp_re($data) {
+		if (isset($data['reason'])) {
+			$utp = $this->db->select("utp")->from("reverse_user_card")
 							->where("user_id", $data['user_id'])
 							->where("deck_id", $data['deck_id'])
 							->where("card_id", $data['card_id'])
