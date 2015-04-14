@@ -83,12 +83,44 @@ class game extends CI_Controller{
 		/* load review log control */
 		$this->load->view('review_log_control', $data);
 	}
-
+	function quick_review_log_scroll()
+	{
+		$userid = $_POST['user_id'];
+		$scroll_limit = $_POST['scroll_limit'];
+		
+		$this->load->model('card');
+		$data = $this->card->get_quick_review_log_limit_scroll($userid,$scroll_limit);
+		
+		$json=array();
+		foreach($data as $r)
+		{
+			
+			$json[]=array(
+				'itp'=> $r->itp ,
+				'question'=> $r->question,
+				'answer'=> $r->answer,
+				'deck_name'=> $r->deck_name,
+				'before_history'=> $r->before_history,
+				'before_rank'=> $r->before_rank,
+				'ans'=> $r->ans,
+				'reason'=> $r->reason,
+				'utp'=> $r->utp,
+				'after_history'=> $r->after_history,
+				'after_rank'=> $r->after_rank,
+				'scroll_limit'=> $scroll_limit + 20
+				);
+		}
+		echo json_encode($json);
+		
+	}
 	function quick_review_log($user_Id) {
 		$this->load->model('card');
 		$user = $this->ion_auth->user($user_Id)->row();
 		$data['user'] = $user->first_name.' '.$user->last_name;
+		$data['user_Id'] = $user_Id;
 		$data['logs'] = $this->card->get_quick_review_log($user_Id);
+		$data['logs1'] = $this->card->get_quick_review_log_limit($user_Id);
+		$data['all_user'] = $this->card->get_users();
 		$this->load->view('quick_review_log', $data);
 	}
 
@@ -155,6 +187,15 @@ class game extends CI_Controller{
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($cardArray));
 	}
+	/*"fix change bug new cards marked wrong showing as - "*/
+	function load_cards_md_play($user_id) {
+		$deck_id_arr = json_decode($this->input->post('data'));
+		$cardArray = $this->card->load_cards_md_play($user_id, $deck_id_arr);
+		$this->output->set_content_type('application/json');
+		$this->output->set_output(json_encode($cardArray));
+	}
+	
+	/*"fix change bug new cards marked wrong showing as - "*/
 	function load_cards_md_re($user_id) {
 		$deck_id_arr = json_decode($this->input->post('data'));
 		$cardArray = $this->card->load_cards_md_re($user_id, $deck_id_arr);
@@ -689,6 +730,9 @@ class game extends CI_Controller{
 	function deck_report($user_Id) {
 		$this->load->model('card');
 		$cards = array();
+		$user = $this->ion_auth->user($user_Id)->row();
+		$cards['user'] = $user->first_name.' '.$user->last_name;
+		$cards['all_user'] = $this->card->get_users();
 		$cards["allCards"] = $this->card->getCompleteGameSessions($user_Id);
 		//  $cards['complete_cards']=$cards;
 		// $cards=$this->object_to_array($cards);
@@ -696,6 +740,7 @@ class game extends CI_Controller{
 		//   $cards["allCards"]=$cards;
 		// $data['title'] = 'a';
 		//  $data['body'] = 'b';
+		
 		$this->load->view('deck_report', $cards);
 	}
 

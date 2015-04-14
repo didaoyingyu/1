@@ -7,9 +7,47 @@
 	</head>
 	<body>
 		<div class="header">
-			<div class="headerText">Report</div>
+			<div class="headerText">Report - <?php echo $user;?></div>
 		</div>
 		<div class="container">
+		
+		<script type="text/javascript">
+		/*"fix change bug new cards marked wrong showing as - "*/
+			function deck_report()
+			{
+
+				
+				if(document.getElementById("userid").selectedIndex == 0)
+				{
+				}
+				else
+				{
+					var id = document.getElementById("userid").value;
+					window.location = "<?php echo base_url()?>index.php/game/deck_report/"+id;
+				}
+				
+				
+			}
+		</script>	
+		<table border="0" cellspacing="0" cellpadding="2" style="width:30%;text-align:center" class="top-margin">
+					<tr>
+						<th>Select User</th>
+						<td width="70%">
+							<select id="userid" onchange="deck_report()"  style="width:100%">
+								<option value="0">Select User</option>
+								<?php
+									/*"fix change bug new cards marked wrong showing as - "*/
+										foreach($all_user as $row)
+										{    
+											echo '<option value="'.$row['id'].'">'.$row["username"].'</option>';
+										}
+								?>
+							</select>
+						</td>
+					</tr>
+		</table>	
+		
+		
 			<?php
 			$type = '';
 			foreach ($allCards as $card) {
@@ -33,6 +71,8 @@
 									<th width="20%">
 										Avg time   
 									</th>
+									<th>Old   
+									</th>
 									<th>New   
 									</th>
 									<th>Prev XX   
@@ -40,6 +80,8 @@
 									<th>Prev X   
 									</th>
 									<th>Change   
+									</th>
+									<th>Total   
 									</th>
 									<th>To date   
 									</th>
@@ -82,6 +124,33 @@
 									?>
 								</td>
 								<td>
+									<?php  
+											$old1 = $card->correct_total  - $card->new_card_correct_count;
+											
+											$new1 = $card->card_count - $card->new_card_count;
+											$o = $old1 - $card->current_true_prex;
+											$n = $new1 - $card->prex;											
+											
+
+										if($card->current_true_prexx == 0 &&  $card->prexx == 0)
+										{
+											echo $o."/".$n;		
+										}
+										else
+										{
+											$odl3 = $o - $card->current_true_prexx;
+											$new3 = $n - $card->prexx;
+											
+											echo $odl3."/".$new3;		
+										}
+										
+										
+										//$card->correct_total  $card->card_count
+										
+										//$card->new_card_correct_count  $card->new_card_count;
+									?>
+								</td>
+								<td>
 									<?= $card->new_card_correct_count ?>/<?= $card->new_card_count ?>
 								</td>
 								<td>
@@ -91,7 +160,9 @@
 									<?= $card->current_true_prex ?>/<?= $card->prex ?>
 								</td>
 								<td>
-                                                                        +<?php  echo $card->change_plus ?>-<?= $card->change_minus ?>
+                                +<?php  echo $card->change_plus ?>-<?= $card->change_minus ?>
+								
+								
                                                                         <?php
                                                                         /*        $total_cards = $card->prex + $card->prexx + $card->new_card_count;
                                                                                 $totalcard_attend = $total_cards;
@@ -112,9 +183,15 @@
                                                                                 }
                                                                         
                                                                         */?>
-                                                                        
+                                            
+                            
 								</td>
 								<td>
+									<?php  echo $card->change_plus - $card->change_minus ?>
+                            
+								</td>
+							
+							<td>
 									<?= $card->correct_to_date_card_count ?>/<?= $card->TotalCardCount ?>
 								</td>
 								<td>
