@@ -571,12 +571,14 @@
 				currentCard['test_history'] = Current_test_history;
 				game_count++;
 				correct_total++;
+				
 				var prev_history = $(".answer_code").html();
 				Current_history = prev_history + 'O';
 				$(".answer_code").html(Current_history);
 				var ansStatus = new Boolean(1);
 				//alert(currentCard);
 				deckHandler.handleCardStatus(currentCard, ansStatus, gameMode, historyLength, variableOk);
+				
 				saveCard(currentCard);
 				showNextQues();
 			}
@@ -638,7 +640,7 @@
 				first_time_card_count = 0;
 				first_time_correct_Card_cout = 0;
 				change_minus = 0;
-				consle.log(game_results);
+				
 				clearInterval(timerIntervalId);
 				if (confirm("Do you really want to finish this game?")) {
 					(alert("Game Completed"));
@@ -776,6 +778,17 @@
 					showAns();
 				}
 			}
+			
+			function rightaarow() {
+					showAns();
+					ansCorrect();
+			}
+			function leftaarow() {
+					showAns();
+					ansWrong();
+			}
+			
+			
 			// register the handler
 			/*document.addEventListener('keypress', keyHandler, false);*/
 			window.addEventListener("keydown", keyHandler);
@@ -826,12 +839,14 @@
 							<div id="qTime" style="width:10%" class="fcardHeadderContent">Time: 00.00</div>
 							<div class="clearFloat"></div>
 						</div>
-						<div id="qContent" class="fcardContent">
+						<div id="qContent" class="fcardContent1">
 							Content
 						</div>
-						<div class="fcardFooterQues">
-							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="showAns()"><p>Answer</p></div></div></div>
-							<div class="buttonHolder"><div class="buttonInner"><div class="button" onclick="finishGame()"><p>Finish</p></div></div></div>
+						<div class="fcardFooterAns1">
+							<div class="buttonHolder2"><div class="buttonHolder1"><div class="button green" onclick="rightaarow();"><p>&#10004;</p></div></div></div>
+							<div class="buttonHolder2"><div class="buttonHolder1"><div class="button red" onclick="leftaarow();" ><p>&#10007;</p></div></div></div>
+							<div class="buttonHolder2"><div class="buttonHolder1"><div class="button green" onclick="showAns()"><p>Answer</p></div></div></div>
+							<div class="buttonHolder2"><div class="buttonHolder1"><div class="button" onclick="finishGame()"><p>Finish</p></div></div></div>
 							<div class="clearFloat"></div>
 						</div>
 					</div>
@@ -846,14 +861,14 @@
 							<div id="aTime" style="width:10%" class="fcardHeadderContent">Time: 00.00</div>
 							<div class="clearFloat"></div>
 						</div>
-						<div id="aContent" class="fcardContent">
+						<div id="aContent" class="fcardContent1">
 							Answer
 						</div>
-						<div class="fcardFooterAns">
-							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:ansCorrect();"><p>&#10004;</p></div></div></div>
-							<div class="buttonHolder"><div class="buttonInner"><div class="button red" onclick="javascript:ansWrong();"><p>&#10007;</p></div></div></div>
-							<div class="buttonHolder"><div class="buttonInner"><div class="button yellow" onclick="javascript:ansOk();"><p>OK</p></div></div></div>
-							<div class="buttonHolder"><div class="buttonInner"><div class="button " onclick="javascript:ansP();"><p>P</p></div></div></div>
+						<div class="fcardFooterAns1">
+							<div class="buttonHolder2"><div class="buttonHolder1"><div class="button green" onclick="javascript:ansCorrect();"><p>&#10004;</p></div></div></div>
+							<div class="buttonHolder2"><div class="buttonHolder1"><div class="button red" onclick="javascript:ansWrong();"><p>&#10007;</p></div></div></div>
+							<div class="buttonHolder2"><div class="buttonHolder1"><div class="button yellow" onclick="javascript:ansOk();"><p>OK</p></div></div></div>
+							<div class="buttonHolder2"><div class="buttonHolder1"><div class="button " onclick="javascript:ansP();"><p>P</p></div></div></div>
 							<div class="clearFloat"></div>
 						</div>
 					</div>
