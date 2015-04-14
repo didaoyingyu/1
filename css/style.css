@@ -170,6 +170,12 @@ body, html{
 	height:80%;
 	font-size:2.5em;
 }
+.fcardContent1{
+	width:100%;
+	height:70%;
+	font-size:2.5em;
+}
+
 .fcardFooterQues{
 	margin:0 auto;
 	height:10%;
@@ -185,13 +191,37 @@ body, html{
 	height:10%;
 	width: 82%;
 }
+.fcardFooterAns1{
+	margin:0 auto;
+	height:10%;
+	width: 60%;
+}
 .fcardFooterAns .buttonHolder{
 	width:25%;
 	text-overflow: ellipsis; 
 	white-space:nowrap;
 }
+
+.fcardFooterAns1 .buttonHolder1{
+	width:25%;
+	text-overflow: ellipsis; 
+	white-space:nowrap;
+	margin-bottom:10px;
+}
+
+.fcardFooterAns1 .buttonHolder2{
+	width:100%;
+	text-overflow: ellipsis; 
+	white-space:nowrap;
+}
 /*Buttons*/
 .buttonHolder{
+	display: table;
+	float:left;
+	height:100%;
+	width:100%;
+}
+.buttonHolder1{
 	display: table;
 	float:left;
 	height:100%;
@@ -206,7 +236,7 @@ body, html{
 	cursor:pointer;
 	background-color:#dfd5df;
 	width:95%;
-	height:85%;
+	height:35px;
 	overflow: hidden;
 	text-overflow: ellipsis; 
 	white-space:nowrap;
@@ -460,3 +490,322 @@ body, html{
 .never_tested_cards label{
 	font-weight: bold;	
 }
+
+
+
+@media only screen and (max-width:768px) {
+	.fcardFooterQues{
+		width: 50%;
+	}
+	
+	.fcardFooterAns .buttonHolder{
+		width: 50%;
+	}
+	.fcardFooterAns1 .buttonHolder1{
+		width: 50%;
+	}
+
+	.gameModeScreen{
+		width: 50%;
+	}
+	
+	.fcardContent1{
+		width: 60%;
+	}
+		
+	.fcardFooterAns1{
+		width: 75%;
+	}
+	
+	.fcardContent1{
+		width: 100%;
+		height: 72%;
+	}
+	.button{
+		font-size:1.5em;
+		height:35px;
+	}
+
+
+	
+}
+
+@media only screen and (max-width:736px) {
+	.fcardFooterQues{
+		width: 50%;
+	}
+	
+	.fcardFooterAns .buttonHolder{
+		width: 50%;
+	}
+	.fcardFooterAns1 .buttonHolder1{
+		width: 25%;
+	}
+
+	.gameModeScreen{
+		width: 50%;
+	}
+	
+	.fcardContent1{
+		width: 60%;
+	}
+	
+	.fcardFooterAns1{
+		width: 90%;
+	}
+	
+	.fcardContent1{
+		width: 100%;
+		height: 75%;
+		font-size:1.5em;
+	}
+	
+	.button{
+		font-size:1.5em;
+		height:35px;
+	}
+
+
+
+}
+
+@media only screen and (max-width:667px) {
+	.fcardFooterQues{
+		width: 50%;
+	}
+	.fcardFooterAns1 .buttonHolder1{
+		width:	25%;
+	}
+	
+	.fcardFooterAns .buttonHolder{
+		width: 50%;
+	}
+
+	.gameModeScreen{
+		width: 65%;
+	}
+	
+	.fcardContent1{
+		width: 60%;
+	}
+	
+	.fcardFooterAns1{
+		width: 90%;
+	}
+	
+	.fcardContent1{
+		width: 100%;
+		height: 75%;
+		font-size:1.5em;
+	}
+	.button{
+		font-size:1.5em;
+		height:35px;
+	}
+
+
+}
+
+
+
+@media only screen and (max-width:600px) {
+	.fcardFooterQues{
+		width: 50%;
+	}
+	.adminScreen{
+		width:68%;
+	}
+	.buttonHolder{
+		margin-bottom:10px;
+		font-size:8px;
+	}
+	.fcardFooterAns1 .buttonHolder1{
+		width: 25%;
+	}
+	
+	.fcardFooterAns .buttonHolder{
+		width: 50%;
+	}
+
+	.gameModeScreen{
+		width: 65%;
+	}
+	.fcardFooterAns1{
+		width: 75%;
+	}
+	
+	.fcardContent1{
+		width: 100%;
+		height: 72%;
+		font-size:1.5em;
+	}
+	
+	.button{
+		font-size:1.5em;
+		height:35px;
+	}
+
+
+}
+
+
+@media only screen and (max-width:568px) {
+	.fcardFooterQues{
+		width: 50%;
+	}
+	.adminScreen{
+		width:68%;
+	}
+	.buttonHolder{
+		margin-bottom:10px;
+		font-size:8px;
+	}
+	.fcardFooterAns1 .buttonHolder1{
+		width: 25%;
+	}
+	
+	.fcardFooterAns .buttonHolder{
+		width: 50%;
+	}
+
+	.gameModeScreen{
+		width: 65%;
+	}
+	.fcardFooterAns1{
+		width: 75%;
+	}
+	
+	.fcardContent1{
+		width: 100%;
+		height: 72%;
+		font-size:1.5em;
+	}
+	
+	.button{
+		font-size:1.5em;
+		height:35px;
+	}
+
+
+}
+
+@media only screen and (max-width:414px) {
+	.fcardFooterQues{
+		width: 72%;
+	}
+	
+	.fcardFooterAns .buttonHolder{
+		width: 50%;
+	}
+	.fcardFooterAns1 .buttonHolder1{
+		width: 50%;
+	}
+
+	.gameModeScreen{
+		width: 55%;
+	}
+	.fcardContent1{
+		width: 60%;
+	}
+	
+	.fcardFooterAns1{
+		width: 75%;
+	}
+	
+	.fcardContent1{
+		width: 100%;
+		height: 72%;
+		font-size:2.5em;
+	}
+	.button{
+		font-size:2.5em;
+		
+	}
+
+
+
+}
+
+
+@media only screen and (max-width:375px) {
+	.fcardFooterQues{
+		width: 80%;
+		margin-left:42px;
+	}
+	.adminScreen{
+		width:75%;
+	}
+	.fcardFooterAns .buttonHolder{
+		width: 50%;
+	}
+	.fcardFooterAns1 .buttonHolder1{
+		width: 50%;
+	}
+	.gameModeScreen{
+		width: 60%;
+	}
+	.fcardContent1{
+		width: 60%;
+	}
+	
+	.fcardFooterAns1{
+		width: 75%;
+	}
+	
+	.fcardContent1{
+		width: 100%;
+		height: 72%;
+		font-size:2.5em;
+	}
+	.button{
+		font-size:2.5em;
+	}
+
+
+}
+
+
+@media only screen and (max-width:320px) {
+	.adminScreen
+	{
+		width: 75%;
+		
+	}
+	.buttonHolder{
+		margin-bottom:10px;
+		font-size:7px;
+	}
+	.fcardFooterQues{
+		width: 70%;
+	}
+	
+	.fcardFooterAns .buttonHolder{
+		width: 50%;
+	}
+	.gameModeScreen{
+		width: 50%;
+	}
+	.fcardFooterAns1 .buttonHolder1{
+		width: 50%;
+	}
+	.fcardContent1{
+		width: 100%;
+		height:78%;
+	}
+	
+	.fcardFooterAns1{
+		width: 75%;
+	}
+	
+	.fcardContent1{
+		width: 100%;
+		height: 68%;
+		font-size:2.5em;
+	}
+	
+	.button{
+		font-size:2.5em;
+	}
+
+}
+
