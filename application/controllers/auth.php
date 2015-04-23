@@ -705,6 +705,9 @@ class Auth extends CI_Controller {
 		$user_Id = $gameSave['user_id'];
 		$cardDetailArray = $this->card->getCardDetailsCount($user_Id);
 		$gameSave['cardCompleteCount'] = $cardDetailArray[0]->card_count;
+		
+		//$wrong_total = 0;
+	
 		$cardCompleteCorrectCount = 0;
 		$change_minus = 0;
 		$prevx = 0;
@@ -729,23 +732,23 @@ class Auth extends CI_Controller {
 				$decksArray[] = $deck['deck_id'];
 			}
 			if (!in_array($deck['card_id'], $cardArray)) {
-				//  $gameSave['deck'][$deck['deck_id']]=$deck['deck_id'];
-				//   $gameSave['deck'][$deck['deck_id']]['card_id']=$deck['card_id'];
-				// $gameSave['deck'][$deck['deck_id']]['ans']=$deck['ans'];
-				//$gameSave['deck']=$deck['deck_id'].','.$deck['ans'];
+				
 				$cardArray[] = $deck['card_id'];
 				$isCorrectArray = array();
 				if ($deck['ans'] == 'true') {
+					
 					$card_id = $deck['card_id'];
 					$html1.=" AND c.card_id!=$card_id ";
 					$correct_to_date_card_count++;
 					$isCorrectArray = $this->card->isAllAnswersCorrectPre($deck['card_id'], $user_Id);
-					// print_r($isCorrectArray);
-					if ($isCorrectArray[0]->total_count == 0) {
+				
+				if ($isCorrectArray[0]->total_count == 0) {
 						$cardCompleteCorrectCount++;
 					}
 					$previousTimeStatus = $this->card->isPreviousTimeWrong($deck['card_id'], $user_Id);
-					if (count($previousTimeStatus) > 0) {
+					
+					if (count($previousTimeStatus) > 0)
+					{
 						if ($previousTimeStatus[0]->ans == 'false') {
 							$previousTwoTimeStatus = $this->card->isPreviousTwoTimeWrong($deck['card_id'], $user_Id);
 							if (count($previousTwoTimeStatus) > 0) {
@@ -767,27 +770,55 @@ class Auth extends CI_Controller {
 						$new_card_correct_count++;
 						$change_plus++;
 					}
-				} else {
+				} 
+				else
+				{
+				
 					$previousTimeStatus = $this->card->isPreviousTimeWrong($deck['card_id'], $user_Id);
-					//print_r($previousTimeStatus);
-					if (count($previousTimeStatus) > 0) {
-						if ($previousTimeStatus[0]->ans == 'true') {
+					
+					if (count($previousTimeStatus) > 0) 
+					{
+						if ($previousTimeStatus[0]->ans == 'true') 
+						{
 							$change_minus++;
-						} else {
+						} 
+						else 
+						{
 							$previousTwoTimeStatus = $this->card->isPreviousTwoTimeWrong($deck['card_id'], $user_Id);
-							if (count($previousTwoTimeStatus) > 0) {
-								if ($previousTwoTimeStatus[0]->ans == 'false') {
+							if (count($previousTwoTimeStatus) > 0) 
+							{
+								if ($previousTwoTimeStatus[0]->ans == 'false') 
+								{
 									$prexx++;
-								} else {
+								}
+								else
+								{
 									$prex++;
 								}
-							} else {
+							} 
+							
+							else 
+							{
 								$prex++;
 							}
 						}
-					} else {
+					} 
+					else
+					{
+						
 						$new_card_count++;
-						$change_minus++;
+						
+						
+						
+						if($new_card_count <= 0)
+						{
+							$change_minus++;	
+						}
+						else
+						{
+							$change_minus = 0;
+						}
+						
 					}
 				}
 			}
@@ -801,7 +832,9 @@ class Auth extends CI_Controller {
                 $correct_to_date_card_count = $cards['cardCount']['O'];
                 $correct_to_date_card_count =  $correct_to_date_card_count;
 		// Code write by vishal end
-                $gameSave['correct_to_date_card_count'] = $correct_to_date_card_count;
+        $gameSave['correct_to_date_card_count'] = $correct_to_date_card_count;
+		
+//		$gameSave['wrong_total'] = $wrong_total;
 		$gameSave['new_card_count'] = $new_card_count;
 		$gameSave['new_card_correct_count'] = $new_card_correct_count;
 		$gameSave['current_true_prex'] = $current_true_prex;
@@ -821,19 +854,23 @@ class Auth extends CI_Controller {
 			}
 			$deck_id = $option;
 		}
-		//	print_r($gameSave);
+		
+		
 		$gameSave['decks_name'] = $html;
 		$gameSave['game_date'] = date("Y-m-d H:i:s");
 		$gameSave['cards'] = $decks;
-		// print_r($gameSave);
+		
 		$cards = $this->card->saveReportDetailsSuperficialMode($gameSave);
-		if ($cards == 1) {
-			echo 'success';
-		} else {
-			echo 'Something went wrong';
-		}
+		//if ($cards == 1) {
+		//	echo 'success';
+		//} else {
+		//	echo 'Something went wrong';
+		//}
+		
+		
 	}
-
+	
+	
 	function reviewModeSave() {
 		$this->load->model('card');
 		$gameArray = json_decode($this->input->post('data'), true);

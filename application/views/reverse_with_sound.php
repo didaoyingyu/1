@@ -33,7 +33,7 @@
 			var questionTimeDiv;
 			var timerIntervalId;
 			/*game history length */
-			var historyLength = 10;
+			var historyLength = 30;
 			/*reviw mode game parameters*/
 			var loadRmParamsResponse;
 			var loadRmParamsResponseStatus;
@@ -290,7 +290,7 @@
 						if (parseInt(currentCard['play_count']) != 0) {
 							avgTime = currentCard['total_time'] / currentCard['play_count'];
 						}
-						renderQuestion(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['answer']);
+						renderQuestion(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['answer']);
 						quick_review_log['before_history'] = game_results['deck'][game_count]['history'];
 						quick_review_log['reason'] = extraInfo.innerHTML;
 						quick_review_log['before_rank'] = currentCard['rank'];
@@ -329,7 +329,7 @@
 							avgTime = currentCard['total_time'] / currentCard['play_count'];
 						}
 						totalSeconds = 0;
-						renderAnswer(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['question']);
+						renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['question']);
 					}
 					function markAnswer(mark) {
 					//	document.getElementById('player_a').removeEventListener("ended", loop);
@@ -347,6 +347,7 @@
 					<?php if ($this->ion_auth->user()->row()->review_log_status == 0) {?>
 						quick_review_log['ans'] = isValid;
 						quick_review_log['after_history'] = currentCard['history'];
+						quick_review_log['test_history'] = currentCard['test_history'];
 						quick_review_log['after_rank'] = currentCard['rank'];
 						new ajaxObject("<?php echo base_url() ?>index.php/auth/save_quick_review_log_re", 
 							function(res, status) {
@@ -416,18 +417,20 @@
 								(/(?:^|\s)fcardAnsFlip(?!\S)/g, '');
 					}
 					/********Card Content Rendering********/
-					function renderQuestion(mode, history, rank, avgTime, ques) {
+					function renderQuestion(mode, history,test_history, rank, avgTime, ques) {
 						document.getElementById("qMode").innerHTML = "M:" + mode;
 						document.getElementById("qHistory").innerHTML = "H:" + history;
+						document.getElementById("qTestHistory").innerHTML = "Test H:" + test_history;
 						document.getElementById("qRank").innerHTML = "R:" + rank;
 						document.getElementById("qAvg").innerHTML = "Avg:" + avgTime;
 						document.getElementById("qContent").innerHTML = ques;
 						/*Call timer function to set count up time*/
 						startTimer(true);
 					}
-					function renderAnswer(mode, history, rank, avgTime, time, ans) {
+					function renderAnswer(mode, history,test_history, rank, avgTime, time, ans) {
 						document.getElementById("aMode").innerHTML = "M:" + mode;
 						document.getElementById("aHistory").innerHTML = "H:" + history;
+						document.getElementById("aTestHistory").innerHTML = "Test H:" + test_history;
 						document.getElementById("aRank").innerHTML = "R:" + rank;
 						document.getElementById("aAvg").innerHTML = "Avg:" + avgTime;
 						document.getElementById("aTime").innerHTML = "Time:" + time;
@@ -466,19 +469,19 @@
 					/********Arrow Key Command Map*******************/
 					// define a handler
 					function keyHandler(e) {
-						if (e.keyCode == e.DOM_VK_LEFT) {		//left arrow
+						if (e.keyCode == 37) {		//left arrow
 							showAns();
 							markAnswer(1);
 						}
-						else if (e.keyCode == e.DOM_VK_RIGHT) {	//right arrow
+						else if (e.keyCode == 39) {	//right arrow
 							showAns();
 							markAnswer(0);
 						}
-						else if (e.keyCode == e.DOM_VK_UP) {	//up arrow
+						else if (e.keyCode == 38) {	//up arrow
 							showAns();
 							finishGame();
 						}
-						else if (e.keyCode == e.DOM_VK_DOWN) {	//down arrow
+						else if (e.keyCode == 40) {	//down arrow
 							showAns();
 						}
 					}
@@ -525,11 +528,12 @@
 					<!-- Question Card -->
 					<div class="fcardQues" id="fcardQues">
 						<div class="fcardHeadder">
-							<div id="qMode" class="fcardHeadderContent">Mode: Review</div>
-							<div id="qHistory" class="fcardHeadderContent">History:###</div>
-							<div id="qRank" class="fcardHeadderContent">Rank: 1</div>
-							<div id="qAvg" class="fcardHeadderContent">Avg Time: 04:45</div>
-							<div id="qTime" class="fcardHeadderContent">Time: 00.00</div>
+							<div id="qMode" style="width:10%"  class="fcardHeadderContent">Mode: Review</div>
+							<div id="qHistory" style="width:25%" class="fcardHeadderContent">History:###</div>
+							<div id="qTestHistory" style="width:25%"  class="fcardHeadderContent">History:###</div>
+							<div id="qRank" style="width:10%"  class="fcardHeadderContent">Rank: 1</div>
+							<div id="qAvg" style="width:15%"  class="fcardHeadderContent">Avg Time: 04:45</div>
+							<div id="qTime" style="width:15%"  class="fcardHeadderContent">Time: 00.00</div>
 							<div class="clearFloat"></div>
 						</div>
 						<div id="qContent" class="fcardContent">
@@ -544,11 +548,12 @@
 					<!-- Answer Card-->
 					<div class="fcardAns" id="fcardAns">
 						<div class="fcardHeadder">
-							<div id="aMode" class="fcardHeadderContent">Mode: Review</div>
-							<div id="aHistory" class="fcardHeadderContent">History:###</div>
-							<div id="aRank" class="fcardHeadderContent">Rank: 1</div>
-							<div id="aAvg" class="fcardHeadderContent">Avg Time: 04:45</div>
-							<div id="aTime" class="fcardHeadderContent">Time: 00.00</div>
+							<div id="aMode" style="width:10%"  class="fcardHeadderContent">Mode: Review</div>
+							<div id="aHistory" style="width:25%"  class="fcardHeadderContent">History:###</div>
+							<div id="aTestHistory" style="width:25%" class="fcardHeadderContent">History:###</div>
+							<div id="aRank" style="width:10%"  class="fcardHeadderContent">Rank: 1</div>
+							<div id="aAvg" style="width:15%"  class="fcardHeadderContent">Avg Time: 04:45</div>
+							<div id="aTime" style="width:15%" class="fcardHeadderContent">Time: 00.00</div>
 							<div class="clearFloat"></div>
 						</div>
 						<div id="aContent" class="fcardContent">

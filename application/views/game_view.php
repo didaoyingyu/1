@@ -239,7 +239,7 @@
 				if (parseInt(currentCard['play_count']) != 0) {
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
-				renderQuestion(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question']);
+				renderQuestion(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question']);
 				quickReviewLog['before_history'] = gameResults['deck'][gameCount]['history'];
 				quickReviewLog['reason'] = extraInfo.innerHTML;
 				quickReviewLog['before_rank'] = currentCard['rank'];
@@ -268,7 +268,7 @@
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
 				totalSeconds = 0;
-				renderAnswer(gameMode, currentCard['history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
+				renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
 			}
 			function markAnswer(mark) {
 				var isValid = mark > 0;
@@ -280,6 +280,7 @@
 			<?php if ($this->ion_auth->user()->row()->review_log_status == 0) {?>
 				quickReviewLog['ans'] = isValid;
 				quickReviewLog['after_history'] = currentCard['history'];
+				quickReviewLog['test_history'] = currentCard['test_history'];
 				quickReviewLog['after_rank'] = currentCard['rank'];
 				new ajaxObject("<?php echo base_url() ?>index.php/auth/save_quick_review_log", 
 					function(res, status) {
@@ -336,18 +337,20 @@
 					(/(?:^|\s)fcardAnsFlip(?!\S)/g, '');
 			}
 			/********Card Content Rendering********/
-			function renderQuestion(mode, history, rank, avgTime, ques) {
+			function renderQuestion(mode, history,test_history, rank, avgTime, ques) {
 				qMode.innerHTML = "M:" + mode;
 				qHistory.innerHTML = "H:" + history;
+				qTestHistory.innerHTML = "Test H:" + test_history;
 				qRank.innerHTML = "R:" + rank;
 				qAvg.innerHTML = "Avg:" + avgTime;
 				qContent.innerHTML = ques;
 				/*Call timer function to set count up time*/
 				startTimer(true);
 			}
-			function renderAnswer(mode, history, rank, avgTime, time, ans) {
+			function renderAnswer(mode, history, test_history, rank, avgTime, time, ans) {
 				aMode.innerHTML = "M:" + mode;
 				aHistory.innerHTML = "H:" + history;
+				aTestHistory.innerHTML = "Test H:" + test_history;
 				aRank.innerHTML = "R:" + rank;
 				aAvg.innerHTML = "Avg:" + avgTime;
 				aTime.innerHTML = "Time:" + time;
@@ -394,19 +397,19 @@
 			/********Arrow Key Command Map*******************/
 			// define a handler
 			function keyHandler(e) {
-				if (e.keyCode == e.DOM_VK_LEFT) {		//left arrow
+				if (e.keyCode == 37) {		//left arrow
 					showAns();
 					markAnswer(1);
 				}
-				else if (e.keyCode == e.DOM_VK_RIGHT) {	//right arrow
+				else if (e.keyCode == 39) {	//right arrow
 					showAns();
 					markAnswer(0);
 				}
-				else if (e.keyCode == e.DOM_VK_UP) {	//up arrow
+				else if (e.keyCode == 38) {	//up arrow
 					showAns();
 					finishGame();
 				}
-				else if (e.keyCode == e.DOM_VK_DOWN) {	//down arrow
+				else if (e.keyCode == 40) {	//down arrow
 					showAns();
 				}
 			}
@@ -468,7 +471,8 @@
 					<div class="fcardQues" id="fcardQues">
 						<div class="fcardHeadder">
 							<div id="qMode" style="width:10%" class="fcardHeadderContent">Mode: Review</div>
-							<div id="qHistory" style="width:50%" class="fcardHeadderContent">History:###</div>
+							<div id="qHistory" style="width:25%" class="fcardHeadderContent">History:###</div>
+							<div id="qTestHistory" style="width:25%" class="fcardHeadderContent">History:###</div>
 							<div id="qRank" style="width:10%" class="fcardHeadderContent">Rank: 1</div>
 							<div id="qAvg" style="width:15%" class="fcardHeadderContent">Avg Time: 04:45</div>
 							<div id="qTime" style="width:15%" class="fcardHeadderContent">Time: 00.00</div>
@@ -487,7 +491,8 @@
 					<div class="fcardAns" id="fcardAns">
 						<div class="fcardHeadder">
 							<div id="aMode" style="width:10%" class="fcardHeadderContent">Mode: Review</div>
-							<div id="aHistory" style="width:50%" class="fcardHeadderContent">History:###</div>
+							<div id="aHistory" style="width:25%" class="fcardHeadderContent">History:###</div>
+							<div id="aTestHistory" style="width:25%" class="fcardHeadderContent">History:###</div>
 							<div id="aRank" style="width:10%" class="fcardHeadderContent">Rank: 1</div>
 							<div id="aAvg" style="width:15%" class="fcardHeadderContent">Avg Time: 04:45</div>
 							<div id="aTime" style="width:15%" class="fcardHeadderContent">Time: 00.00</div>
@@ -551,12 +556,14 @@
 			var qTime = ui("qTime");
 			var qMode = ui("qMode");
 			var qHistory = ui("qHistory");
+			var qTestHistory = ui("qTestHistory");
 			var qRank = ui("qRank");
 			var qAvg = ui("qAvg");
 			var qContent = ui("qContent");
 			var aTime = ui("aTime");
 			var aMode = ui("aMode");
 			var aHistory = ui("aHistory");
+			var aTestHistory = ui("aTestHistory");
 			var aRank = ui("aRank");
 			var aAvg = ui("aAvg");
 			var aContent = ui("aContent");

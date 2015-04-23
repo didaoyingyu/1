@@ -1041,7 +1041,34 @@ class card extends CI_Model {
 			return NULL;
 		}
 	}
-
+	/*"fix change bug new cards marked wrong showing as - "*/
+	function load_cards_md_play($user_id, $deck_id_arr) {
+			
+		if (sizeof($deck_id_arr) > 0) {
+			/* load the cards */
+			
+			//$this->db->where('user_card.deck_id ', $deck_id_arr[0]); /*simple hack which is OK*/
+			if ($deck_id_arr) {
+				
+				$new_arr_1 = str_replace("_",",",$deck_id_arr);
+				$new_arr = substr($new_arr_1,0,-1);
+					$re = $this->db->query("select * from user_card join card on user_card.card_id = card.card_id 
+										where user_card.user_id = $user_id and user_card.deck_id IN($new_arr)");
+					return $re->result();
+			
+			}
+			/*
+			  foreach($deck_id_arr as $deck_id){
+			  //send card deck to the user
+			  $this->db->or_where('user_card.deck_id ', $deck_id);
+			  }
+			 */
+			
+		} else {
+			return NULL;
+		}
+	}
+	/*"fix change bug new cards marked wrong showing as - "*/
 	function load_cards_md_re($user_id, $deck_id_arr) {
 		if (sizeof($deck_id_arr) > 0) {
 			foreach ($deck_id_arr as $deck_id) {
@@ -1650,6 +1677,7 @@ class card extends CI_Model {
 
 	public function save_quick_review_log($data) {
 		$data['reason'] = str_replace('&gt;&gt;', '', $data['reason']);
+		$data['test_history'] = $data['test_history'];
 		$deck_name = $this->db->select("deck_name")->from("card_deck")->where("deck_id", $data['deck_id'])->get()->row_array();
 		$data['deck_name'] = $deck_name['deck_name'];
 		if (isset($data['reason'])) {
@@ -1665,6 +1693,7 @@ class card extends CI_Model {
 					->update('user_card');
 			//print_r($utp);
 			//$data['utp'] = $utp['utp'];
+			
 			$this->db->insert('quick_review_log', $data);
 			//print_r($this->db->last_query());
 			return $this->db->insert_id();
@@ -1727,6 +1756,16 @@ class card extends CI_Model {
 	public function get_quick_review_log($user_id) {
 		return $this->db->where("user_id", $user_id)->order_by("id desc")->get("quick_review_log")->result_array();
 	}
+	
+	public function get_quick_review_log_limit($user_id) {
+		$re = $this->db->query("select * from quick_review_log where user_id = $user_id order by id desc limit 0,20");
+		return $re->result();
+	}	
+	
+	public function get_quick_review_log_limit_scroll($user_id,$scroll_limit) {
+		$re = $this->db->query("select * from quick_review_log where user_id = $user_id order by id desc limit $scroll_limit,20");
+		return $re->result();
+	}	
 
 	public function get_users() {
 		return $this->db->get("users")->result_array();

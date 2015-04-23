@@ -534,7 +534,7 @@
 				game_results['deck'][game_count]['history'] = currentCard['history'];
 				flipBack();
 				var avgTime = 0;
-				console.log(currentCard);
+				//alert(JSON.stringify(currentCard));
 				if (parseInt(currentCard['play_count']) != 0) {
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
