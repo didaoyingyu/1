@@ -12,6 +12,8 @@ var prevSelectedCardIndex = -1;
 var prevRandNum = -1;
 /*algorithm alternation: 0 = RANDOM, 1 = OLDEST*/
 var algoChoice = 0;
+/*algorithm alternation: RANK NOT FOUND (RNF): 1..4, incremented before use (Review Mode > 4)*/
+var algoChoiceRNF = 0;
 /*EXPIRED card queue (maxNoShowTime based); can grow limitlessly*/
 var expiredQueue = [];
 /*skip counter for skipping rounds, to show expired cards periodically*/
@@ -257,58 +259,41 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 		}
 		return this.setAsNextCard(selectedCardIndex, (algoChoice == 0 ? "RANDOM" : "OLDEST") + " rank match: " + rank + ", Random Number: " + randNum);
 	}
-	console.log("No card for rank " + rank + "\nTrying random rank mode...");
-	/*4. if above fails, get the oldest card from the smallest rank*/
-	var minRank = Number.MAX_VALUE;
-	longestDelay = -1;
-	delay = 0;
-	/* if random algorithm in use, list all lowest-rank cards
-	 and pick a random index */
-	if (algoChoice == 0) { //RANDOM
-		var lowRanks = new Array();
+	console.log("No card for rank " + rank + "\nTrying 4 RNF modes...");
+	/*4. if above fails, go for one of:
+		1) OLDEST CARD (regardless of rank)
+		2) OLDEST CARD history begin with "x" (if not exist move on to #3 below)
+		3) OLDEST CARD (regardless of rank)
+		4) OLDEST CARD test_history begin with "X" (if not exist move on to #1 and repeat)*/
+	for (var j = 0; j < 4; j++) {	//full circle over choices
+		longestDelay = -1;
+		if (++algoChoiceRNF > 4)	//0 at init
+			algoChoiceRNF = 1;		//start over
+		console.log("RNF mode #" + algoChoiceRNF);
 		for (var i = 0; i < this.deck.length; i++) {
 			var ch = this.deck[i]['history'].search(/[^-]/);
 			if (ch == -1 || this.deck[i]['learning'] == 1)
 				continue;
-			rank = parseInt(this.deck[i]['rank']);
-			if (rank < minRank) { //new lowest rank found
-				minRank = rank;
-				lowRanks = new Array(); //clear previous array
-				lowRanks.push(i);
-			} else if (rank == minRank) { //one more card of lowest rank
-				lowRanks.push(i);
-			}
-		}
-		//pick random index from lowest-rank cards
-		selectedCardIndex = lowRanks[Math.floor(lowRanks.length * Math.random())];
-	} else { //OLDEST
-		//here we don't want to check for prevSelectedCardIndex, because it cannot be the 'longest-not-shown' card
-		for (var i = 0; i < this.deck.length; i++) {
-			var ch = this.deck[i]['history'].search(/[^-]/);
-			if (ch == -1 || this.deck[i]['learning'] == 1)
-				continue;
-			rank = parseInt(this.deck[i]['rank']);
+console.log(this.deck[i]['last_shown'])
 			delay = (nowMils - parseInt(this.deck[i]['last_shown'])) / 1000;
-//			console.log("Card " + i + ": rank = " + rank + ", delay = " + delay);
-			if (rank < minRank) { //lower rank; pick it
-				longestDelay = delay;
-				minRank = rank;
-				selectedCardIndex = i; //this is the smallest, oldest card found so far
-				console.log("Card " + i + " (min.rank: " + minRank + ") is the best choice so far");
-			} else if (rank == minRank && delay > longestDelay) {
-				//ranks equal; compare delay
-				longestDelay = delay;
-				selectedCardIndex = i; //this is the smallest, oldest card found so far
-				console.log("Card " + i + " (min.rank and longest delay) is the best choice so far");
+			if (delay > longestDelay) {
+				if ((algoChoiceRNF == 2 && this.deck[i]['history'][0] == 'x') || 
+					(algoChoiceRNF == 4 && this.deck[i]['test_history'][0] == 'X')) {
+					longestDelay = delay;
+					selectedCardIndex = i;
+					console.log("New best: card " + i + " (longest delay), RNF mode #" + algoChoiceRNF);
+				}
 			}
 		}
+		if (selectedCardIndex != -1)
+			break;
 	}
 	//see if a card was selected
 	if (selectedCardIndex != -1) {
-		return this.setAsNextCard(selectedCardIndex, (algoChoice == 0 ? "RANDOM" : "OLDEST") + " pick from min rank " + minRank + ", Random Number: " + randNum);
+		return this.setAsNextCard(selectedCardIndex, "RNF mode #" + algoChoiceRNF);
 	}
-	//prompt that min rank mode failed
-	console.log("Failed to find a card for min rank: " + minRank);
+	//prompt that RNF mode failed
+	console.log("Failed to find a card via RNF logic");
 	//if using learn logic select another new card
 	if (inLearning == 1) {
 		for (var i = 0; i < this.deck.length; i++) {
