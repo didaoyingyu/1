@@ -274,7 +274,6 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 			var ch = this.deck[i]['history'].search(/[^-]/);
 			if (ch == -1 || this.deck[i]['learning'] == 1)
 				continue;
-console.log(this.deck[i]['last_shown'])
 			delay = (nowMils - parseInt(this.deck[i]['last_shown'])) / 1000;
 			if (delay > longestDelay) {
 				if ((algoChoiceRNF == 2 && this.deck[i]['history'][0] == 'x') || 
@@ -316,7 +315,7 @@ console.log(this.deck[i]['last_shown'])
 		do {
 			selectedCardIndex = Math.floor(Math.random() * this.deck.length);
 			var ch = this.deck[selectedCardIndex]['history'].search(/[^-]/);
-			if (ch != -1 && this.deck[i]['learning'] != 1)
+			if (ch != -1 && this.deck[selectedCardIndex]['learning'] != 1)
 				stop = true;
 		} while (!stop);
 		console.log("Last Shown - Now: " + (nowMils - parseInt(this.deck[selectedCardIndex]['last_shown'])) / 1000);
