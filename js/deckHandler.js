@@ -12,7 +12,7 @@ var prevSelectedCardIndex = -1;
 var prevRandNum = -1;
 /*algorithm alternation: 0 = RANDOM, 1 = OLDEST*/
 var algoChoice = 0;
-/*algorithm alternation: RANK NOT FOUND (RNF): 1..4, incremented before use (Review Mode > 4)*/
+/*algorithm alternation: RANK NOT FOUND (RNF): 1..5, ++ before use (RW.4)*/
 var algoChoiceRNF = 0;
 /*EXPIRED card queue (maxNoShowTime based); can grow limitlessly*/
 var expiredQueue = [];
@@ -22,11 +22,13 @@ var expiredSkipCount = 0;
 var expiredCardPickPeriod = 10;
 /*indicates whether SPECIAL FREQUENCY is active*/
 var specialFreq = false;
+
 /*SPECIAL FREQUENCY card queue; change 10 (length) as needed*/
 var specialQueue = new Array(10);
 specialQueue.size = 0;
 specialQueue.start = 0;
 specialQueue.end = 0;
+
 /*adds card to queue*/
 specialQueue.enqueue = function(cardID) {
 	if (this.start == this.end && this.size == this.length) //full
@@ -39,7 +41,8 @@ specialQueue.enqueue = function(cardID) {
 	if (this.end == this.length) //wrap around
 		this.end = 0; //to beginning
 	return true; //enqueue success
-}
+};
+
 /*fetches and removes next card from queue*/
 specialQueue.dequeue = function() {
 	if (this.start == this.end && this.size == 0) { //nothing to return
@@ -51,14 +54,16 @@ specialQueue.dequeue = function() {
 	if (this.start == this.length) //wrap around
 		this.start = 0; //to beginning
 	return temp;
-}
+};
+
 /*'shows' next card from queue*/
 specialQueue.peek = function() {
 	if (this.start == this.end && this.size == 0) { //nothing to 'show'
 		return;
 	}
 	return this[this.start]; //'show' first card
-}
+};
+
 /*SPECIAL FREQUENCY card skip sequences; add/edit skips as necessary*/
 var skips = [
 	[1, 1], //Skip 1 cards for 1 times 
@@ -68,6 +73,7 @@ var skips = [
  [skipIndex, skipCount] matching above definition */
 var skipIndex = 0; //index of current skip sequence
 var skipCount = 0; //how many times the current skip sequence has run
+
 /*frequency constants based on rank*/
 var r1 = 40; //40
 var r2 = 55; //15 55
@@ -79,6 +85,7 @@ var r7 = 91; //5 91
 var r8 = 95; //4 95
 var r9 = 98; //3 98
 var r10 = 100; //2 //rand 13+ 100
+
 /****************************LEARN Logic Variables***************************/
 var learnFirstTimeCorrectMark = '5'; //First time shown marked right history mark
 var learnCorrectMark = 'L'; //Answered correctly history mark
@@ -92,8 +99,10 @@ var learnSkips = {
 	4: 4
 }; //Skips to take per rank.  Format:  rank : #_of_skips
 var learnFirstTimeCorrectRank = 5; //Rank value for learning cards answered correctly on the first try.
+
 /*******************************************************************************/
 function DeckHandler() {}
+
 DeckHandler.prototype.setDeck = function(deck) {
 	this.deck = deck;
 	var nowMils = new Date().getTime();
@@ -135,6 +144,7 @@ DeckHandler.prototype.setDeck = function(deck) {
 	console.log("Loaded " + expiredQueue.length + " cards to Expired queue");
 	console.log('Loaded ' + specialQueue.size + ' cards that have not been reviewed after last test');
 };
+
 /*****card selection algorithms****/
 /*get the card to show next - work as a delegate*/
 DeckHandler.prototype.getNextCard = function(gameMode) {
@@ -144,6 +154,7 @@ DeckHandler.prototype.getNextCard = function(gameMode) {
 		return this.getNextCardSupervisedPlusMode();
 	}
 };
+
 /*get next card in review mode v1*/
 DeckHandler.prototype.getNextCardReviewMode = function() {
 	/*current time, for subsequent calculations*/
@@ -172,14 +183,17 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 			}
 		}
 	}
+	
 	/*2. pick from EXPIRED queue, if period has reached */
 	if (expiredSkipCount++ % expiredCardPickPeriod == 0 && expiredQueue.length > 0) {
 		return this.setAsNextCard(expiredQueue.pop(), "maxNoShowTime");
 	}
+
 	/*3. if expiry check fails, generate a random number and show a card accordingly*/
 	/* decide between OLDEST and RANDOM; will alternate between
 	 0 (RANDOM) and 1 (OLDEST). */
 	algoChoice = 1 - algoChoice;
+
 	/*i. get the psuod randoma number*/
 	var randNum;
 	do {
@@ -187,6 +201,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 	}
 	while (randNum == prevRandNum); //pick something different from previous
 	prevRandNum = randNum;
+
 	/*ii. get the rank regarding to it*/
 	var rank = 1;
 	if (randNum <= r1) {
@@ -212,6 +227,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 	}
 	console.log("Trying random rank mode...");
 	console.log("Rand: " + randNum + ", Selectd Rank: " + rank);
+
 	/*iii. search for a card from a random point*/
 	var startPoint = Math.floor(Math.random() * this.deck.length);
 	var firstRound = true;
@@ -257,17 +273,22 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 				break;
 			}
 		}
-		return this.setAsNextCard(selectedCardIndex, (algoChoice == 0 ? "RANDOM" : "OLDEST") + " rank match: " + rank + ", Random Number: " + randNum);
+		return this.setAsNextCard(selectedCardIndex, (algoChoice == 0 ? "RANDOM" : "OLDEST") + " rank match: " + 
+			rank + ", Random Number: " + randNum);
 	}
 	console.log("No card for rank " + rank + "\nTrying 4 RNF modes...");
+
 	/*4. if above fails, go for one of:
 		1) OLDEST CARD (regardless of rank)
 		2) OLDEST CARD history begin with "x" (if not exist move on to #3 below)
 		3) OLDEST CARD (regardless of rank)
-		4) OLDEST CARD test_history begin with "X" (if not exist move on to #1 and repeat)*/
-	for (var j = 0; j < 4; j++) {	//full circle over choices
+		4) OLDEST CARD test_history begin with "X" (if not exist move on to #1 and repeat)
+		5) OLDEST LOWEST RANK*/
+	var minRank;
+	for (var j = 0; j < 5; j++) {	//full circle over choices
 		longestDelay = -1;
-		if (++algoChoiceRNF > 4)	//0 at init
+		minRank = Number.MAX_VALUE;
+		if (++algoChoiceRNF > 5)	//0 at init
 			algoChoiceRNF = 1;		//start over
 		console.log("RNF mode #" + algoChoiceRNF);
 		for (var i = 0; i < this.deck.length; i++) {
@@ -276,11 +297,14 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 				continue;
 			delay = (nowMils - parseInt(this.deck[i]['last_shown'])) / 1000;
 			if (delay > longestDelay) {
-				if ((algoChoiceRNF == 2 && this.deck[i]['history'][0] == 'x') || 
-					(algoChoiceRNF == 4 && this.deck[i]['test_history'][0] == 'X')) {
+				if (!((algoChoiceRNF == 2 && this.deck[i]['history'][0] != 'x') || 
+					(algoChoiceRNF == 4 && this.deck[i]['test_history'][0] != 'X') ||
+					(algoChoiceRNF == 5 && this.deck[i]['rank'] >= minRank))) {
 					longestDelay = delay;
+					minRank = this.deck[i]['rank'];
 					selectedCardIndex = i;
-					console.log("New best: card " + i + " (longest delay), RNF mode #" + algoChoiceRNF);
+					console.log("New best: card " + i + " (longest delay), RNF mode #" + algoChoiceRNF + 
+						", rank " + minRank);
 				}
 			}
 		}
@@ -289,7 +313,8 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 	}
 	//see if a card was selected
 	if (selectedCardIndex != -1) {
-		return this.setAsNextCard(selectedCardIndex, "RNF mode #" + algoChoiceRNF);
+		return this.setAsNextCard(selectedCardIndex, "RNF mode #" + algoChoiceRNF + 
+			(algoChoiceRNF == 5 ? ", minRank " + minRank : ""));
 	}
 	//prompt that RNF mode failed
 	console.log("Failed to find a card via RNF logic");
@@ -306,6 +331,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 			}
 		}
 	}
+
 	/*5. if everything above fails, use random selection*/
 	var randomSelection = true;
 	while (randomSelection) {
@@ -323,8 +349,10 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 			randomSelection = false;
 		}
 	}
-	return this.setAsNextCard(selectedCardIndex, "Random Index, Deck Size: " + this.deck.length + ", Random Number: " + randNum);
+	return this.setAsNextCard(selectedCardIndex, "Random Index, Deck Size: " + this.deck.length + 
+		", Random Number: " + randNum);
 };
+
 /*next card prompt and prevSelectedCardIndex update*/
 DeckHandler.prototype.setAsNextCard = function(cardId, reason) {
 	var prompt = "Selected Card: " + cardId + " based on " + reason;
@@ -333,6 +361,7 @@ DeckHandler.prototype.setAsNextCard = function(cardId, reason) {
 	prevSelectedCardIndex = cardId;
 	return this.deck[cardId];
 };
+
 /*special frequency algorithm*/
 DeckHandler.prototype.checkSpecialFreq = function() {
 	//update control variables
@@ -358,7 +387,8 @@ DeckHandler.prototype.checkSpecialFreq = function() {
 			for (var i = 0; i < this.deck.length; i++) {
 				if (this.deck[i] == temp) {
 					prevSelectedCardIndex = i; //won't be selected next time
-					returnCard = this.setAsNextCard(i, "Special Frequency (sequence " + (skipIndex + 1) + ", cycle " + (skipCount / (skips[skipIndex][0] + 1)) + ")");
+					returnCard = this.setAsNextCard(i, "Special Frequency (sequence " + (skipIndex + 1) + ", cycle " + 
+						(skipCount / (skips[skipIndex][0] + 1)) + ")");
 				}
 			}
 			/*	check if cycle has run the required number of times (i.e. whether the current sequence is complete) */
@@ -386,6 +416,7 @@ DeckHandler.prototype.checkSpecialFreq = function() {
 		skipIndex = skipCount = 0; //start over
 	}
 };
+
 /*get card in test supervisedplus mode*/
 DeckHandler.prototype.getNextCardSupervisedPlusMode = function() {
 	for (var nextPick = prevSelectedCardIndex + 1; nextPick < this.deck.length; nextPick++) {
@@ -397,6 +428,7 @@ DeckHandler.prototype.getNextCardSupervisedPlusMode = function() {
 		}
 	}
 };
+
 /*reset status values and flags, for new session*/
 DeckHandler.prototype.reset = function() {
 	prevSelectedCardIndex = -1;
@@ -411,6 +443,7 @@ DeckHandler.prototype.reset = function() {
 	skipIndex = 0;
 	skipCount = 0;
 };
+
 /*update a card*/
 DeckHandler.prototype.updateCard = function(card) {
 	var cardId = card['card_id'];
@@ -424,9 +457,9 @@ DeckHandler.prototype.updateCard = function(card) {
 		}
 	}
 };
+
 /*manage the history of a card*/
 DeckHandler.prototype.handleCardStatus = function(card, ansCorrect, gameMode, historyLength, variableOk) {
-//	console.log("Updating card: current rank = " + card['rank'] + ", answer = " + (ansCorrect == 1 ? "correct" : "wrong") + ", history = " + card['history']);
 	/*handle the rank*/
 	var rank = parseInt(card['rank']);
 	if (ansCorrect == 1) {
@@ -541,6 +574,7 @@ DeckHandler.prototype.handleCardStatus = function(card, ansCorrect, gameMode, hi
 		}
 	}
 };
+
 DeckHandler.prototype.checkHistory = function(card) {
 	var ch = card['history'].search(/[^-]/);
 	if (ch == -1) {
@@ -549,11 +583,11 @@ DeckHandler.prototype.checkHistory = function(card) {
 	} else if (card['learning'] == 1 && card['rank'] == L)
 		card['learning'] = 0;
 };
+
 /****************Util Section**********************/
 /*char replacement algorithm for js*/
 function setCharAt(str, index, chr) {
 	if (index > str.length - 1)
 		return str;
 	return str.substr(0, index) + chr + str.substr(index + 1);
-}
-;
+};
