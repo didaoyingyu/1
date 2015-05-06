@@ -10,10 +10,10 @@ var avgExceedPercentage = 0.5;
 var prevSelectedCardIndex = -1;
 /*previously selected random number*/
 var prevRandNum = -1;
-/*algorithm alternation: 0 = RANDOM, 1 = OLDEST*/
-var algoChoice = 0;
-/*algorithm alternation: RANK NOT FOUND (RNF): 1..5, ++ before use (RW.4)*/
+/*algorithm alternation: RANK NOT FOUND (RNF): 1..5, incremented before use (refer Review Mode, option 4)*/
 var algoChoiceRNF = 0;
+/*readable names for RNF algorithms (indexed 1..5)*/
+var algoNamesRNF = ["", "RNF 1 OLDEST", "RNF 2 H=x", "RNF 3 OLDEST", "RNF 4 H=X", "RNF 5 LOWEST RANK"];
 /*EXPIRED card queue (maxNoShowTime based); can grow limitlessly*/
 var expiredQueue = [];
 /*skip counter for skipping rounds, to show expired cards periodically*/
@@ -190,11 +190,8 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 	}
 
 	/*3. if expiry check fails, generate a random number and show a card accordingly*/
-	/* decide between OLDEST and RANDOM; will alternate between
-	 0 (RANDOM) and 1 (OLDEST). */
-	algoChoice = 1 - algoChoice;
 
-	/*i. get the psuod randoma number*/
+	/*i. get the pseudorandom number*/
 	var randNum;
 	do {
 		randNum = parseInt(Math.random() * 100);
@@ -226,7 +223,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 		rank = Math.floor(12 + 2 / (r10 - randNum));
 	}
 	console.log("Trying random rank mode...");
-	console.log("Rand: " + randNum + ", Selectd Rank: " + rank);
+	console.log("Rand: " + randNum + ", Selected Rank: " + rank);
 
 	/*iii. search for a card from a random point*/
 	var startPoint = Math.floor(Math.random() * this.deck.length);
@@ -245,18 +242,10 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 		if (ch == -1 || this.deck[j]['learning'] == 1)
 			continue;
 		delay = (nowMils - parseInt(this.deck[j]['last_shown'])) / 1000;
-		if (rank == parseInt(this.deck[j]['rank'])) {
-			if (algoChoice == 0) { //RANDOM
-				// since we start from random point, no need to make a randomized pick again
-				if (prevSelectedCardIndex != j) {
-					selectedCardIndex = j;
-					break;
-				}
-			} else if (delay >= longestDelay) { //OLDEST: candidate found
-				if (prevSelectedCardIndex != j) {
-					selectedCardIndex = j;
-					longestDelay = delay;
-				}
+		if (rank == parseInt(this.deck[j]['rank']) && delay >= longestDelay) {
+			if (prevSelectedCardIndex != j) {
+				selectedCardIndex = j;
+				longestDelay = delay;
 			}
 		}
 		if (j == (this.deck.length - 1)) {
@@ -273,7 +262,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 				break;
 			}
 		}
-		return this.setAsNextCard(selectedCardIndex, (algoChoice == 0 ? "RANDOM" : "OLDEST") + " rank match: " + 
+		return this.setAsNextCard(selectedCardIndex, "oldest rank match: " + 
 			rank + ", Random Number: " + randNum);
 	}
 	console.log("No card for rank " + rank + "\nTrying 4 RNF modes...");
@@ -290,21 +279,30 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 		minRank = Number.MAX_VALUE;
 		if (++algoChoiceRNF > 5)	//0 at init
 			algoChoiceRNF = 1;		//start over
-		console.log("RNF mode #" + algoChoiceRNF);
+		console.log(algoNamesRNF[algoChoiceRNF]);
 		for (var i = 0; i < this.deck.length; i++) {
 			var ch = this.deck[i]['history'].search(/[^-]/);
 			if (ch == -1 || this.deck[i]['learning'] == 1)
 				continue;
 			delay = (nowMils - parseInt(this.deck[i]['last_shown'])) / 1000;
-			if (delay > longestDelay) {
-				if (!((algoChoiceRNF == 2 && this.deck[i]['history'][0] != 'x') || 
-					(algoChoiceRNF == 4 && this.deck[i]['test_history'][0] != 'X') ||
-					(algoChoiceRNF == 5 && this.deck[i]['rank'] >= minRank))) {
+			rank = parseInt(this.deck[i]['rank']);
+			if (algoChoiceRNF == 5) {	//no prevSelectedCardIndex check, as we go for oldest cards
+				if (rank < minRank) {	//lower rank
+					minRank = rank;
 					longestDelay = delay;
-					minRank = this.deck[i]['rank'];
 					selectedCardIndex = i;
-					console.log("New best: card " + i + " (longest delay), RNF mode #" + algoChoiceRNF + 
-						", rank " + minRank);
+					console.log("New best: card " + i + " (lower rank " + minRank + ")");
+				} else if (rank == minRank && delay > longestDelay) {	//older card of same rank
+					longestDelay = delay;
+					selectedCardIndex = i;
+					console.log("New best: card " + i + " (rank " + minRank + ", longer delay)");
+				}
+			} else if (delay > longestDelay) {
+				if (!((algoChoiceRNF == 2 && this.deck[i]['history'][0] != 'x') || 
+					(algoChoiceRNF == 4 && this.deck[i]['test_history'][0] != 'X'))) {
+					longestDelay = delay;
+					selectedCardIndex = i;
+					console.log("New best: card " + i + " (longer delay)");
 				}
 			}
 		}
@@ -313,7 +311,7 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 	}
 	//see if a card was selected
 	if (selectedCardIndex != -1) {
-		return this.setAsNextCard(selectedCardIndex, "RNF mode #" + algoChoiceRNF + 
+		return this.setAsNextCard(selectedCardIndex, algoNamesRNF[algoChoiceRNF] + 
 			(algoChoiceRNF == 5 ? ", minRank " + minRank : ""));
 	}
 	//prompt that RNF mode failed
@@ -433,7 +431,7 @@ DeckHandler.prototype.getNextCardSupervisedPlusMode = function() {
 DeckHandler.prototype.reset = function() {
 	prevSelectedCardIndex = -1;
 	prevRandNum = -1;
-	algoChoice = 0;
+	algoChoiceRNF = 0;
 	expiredSkipCount = 0;
 	expiredQueue = [];
 	specialFreq = false;
