@@ -290,19 +290,25 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 				if (rank < minRank) {	//lower rank
 					minRank = rank;
 					longestDelay = delay;
-					selectedCardIndex = i;
-					console.log("New best: card " + i + " (lower rank " + minRank + ")");
+					if (i != prevSelectedCardIndex) {
+						selectedCardIndex = i;
+						console.log("New best: card " + i + " (lower rank " + minRank + ")");
+					}
 				} else if (rank == minRank && delay > longestDelay) {	//older card of same rank
 					longestDelay = delay;
-					selectedCardIndex = i;
-					console.log("New best: card " + i + " (rank " + minRank + ", longer delay)");
+					if (i != prevSelectedCardIndex) {
+						selectedCardIndex = i;
+						console.log("New best: card " + i + " (rank " + minRank + ", longer delay)");
+					}
 				}
 			} else if (delay > longestDelay) {
 				if (!((algoChoiceRNF == 2 && this.deck[i]['history'][0] != 'x') || 
 					(algoChoiceRNF == 4 && this.deck[i]['test_history'][0] != 'X'))) {
 					longestDelay = delay;
-					selectedCardIndex = i;
-					console.log("New best: card " + i + " (longer delay)");
+					if (i != prevSelectedCardIndex) {
+						selectedCardIndex = i;
+						console.log("New best: card " + i + " (longer delay)");
+					}
 				}
 			}
 		}
