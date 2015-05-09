@@ -66,8 +66,8 @@ specialQueue.peek = function() {
 
 /*SPECIAL FREQUENCY card skip sequences; add/edit skips as necessary*/
 var skips = [
-	[1, 1], //Skip 1 cards for 1 times 
-	[3, 1] //Skip 3 cards for 1 times
+	[3, 1], //Skip 3 cards for 1 times 
+	[8, 1] //Skip 8 cards for 1 times
 ];
 /*skip progress of current SPECIAL FREQUENCY card in the format 
  [skipIndex, skipCount] matching above definition */
@@ -87,19 +87,18 @@ var r9 = 98; //3 98
 var r10 = 100; //2 //rand 13+ 100
 
 /****************************LEARN Logic Variables***************************/
-var learnFirstTimeCorrectMark = '5'; //First time shown marked right history mark
-var learnCorrectMark = 'L'; //Answered correctly history mark
+var learnFirstTimeCorrectMark = '@'; //First time shown marked right history mark
+var learnCorrectMark = 'K'; //Answered correctly history mark
 var learnWrongMark = '*'; //Answered incorrectly history mark
 var L = 3; //Learning rank maximum
 var learnSkips = {
-	0: 1,
-	1: 1,
-	2: 2,
-	3: 3,
-	4: 4
+	0: 3,
+	1: 6,
+	2: 10,
+	3: 20,
+	4: 40
 }; //Skips to take per rank.  Format:  rank : #_of_skips
 var learnFirstTimeCorrectRank = 5; //Rank value for learning cards answered correctly on the first try.
-
 /*******************************************************************************/
 function DeckHandler() {}
 
@@ -519,7 +518,7 @@ DeckHandler.prototype.handleCardStatus = function(card, ansCorrect, gameMode, hi
 	var recordChar = '';
 	if (gameMode == 'TR' || gameMode == 'RW') {
 		if (specialFreq && specialQueue.peek() == card && card['learning'] != 1)
-			recordChar = (ansCorrect == 1 ? 'S' : '%');
+			recordChar = (ansCorrect == 1 ? '$' : '%');
 		else if (card['learning'] == 1) {
 			var ch = card['history'].search(/[^-]/);
 			if (ch == -1) {
@@ -535,7 +534,7 @@ DeckHandler.prototype.handleCardStatus = function(card, ansCorrect, gameMode, hi
 			recordChar = (ansCorrect == 1 ? 'o' : 'x');
 	} else if (gameMode == 'SUP') {
 		if (specialFreq && specialQueue.peek() == card)
-			recordChar = (ansCorrect == 1 ? 'S' : '%');
+			recordChar = (ansCorrect == 1 ? '$' : '%');
 		else
 			recordChar = (ansCorrect == 1 ? 'O' : 'X');
 	} else if (gameMode == 'STST') {
