@@ -143,10 +143,10 @@
 					function renderDeckSelection(deckArray) {
 						var innerHtml = "";
 						for (var i = 0; i < deckArray.length; i++) {
-							innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='loadGame(" + deckArray[i]['deck_id'] + ")'><p>" + deckArray[i]['deck_name'] + "</p></div></div></div><br/><br/><br/>";
+							innerHtml = innerHtml + "<div class='buttonHolder1'><div class='buttonHolder1'><div class='button green' onclick='loadGame(" + deckArray[i]['deck_id'] + ")'><p>" + deckArray[i]['deck_name'] + "</p></div></div></div><br/><br/><br/>";
 						}
 						/*for multiple deck mode*/
-						innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='loadGameMultiDeckMode()'><p>Play Multiple Decks</p></div></div></div><br/><br/><br/>";
+						innerHtml = innerHtml + "<div class='buttonHolder1'><div class='buttonHolder1'><div class='button green' onclick='loadGameMultiDeckMode()'><p>Play Multiple Decks</p></div></div></div><br/><br/><br/>";
 						document.getElementById("cardDeckSelectionScreen").innerHTML = innerHtml;
 					}
 					function renderDeckMultiSelection(deckArray) {
@@ -272,6 +272,10 @@
 					function showNextQues() {
 						$("#source_div_a").html("");
 						$("#source_div_q").html("");
+						
+						$("#source_div_a_slow").html("");
+						$("#source_div_q_slow").html("");
+						
 						currentCard = deckHander.getNextCard(gameMode);
 						game_results['deck'][game_count] = new Object();
 						game_results['deck'][game_count]['deck_id'] = currentCard['deck_id'];
@@ -280,23 +284,49 @@
 						var base_url = '<?php echo base_url(); ?>';
 						var question_upload_file = currentCard['question_upload_file'];
 						var answer_upload_file = currentCard['answer_upload_file'];
+						
+						var question_upload_file_slow = currentCard['question_upload_file_slow'];
+						var answer_upload_file_slow = currentCard['answer_upload_file_slow'];
+						
 						$("#source_div_a").html("<audio id='player_a'><source id='sorce_id_a' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file + "'></audio>");
 						$("#source_div_q").html("<audio id='player_q'><source id='sorce_id_q' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file + "'></audio>");
 						$("#sorce_id_a").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file']);
 						$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
+						
+						$("#source_div_a_slow").html("<audio id='player_a_slow'><source id='sorce_id_a_slow' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file_slow + "'></audio>");
+						$("#source_div_q_slow").html("<audio id='player_q_slow'><source id='sorce_id_q_slow' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file_slow + "'></audio>");
+						$("#sorce_id_a_slow").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file_slow']);
+						$("#sorce_id_q_slow").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file_slow']);
 						flipBack();
 						document.getElementById('player_q').play();
+						
+						var first_play = 0;
 						window.loop = 	function(){
 											window.loop_q = setTimeout(function(){
-												document.getElementById('player_q').play();
+												first_play++;
+												console.log(Q_AudioLoopResetInterval+" "+first_play);
+												
+												if(first_play < 0)
+												{
+													console.log(0);
+												}
+												else
+												{	
+													console.log(1);
+													document.getElementById('player_q_slow').play();
+												}
 											}, Q_AudioLoopResetInterval);
 										};
+										
 						document.getElementById('player_q').addEventListener("ended",loop);
+						document.getElementById('player_q_slow').addEventListener("ended",loop);
+								
+						
 						var avgTime = 0;
 						if (parseInt(currentCard['play_count']) != 0) {
 							avgTime = currentCard['total_time'] / currentCard['play_count'];
 						}
-						renderQuestion(gameMode, currentCard['history'],currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question']);
+						renderQuestion(gameMode, currentCard['history'],currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question'], currentCard['question_note']);
 						quick_review_log['before_history'] = game_results['deck'][game_count]['history'];
 						quick_review_log['reason'] = extraInfo.innerHTML;
 						quick_review_log['before_rank'] = currentCard['rank'];
@@ -313,17 +343,34 @@
 					function showAns() {						
 						flip();
 						document.getElementById('player_q').removeEventListener("ended", loop);
+						document.getElementById('player_q_slow').removeEventListener("ended", loop);
 						if(typeof loop_q !== "undefined"){
 							clearTimeout(loop_q);
 						}
 						document.getElementById('player_q').pause();
+						document.getElementById('player_q_slow').pause();
 						document.getElementById('player_a').play();
+						
+						var first_play = 0;
 						window.loop = 	function(){
 											window.loop_a = setTimeout(function(){
-												document.getElementById('player_a').play();
+												first_play++;
+												if(first_play < 0)
+												{
+													console.log(0);
+												}
+												else
+												{	
+													console.log(1);
+													document.getElementById('player_a_slow').play();
+												}
+												
 											}, A_AudioLoopResetInterval);
 										};
+										
 						document.getElementById('player_a').addEventListener("ended", loop);
+						document.getElementById('player_a_slow').addEventListener("ended", loop);
+						
 						/*stop the time up timer and get it value*/
 						clearInterval(timerIntervalId);
 						currentCard['last_time'] = totalSeconds;
@@ -333,14 +380,16 @@
 							avgTime = currentCard['total_time'] / currentCard['play_count'];
 						}
 						totalSeconds = 0;
-						renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
+						renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer'], currentCard['answer_note'], currentCard['question']);
 					}
 					function markAnswer(mark) {
 						document.getElementById('player_a').removeEventListener("ended", loop);
+						document.getElementById('player_a_slow').removeEventListener("ended", loop);
 						if(typeof loop_a !== "undefined"){
 							clearTimeout(loop_a);
 						}
 						document.getElementById('player_a').pause();
+						document.getElementById('player_a_slow').pause();
 						
 						var isValid = mark > 0;
 						console.log("isValid "+isValid+ " mark="+mark);
@@ -374,15 +423,20 @@
 					function finishGame() {
 						/* show the deck selection screen */
 						document.getElementById('player_a').removeEventListener("ended", loop);
+						document.getElementById('player_a_slow').removeEventListener("ended", loop);
 						if(typeof loop_a !== "undefined"){
 							clearTimeout(loop_a);
 						}
 						document.getElementById('player_a').pause();
+						document.getElementById('player_a_slow').pause();
 						document.getElementById('player_q').removeEventListener("ended", loop);
+						document.getElementById('player_q_slow').removeEventListener("ended", loop);
+						
 						if(typeof loop_q !== "undefined"){
 							clearTimeout(loop_q);
 						}
 						document.getElementById('player_q').pause();
+						document.getElementById('player_q_slow').pause();
 						
 						game_results['card_count'] = total_cards;
 						total_cards = 0;
@@ -424,24 +478,24 @@
 								(/(?:^|\s)fcardAnsFlip(?!\S)/g, '');
 					}
 					/********Card Content Rendering********/
-					function renderQuestion(mode, history,test_history, rank, avgTime, ques) {
+					function renderQuestion(mode, history,test_history, rank, avgTime, ques, quesNotes) {
 						document.getElementById("qMode").innerHTML = "M:" + mode;
 						document.getElementById("qHistory").innerHTML = "H:" + history;
 						document.getElementById("qTestHistory").innerHTML = "Test H:" + test_history;
 						document.getElementById("qRank").innerHTML = "R:" + rank;
 						document.getElementById("qAvg").innerHTML = "Avg:" + avgTime;
-						document.getElementById("qContent").innerHTML = ques;
+						document.getElementById("qContent").innerHTML = ques + '<div style="font-size:14px;">'+quesNotes+'</div>';
 						/*Call timer function to set count up time*/
 						startTimer(true);
 					}
-					function renderAnswer(mode, history,test_history, rank, avgTime, time, ans) {
+					function renderAnswer(mode, history,test_history, rank, avgTime, time, ans, ansNotes, ques) {
 						document.getElementById("aMode").innerHTML = "M:" + mode;
 						document.getElementById("aHistory").innerHTML = "H:" + history;
 						document.getElementById("aTestHistory").innerHTML = "Test H:" + test_history;
 						document.getElementById("aRank").innerHTML = "R:" + rank;
 						document.getElementById("aAvg").innerHTML = "Avg:" + avgTime;
 						document.getElementById("aTime").innerHTML = "Time:" + time;
-						document.getElementById("aContent").innerHTML = ans;
+						document.getElementById("aContent").innerHTML = '<div style="font-size:14px;">'+ques+'</div>'+ans+'<div style="font-size:14px;">'+ansNotes+'</div>';
 					}
 					/***********Timer Functions****************/
 					function startTimer(restart) {
@@ -500,6 +554,10 @@
 		<div id="source_div_a">
 		</div>
 		<div id="source_div_q">
+		</div>
+		<div id="source_div_a_slow">
+		</div>
+		<div id="source_div_q_slow">
 		</div>
 		<!--	  
 		<audio controls="controls">

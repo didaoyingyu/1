@@ -538,7 +538,7 @@
 				if (parseInt(currentCard['play_count']) != 0) {
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
-				renderQuestion(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question']);
+				renderQuestion(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question'], currentCard['question_note']);
 			}
 			function showAns() {
 				flip();
@@ -553,7 +553,7 @@
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
 				totalSeconds = 0;
-				renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
+				renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer'], currentCard['answer_note'], currentCard['question']);
  			}
 			function ansCorrect() {
 				total_cards++;
@@ -713,24 +713,24 @@
 						(/(?:^|\s)fcardAnsFlip(?!\S)/g, '');
 			}
 			/********Card Content Rendering********/
-			function renderQuestion(mode, history, test_history, rank, avgTime, ques) {
+			function renderQuestion(mode, history, test_history, rank, avgTime, ques, quesNotes) {
 				document.getElementById("qMode").innerHTML = "M:" + mode;
 				document.getElementById("qHistory").innerHTML = "H:" + history;
 				document.getElementById("qTestHistory").innerHTML = "Test H:" + test_history;
 				document.getElementById("qRank").innerHTML = "R:" + rank;
 				document.getElementById("qAvg").innerHTML = "Avg:" + avgTime;
-				document.getElementById("qContent").innerHTML = ques;
+				document.getElementById("qContent").innerHTML = ques + '<div style="font-size:14px;">'+quesNotes+'</div>';
 				/*Call timer function to set count up time*/
 				startTimer(true);
 			}
-			function renderAnswer(mode, history, test_history, rank, avgTime, time, ans) {
+			function renderAnswer(mode, history, test_history, rank, avgTime, time, ans, ansNotes, ques) {
 				document.getElementById("aMode").innerHTML = "M:" + mode;
 				document.getElementById("aHistory").innerHTML = "H:" + history;
 				document.getElementById("aTestHistory").innerHTML = "Test H:" + test_history;
 				document.getElementById("aRank").innerHTML = "R:" + rank;
 				document.getElementById("aAvg").innerHTML = "Avg:" + avgTime;
 				document.getElementById("aTime").innerHTML = "Time:" + time;
-				document.getElementById("aContent").innerHTML = ans;
+				document.getElementById("aContent").innerHTML = '<div style="font-size:14px;">'+ques+'</div>'+ans+'<div style="font-size:14px;">'+ansNotes+'</div>';
 			}
 			/***********Timer Functions****************/
 			function startTimer(restart) {

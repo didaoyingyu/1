@@ -80,6 +80,10 @@
 									avgExceedRankDesc = parseInt(reviwModeParams[i]['value']);
 								} else if (reviwModeParams[i]['param_name'] == 'avgExceedPercentage') {
 									avgExceedPercentage = parseInt(reviwModeParams[i]['value']);
+								}else if (reviwModeParams[i]['param_name'] == 'Q_AudioLoopResetInterval') {
+									Q_AudioLoopResetInterval = parseInt(reviwModeParams[i]['value']);
+								} else if (reviwModeParams[i]['param_name'] == 'A_AudioLoopResetInterval') {
+									A_AudioLoopResetInterval = parseInt(reviwModeParams[i]['value']);
 								}
 							}
 						} else {
@@ -106,10 +110,10 @@
 			function renderDeckSelection(deckArray) {
 				var innerHtml = "";
 				for (var i = 0; i < deckArray.length; i++) {
-					innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='loadGame(" + deckArray[i]['deck_id'] + ")'><p>" + deckArray[i]['deck_name'] + "</p></div></div></div><br/><br/><br/>";
+					innerHtml = innerHtml + "<div class='buttonHolder1'><div class='buttonHolder1'><div class='button green' onclick='loadGame(" + deckArray[i]['deck_id'] + ")'><p>" + deckArray[i]['deck_name'] + "</p></div></div></div><br/><br/><br/>";
 				}
 				/*for multiple deck mode*/
-				innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='loadGameMultiDeckMode()'><p>Play Multiple Decks</p></div></div></div><br/><br/><br/>";
+				innerHtml = innerHtml + "<div class='buttonHolder1'><div class='buttonHolder1'><div class='button green' onclick='loadGameMultiDeckMode()'><p>Play Multiple Decks</p></div></div></div><br/><br/><br/>";
 				deckScreen.innerHTML = innerHtml;
 			}
 			function renderDeckMultiSelection(deckArray) {
@@ -230,8 +234,10 @@
 			}
 			/*********User button clicking event handling**************/
 			function showNextQues() {
-				//$("#source_div_a").html("");
-				//$("#source_div_q").html("");
+				$("#source_div_a").html("");
+				$("#source_div_q").html("");
+				$("#source_div_a_slow").html("");
+				$("#source_div_q_slow").html("");
 				var track = document.getElementById("quickReviewValue").value;
 				
 				currentCard = deckHandler.getNextCard(gameMode);
@@ -239,27 +245,46 @@
 				gameResults['deck'][gameCount]['deck_id'] = currentCard['deck_id'];
 				gameResults['deck'][gameCount]['card_id'] = currentCard['card_id'];
 				gameResults['deck'][gameCount]['history'] = currentCard['history'];
-				if(track == 1)
-				{
-				}
-				else
-				{
+				
 					var base_url = '<?php echo base_url(); ?>';
 					var question_upload_file = currentCard['question_upload_file'];
 					var answer_upload_file = currentCard['answer_upload_file'];
+					
+					var question_upload_file_slow = currentCard['question_upload_file_slow'];
+					var answer_upload_file_slow = currentCard['answer_upload_file_slow'];
+					
 					$("#source_div_q").html("<audio id='player_a'><source id='sorce_id_a' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file + "'></audio>");
 					$("#source_div_a").html("<audio id='player_q'><source id='sorce_id_q' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file + "'></audio>");
 					$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file']);
 					$("#sorce_id_a").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
+					
+					$("#source_div_q_slow").html("<audio id='player_a_slow'><source id='sorce_id_a_slow' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file_slow + "'></audio>");
+					$("#source_div_a_slow").html("<audio id='player_q_slow'><source id='sorce_id_q_slow' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file_slow + "'></audio>");
+					$("#sorce_id_q_slow").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file_slow']);
+					$("#sorce_id_a_slow").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file_slow']);
+					
 					document.getElementById('player_q').play();
+					var first_play = 0;
 					window.loop = 	function(){
 										window.loop_q = setTimeout(function(){
-											document.getElementById('player_q').play();
+											first_play++;
+												console.log(Q_AudioLoopResetInterval+" "+first_play);
+												
+												if(first_play < 0)
+												{
+													console.log(0);
+												}
+												else
+												{	
+													console.log(1);
+													document.getElementById('player_q_slow').play();
+												}
 										}, Q_AudioLoopResetInterval);
 									};
 					document.getElementById('player_q').addEventListener("ended",loop);
+					document.getElementById('player_q_slow').addEventListener("ended",loop);
 						
-				}
+				
 				
 				flipBack();
 				var avgTime = 0;
@@ -267,7 +292,7 @@
 				if (parseInt(currentCard['play_count']) != 0) {
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
-				renderQuestion(gameMode, currentCard['history'],currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['answer']);
+				renderQuestion(gameMode, currentCard['history'],currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['answer'], currentCard['answer_note'], currentCard['question']);
 				quickReviewLog['before_history'] = gameResults['deck'][gameCount]['history'];
 				quickReviewLog['reason'] = extraInfo.innerHTML;
 				quickReviewLog['before_rank'] = currentCard['rank'];
@@ -291,20 +316,37 @@
 				{
 				}
 				else
-				{/*
+				{
 					document.getElementById('player_q').removeEventListener("ended", loop);
+					document.getElementById('player_q_slow').removeEventListener("ended", loop);
 					if(typeof loop_q !== "undefined"){
 								clearTimeout(loop_q);
 							}
 					document.getElementById('player_q').pause();
+					document.getElementById('player_q_slow').pause();
 					document.getElementById('player_a').play();
+					
+					var first_play = 0;
 					window.loop = 	function(){
 										window.loop_a = setTimeout(function(){
-											document.getElementById('player_a').play();
+											
+												first_play++;
+												console.log(A_AudioLoopResetInterval+" "+first_play);
+												
+												if(first_play < 0)
+												{
+													console.log(0);
+												}
+												else
+												{	
+													console.log(1);
+													document.getElementById('player_a_slow').play();
+												}
 										}, A_AudioLoopResetInterval);
 									};
 					document.getElementById('player_a').addEventListener("ended", loop);
-					*/
+					document.getElementById('player_a_slow').addEventListener("ended", loop);
+					
 				}
 				
 				/*stop the time up timer and get it value*/
@@ -317,7 +359,7 @@
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
 				totalSeconds = 0;
-				renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['question']);
+				renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['question'], currentCard['question_note'], currentCard['answer']);
 			}
 			function markAnswer(mark) {
 				var track = document.getElementById("quickReviewValue").value;
@@ -325,13 +367,15 @@
 				{
 				}
 				else
-				{/*
+				{
 					document.getElementById('player_a').removeEventListener("ended", loop);
+					document.getElementById('player_a_slow').removeEventListener("ended", loop);
 					if(typeof loop_a !== "undefined"){
 							clearTimeout(loop_a);
 						}
 					document.getElementById('player_a').pause();
-					*/
+					document.getElementById('player_a_slow').pause();
+					
 				}
 				var isValid = mark > 0;
 				
@@ -369,20 +413,24 @@
 				}
 				else
 				{
-				/*
+				
 					document.getElementById('player_a').removeEventListener("ended", loop);
+					document.getElementById('player_a_slow').removeEventListener("ended", loop);
 					if(typeof loop_a !== "undefined"){
 						clearTimeout(loop_a);
 					}
 					document.getElementById('player_a').pause();
+					document.getElementById('player_a_slow').pause();
 					document.getElementById('player_q').removeEventListener("ended", loop);
+					document.getElementById('player_q_slow').removeEventListener("ended", loop);
 		
 					if(typeof loop_q !== "undefined"){
 						clearTimeout(loop_q);
 					}
 					document.getElementById('player_q').pause();
+					document.getElementById('player_q_slow').pause();
 					
-					*/
+					
 				}
 				gameResults['card_count'] = totalCards;
 				totalCards = 0;
@@ -404,6 +452,7 @@
 					}
 					gameScreen.style.display = "none";
 					modeScreen.style.display = "block";
+					window.location = "<?php echo base_url(); ?>index.php/game/game_view/";
 				}
 				else {
 					startTimer(false);	//restart timer without reset
@@ -421,24 +470,24 @@
 					(/(?:^|\s)fcardAnsFlip(?!\S)/g, '');
 			}
 			/********Card Content Rendering********/
-			function renderQuestion(mode, history,test_history, rank, avgTime, ques) {
+			function renderQuestion(mode, history,test_history, rank, avgTime, ans, ansNotes, ques) {
 				qMode.innerHTML = "M:" + mode;
 				qHistory.innerHTML = "H:" + history;
 				qTestHistory.innerHTML = "Test H:" + test_history;
 				qRank.innerHTML = "R:" + rank;
 				qAvg.innerHTML = "Avg:" + avgTime;
-				qContent.innerHTML = ques;
+				qContent.innerHTML = 'A. '+ans;
 				/*Call timer function to set count up time*/
 				startTimer(true);
 			}
-			function renderAnswer(mode, history,test_history, rank, avgTime, time, ans) {
+			function renderAnswer(mode, history,test_history, rank, avgTime, time, ques, quesNotes,ans) {
 				aMode.innerHTML = "M:" + mode;
 				aHistory.innerHTML = "H:" + history;
 				aTestHistory.innerHTML = "Test H:" + test_history;
 				aRank.innerHTML = "R:" + rank;
 				aAvg.innerHTML = "Avg:" + avgTime;
 				aTime.innerHTML = "Time:" + time;
-				aContent.innerHTML = ans;
+				aContent.innerHTML =  '<div style="font-size:14px;">'+ques + '</div>'+ans+'<div style="font-size:14px;">'+quesNotes+'</div>';
 			}
 			/***********Timer Functions****************/
 			function startTimer(restart) {
@@ -517,6 +566,31 @@
 			/**"add ability for user to create new decks and edit personal decks"**/
 			function quickReviewSound() {
 			
+				$(".fcardQues").css({"display":"none"});
+				$(".fcardStage").css({"display":"block"});
+			/*
+				loadGameMode('RW', false);
+				new ajaxObject("<?php echo base_url() ?>index.php/game/load_decks_id/<?php echo $this->ion_auth->user()->row()->id ?>", 
+					function(response, status) {
+						if (status == 200) {
+							//loadGameMd(JSON.parse(response));
+						} else {
+							alert("Communication Error! Please check Your Network Connection!\nStatus Code: " + status);
+						}
+					}).update();
+					
+					*/
+			}
+			
+			function show_all()
+			{
+				window.location = "<?php echo base_url(); ?>index.php/game/quick_reverse_with_sound_show_all/<?php echo $this->ion_auth->user()->row()->id ?>";
+			}
+			function show_text()
+			{
+				$(".fcardQues").css({"display":"block"});
+				$(".fcardStage").css({"display":"none"});
+				
 				loadGameMode('RW', false);
 				new ajaxObject("<?php echo base_url() ?>index.php/game/load_decks_id/<?php echo $this->ion_auth->user()->row()->id ?>", 
 					function(response, status) {
@@ -526,17 +600,32 @@
 							alert("Communication Error! Please check Your Network Connection!\nStatus Code: " + status);
 						}
 					}).update();
+					
 			}
-			// register the handler 
+			function finish()
+			{
+				if (confirm("Do you really want to finish this game?")) {
+					window.location = "<?php echo base_url(); ?>index.php/game/game_view/";
+				}
+				else
+				{
+				}
+			}
+			
 			document.addEventListener('keyup', keyHandler, false);
 		</script>
 	</head>
 	<body onload="quickReviewSound()">
 	
-	<div id="source_div_a">
+		<div id="source_div_a">
 		</div>
 		<div id="source_div_q">
 		</div>
+		<div id="source_div_a_slow">
+		</div>
+		<div id="source_div_q_slow">
+		</div>
+		
 		<div class="container">
 			<!-- Header Section -->
 			<div class="header">
@@ -573,8 +662,11 @@
 						<div id="qContent" class="fcardContent">
 							Content
 						</div>
-						<div class="fcardFooterQues">
-							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="showAns()"><p>Question</p></div></div></div>
+						<div class="fcardFooterAns">
+							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:markAnswer(1);"><p>&#10004;</p></div></div></div> 
+							<div class="buttonHolder"><div class="buttonInner"><div class="button red" onclick="javascript:markAnswer(0);"><p>&#10007;</p></div></div></div> 
+							
+							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="showAns()"><p>Meaning</p></div></div></div>
 							<div class="buttonHolder"><div class="buttonInner"><div class="button" onclick="finishGame()"><p>Finish</p></div></div></div>
 							<div class="clearFloat"></div>
 						</div>
@@ -596,37 +688,54 @@
 						<div class="fcardFooterAns">
 							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:markAnswer(1);"><p>&#10004;</p></div></div></div> 
 							<div class="buttonHolder"><div class="buttonInner"><div class="button red" onclick="javascript:markAnswer(0);"><p>&#10007;</p></div></div></div> 
+							<div class="buttonHolder"><div class="buttonInner"><div class="button" onclick="finishGame()"><p>Finish</p></div></div></div>
+							
 							<div class="clearFloat"></div>
 						</div>
 					</div>
+					<!-- Stage-->
+					<div class="fcardStage" style="display:none;" id="fcardStage">
+						<h1>What o you hear?</h1>
+						<div class="fcardContent">	
+							<div class="reversclass  green " onclick="show_text();" >SHOW TEXT</div>
+							<div class="reversclass  green " onclick="show_all();" >SHOW ALL</div>
+							<div class="reversclass  green " onclick="finish();" >FINISH</div>
+							<div class="clearFloat"></div>
+					</div>
+				
 				</div>
+				
 				<div id="extraInfo" style="position:relative; z-index: 500000000000000000000;  top:-20px;"></div>
 			</div>
 			<!--QuickView not redirect same page-->
 			<!-- Game mode and extra functions selector Screen -->
 			<div class="gameModeScreen" id="gameModeScreen">
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReview();"><p class="black">Quick Review</p></div></div></div> 
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:loadGameMode('RW', true);"><p>Review Mode</p></div></div></div> 
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p>Quick Review With Sound</p></a></div></div>
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/rw_with_sound" style="text-decoration:none;color:#fff"><p>Review Mode With Sound</p></a></div></div> 
-				<!-- <div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReviewSound();"><p>Quick Review With Sound</p></div></div></div>  -->
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_reverse_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p>Quick Reverse With Sound</p></a></div></div>
+				
+				
+				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReview();"><p><span class="black">QUICK</span></p></div></div></div> 
+				
+				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:loadGameMode('RW', true);"><p><span class="white">Review Mode</span></p></div></div></div> 
+				
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p><span class="black">QUICK</span></p></a></div></div>
+				
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/rw_with_sound" style="text-decoration:none;color:black"><p><span class="white">Review + Sound</span></p></a></div></div> 
+				
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_reverse_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p><span class="black">QUICK</span></p></a></div></div>
+				
+				
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/reverse_with_sound" style="text-decoration:none;color:black"><p><span class="white">Reverse + sound</span></p></a></div></div> 
+				
+				
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/self_test/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p><span class="white">Self Test</span></p></a></div></div> 
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/rw_input/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p><span class="white">Review w/Input</span></p></a></div></div> 
 				<br/><br/><br/>
 				
-				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/reverse_with_sound" style="text-decoration:none;color:#fff"><p>Reverse Mode With sound</p></a></div></div> 
-				<br/><br/><br/>
-
 				<!--create new deck-->
-				<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='newDeck()'><p>Create New Deck</p></div></div></div>
-				<br/><br/><br/>
+				<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='newDeck()'><p>New Deck</p></div></div></div>
 				<!--manage card decks-->
 				<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='manageDeck()'><p>Manage Deck</p></div></div></div>
 				<br/><br/><br/>
-				<!--upload card decks
+			<!--upload card decks
 				<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='uploadDeck()'><p>Upload Deck</p></div></div></div>
 				<br/><br/><br/>-->
 			</div>

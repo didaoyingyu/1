@@ -57,6 +57,7 @@
 						<th>Date</th>
 						<th>Question</th>
 						<th>Answer</th>
+						<th>User Input</th>
 						<th>Deck Name</th>
 						<th>Before History</th>
 						<th>Before Rank</th>
@@ -78,6 +79,7 @@
 											<td>".$r->itp."</td>
 											<td>".$r->question."</td>
 											<td>".$r->answer."</td>
+											<td>".$r->ans_userInput."</td>
 											<td>".$r->deck_name."</td>
 											<td>".$r->before_history."</td>
 											<td>".$r->before_rank."</td>

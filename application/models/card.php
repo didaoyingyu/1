@@ -1188,12 +1188,27 @@ class card extends CI_Model {
 			{
 				
 					$question =  $deck[$i]['q'];
+					$question_note =  $deck[$i]['qn'];
 					$anwser = $deck[$i]['a'];
+					$anwser_note = $deck[$i]['an'];
+
+					$questionfile =  $deck[$i]['qf'];
+					$questionffile =  $deck[$i]['qnf'];
+					$anwserfile = $deck[$i]['af'];
+					$anwserffile = $deck[$i]['anf'];
 					
 				
 					$this->db->set('created_user_id', $user_id);
 					$this->db->set('question', $question);
+					$this->db->set('question_note', $question_note);
 					$this->db->set('answer', $anwser);
+					$this->db->set('answer_note', $anwser_note);
+					
+					$this->db->set('question_upload_file', $questionfile);
+					$this->db->set('question_upload_file_slow', $questionffile);
+					$this->db->set('answer_upload_file', $anwserfile);
+					$this->db->set('answer_upload_file_slow', $anwserffile);
+					
 					$this->db->insert('card');
 					$cardId = $this->db->insert_id();
 					/* insert record to card in deck */
@@ -1300,7 +1315,7 @@ class card extends CI_Model {
 //		INNER JOIN card_deck d ON d.deck_id=cid.deck_id
 //
 //		WHERE cid.deck_id = $id";
-			$sql = "SELECT a.card_id, a.created_user_id, a.question, a.answer, a.answer_upload_file, a.question_upload_file, a.created_date,
+			$sql = "SELECT a.card_id, a.created_user_id, a.question, a.question_note, a.answer,a.answer_note, a.answer_upload_file_slow, a.question_upload_file_slow, a.answer_upload_file, a.question_upload_file, a.created_date,
 	b.deck_name, b.deck_id, c.id FROM card a
 	INNER JOIN card_in_deck c ON a.card_id = c.card_id
 	INNER JOIN card_deck b ON c.deck_id = b.deck_id WHERE c.deck_id = $id";
@@ -1456,8 +1471,34 @@ class card extends CI_Model {
 			if ($type == "q"){
 				$insert['question_upload_file'] = '';
 			}
+			else if ($type == "slow_q"){
+				$insert['question_upload_file_slow'] = '';
+			}
+			else if ($type == "slow_a"){
+				$insert['answer_upload_file_slow'] = '';
+			}
 			else{
 				$insert['answer_upload_file'] = '';
+			}
+			$this->db->update('card', $insert, array('card_id' => $id));
+			$this->db->trans_commit();
+			return 1;
+		} catch (Exception $ex) {
+			print_r($ex);
+			$this->db->trans_rollback();
+			return 0;
+		}
+	}
+
+	public function updateCardUrlInDeckSlow($id, $type) {
+		$this->db->trans_begin();
+		try {
+			$insert = array();
+			if ($type == "slow_q"){
+				$insert['question_upload_file_slow'] = '';
+			}
+			else{
+				$insert['answer_upload_file_slow'] = '';
 			}
 			$this->db->update('card', $insert, array('card_id' => $id));
 			$this->db->trans_commit();
@@ -1485,15 +1526,24 @@ class card extends CI_Model {
 						$id = $data['id'];
 						if ($data['action'] == 'active') {
 							$insert['question'] = $data['question'];
+							$insert['question_note'] = $data['question_note'];
 							$insert['answer'] = $data['answer'];
+							$insert['answer_note'] = $data['answer_note'];
 							if (isset($data['answer_upload_file'])) {
 								$insert['answer_upload_file'] = $data['answer_upload_file'];
 							}
 							if (isset($data['question_upload_file'])) {
 								$insert['question_upload_file'] = $data['question_upload_file'];
 							}
+							if (isset($data['answer_upload_file_slow'])) {
+								$insert['answer_upload_file_slow'] = $data['answer_upload_file_slow'];
+							}
+							if (isset($data['question_upload_file_slow'])) {
+								$insert['question_upload_file_slow'] = $data['question_upload_file_slow'];
+							}
 							// $wherestr = " id='$id' ";
 							$this->db->update('card', $insert, array('card_id' => $id));
+							
 						} else if ($data['action'] == 'delete') {
 							$this->db->delete('card', array('card_id' => $id));
 						}
@@ -1503,7 +1553,9 @@ class card extends CI_Model {
 					if (isset($data['question']) && (isset($data['answer']))) {
 						$item['created_user_id'] = $user_id;
 						$item['question'] = $data['question'];
+						$item['question_note'] = $data['question_note'];
 						$item['answer'] = $data['answer'];
+						$item['answer_note'] = $data['answer_note'];
 						if (isset($data['answer_upload_file'])) {
 							$item['answer_upload_file'] = $data['answer_upload_file'];
 						}
@@ -1563,6 +1615,7 @@ class card extends CI_Model {
 					$var = array();
 					if (isset($item['question']) && (isset($item['answer']))) {
 						$item['created_user_id'] = $user_id;
+						
 						$this->db->insert('card', $item);
 						$card_id = $this->db->insert_id();
 						$var['deck_id'] = $deck_id;
@@ -1654,7 +1707,7 @@ class card extends CI_Model {
 
 	public function getAllErrors($user_name) {
 //********/
-        $sql = "SELECT ssc.history,ssc.rank,ssc.itp,ssc.last_shown,ssc.utp,cd.deck_name,
+        $sql = "SELECT ssc.test_history, ssc.history,ssc.rank,ssc.itp,ssc.last_shown,ssc.utp,cd.deck_name,
                     ss.game_date,
                  c.question,
                  c.answer,
@@ -1674,10 +1727,61 @@ class card extends CI_Model {
         $query = $this->db->query($sql, array($user_name))->result();
         return $query;
     }
+	
+	
+	public function getAllErrorsSelft($user_name) {
+
+		$sql = "SELECT ssc.ans_userInput, ssc.test_history, ssc.after_history,ssc.after_rank,ssc.itp,ssc.utp,cd.deck_name,
+        c.question,c.answer,cd.deck_id
+        FROM quick_review_log ssc
+        INNER JOIN card c
+        ON c.card_id=ssc.card_id
+        INNER JOIN card_deck cd
+        ON cd.deck_id=ssc.deck_id
+        INNER JOIN users u
+        ON u.id=ssc.user_id
+        WHERE u.email = '$user_name'
+        AND ssc.ans=0
+        AND ssc.ans_userInput != ''
+        ORDER BY ssc.itp DESC,cd.deck_name ";
+        $query = $this->db->query($sql);
+		return $query->result();
+    }
+	
+	
 
 	public function save_quick_review_log($data) {
 		$data['reason'] = str_replace('&gt;&gt;', '', $data['reason']);
 		$data['test_history'] = $data['test_history'];
+		$deck_name = $this->db->select("deck_name")->from("card_deck")->where("deck_id", $data['deck_id'])->get()->row_array();
+		$data['deck_name'] = $deck_name['deck_name'];
+		if (isset($data['reason'])) {
+			$utp = $this->db->select("utp")->from("user_card")
+							->where("user_id", $data['user_id'])
+							->where("deck_id", $data['deck_id'])
+							->where("card_id", $data['card_id'])
+							->get()->row_array();
+			$this->db->set('utp', 'NOW()', FALSE)
+					->where("user_id", $data['user_id'])
+					->where("deck_id", $data['deck_id'])
+					->where("card_id", $data['card_id'])
+					->update('user_card');
+			//print_r($utp);
+			//$data['utp'] = $utp['utp'];
+			
+			$this->db->insert('quick_review_log', $data);
+			//print_r($this->db->last_query());
+			return $this->db->insert_id();
+		} else {
+			return FALSE;
+		}
+	}
+
+
+	public function save_quick_review_log_self($data) {
+		$data['reason'] = str_replace('&gt;&gt;', '', $data['reason']);
+		$data['test_history'] = $data['test_history'];
+		$data['ans_userInput'] = $data['ans_userInput'];
 		$deck_name = $this->db->select("deck_name")->from("card_deck")->where("deck_id", $data['deck_id'])->get()->row_array();
 		$data['deck_name'] = $deck_name['deck_name'];
 		if (isset($data['reason'])) {

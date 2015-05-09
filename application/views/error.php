@@ -27,6 +27,9 @@
                             Answer  
                         </th>
                         <th >
+                            User Answer
+                        </th>
+                        <th >
                             History  
                         </th>
                         <th >
@@ -86,13 +89,16 @@
                                 <?= $card->answer ?> 
                             </td>
                             <td>
+                               
+                            </td>
+                            <td>
                                 <?= $card->history ?> 
                             </td>
                             <td>
                                 <?= $card->rank ?> 
                             </td>
                             <td>
-											 
+								<?= $card->test_history ?> 		 
                             </td>
                             <td>
                                 <script>

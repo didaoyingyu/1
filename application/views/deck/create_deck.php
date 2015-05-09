@@ -6,6 +6,11 @@
 		<link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css">
 		<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.js"></script>
 		<script src="<?php echo base_url() ?>js/ajaxfileupload.js"></script>
+		<style>
+			.container{
+				width:100%;
+			}
+		</style>
 		<script>
 			function getValuesOnTrOnQ(obj)
 			{
@@ -19,6 +24,20 @@
 				var ans = $(obj).val();
 				var tr = $(obj).parents('tr').first();
 				$(tr).attr("data-answer", ans);
+				$(tr).attr("data-unchanged", "changed");
+			}
+			function getValuesOnTrOnQN(obj)
+			{
+				var que = $(obj).val();
+				var tr = $(obj).parents('tr').first();
+				$(tr).attr("data-question_note", que);
+				$(tr).attr("data-unchanged", "changed");
+			}
+			function getValuesOnTrOnAN(obj)
+			{
+				var ans = $(obj).val();
+				var tr = $(obj).parents('tr').first();
+				$(tr).attr("data-answer_note", ans);
 				$(tr).attr("data-unchanged", "changed");
 			}
 		</script>
@@ -55,8 +74,20 @@
 						<th>
 							||
 						</th>
+						<th>
+							Question Note
+						</th>
+						<th>
+							||
+						</th>
 						<th >
 							Answer
+						</th>
+						<th>
+							||
+						</th>
+						<th>
+							Answer Note
 						</th>
 						<th width="20%">
 							Attachments
@@ -73,8 +104,21 @@
 								<td class='center-align'>
 									||
 								</td>
+								<td cell-name='question_note'>
+									<input type='text' class="question" onBlur='getValuesOnTrOnQN(this)' />
+								</td>
+								<td class='center-align'>
+									||
+								</td>
+								
 								<td cell-name='answer'>
 									<input type='text' class="answer" onBlur='getValuesOnTrOnA(this)' />
+								</td>
+								<td class='center-align'>
+									||
+								</td>
+								<td cell-name='answer_note'>
+									<input type='text' class="answer_note" onBlur='getValuesOnTrOnAN(this)' />
 								</td>
 								<td>
 									<input class="sound_file" type='file' name="file_name_<?= $count ?>" id="file_name_<?= $count ?>"   onChange="uploadFiles(<?= $count ?>, this)" />
@@ -193,9 +237,31 @@
 										.addClass('center-align')
 										)
 								.append($('<td>')
+										.append($('<input>')
+												.attr('type', 'text')
+												.attr('onBlur', 'getValuesOnTrOnQN(this)')
+												)
+										)
+								.attr("class", "last")
+								.append($('<td>')
+										.text('||')
+										.addClass('center-align')
+										)
+								.append($('<td>')
 										.append($("<input>")
 												.attr('type', 'text')
 												.attr('onBlur', 'getValuesOnTrOnA(this)')
+												)
+										)
+								.attr("class", "last")
+								.append($('<td>')
+										.text('||')
+										.addClass('center-align')
+										)
+								.append($('<td>')
+										.append($("<input>")
+												.attr('type', 'text')
+												.attr('onBlur', 'getValuesOnTrOnAN(this)')
 												)
 										)
 								.append($('<td>')
@@ -251,7 +317,9 @@
 				//				  }
 				initialClone(obj);
 				getValuesOnTrOnQ(this);
+				getValuesOnTrOnQN(this);
 				getValuesOnTrOnA(this);
+				getValuesOnTrOnAN(this);
 			}
 			function deleteThis(obj)
 			{
@@ -264,7 +332,9 @@
 				data['deck_name'] = $("#deck_name").val();
 				var fields = new Array(
 						"question",
+						"question_note",
 						"answer",
+						"answer_note",
 						"answer_upload_file"
 						);
 				data['items'] = getPostData("#table", fields).length > 0 ? getPostData("#table", fields) : null;

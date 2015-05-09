@@ -480,7 +480,11 @@ class game extends CI_Controller{
 				$errormsg.=" Deck Name not entered ";
 			}
 			if (isset($decks['items'])) {
+			
+
 				foreach ($decks['items'] AS $item) {
+				
+	
 					if ($item['action'] != 'delete') {
 						if (!isset($item['question']) || $item['question'] == '') {
 							$errormsg.=" One Question not entered ";
@@ -493,8 +497,11 @@ class game extends CI_Controller{
 			} else {
 				$errormsg = " No questions or answers in Table ";
 			}
+			
 			if (!$errormsg) {
 				$this->load->model('card');
+				
+				
 				$cards = $this->card->updateCardsInDeck($decks, $user->id);
 				if ($cards != 1) {
 					echo "error";
@@ -662,6 +669,15 @@ class game extends CI_Controller{
 		$this->load->view('quick_reverse_with_sound');
 	}
 
+
+	function quick_reverse_with_sound_show_all($userId) {
+		if (!$this->ion_auth->logged_in()) {
+			redirect('');
+		}
+
+		$this->load->view('quick_reverse_with_sound_show_all');
+	}
+
 	function rw_with_sound() {
 		if (!$this->ion_auth->logged_in()) {
 			redirect('');
@@ -669,11 +685,35 @@ class game extends CI_Controller{
 		$this->load->view('rw_with_sound');
 	}
 
+	function rw_input() {
+		if (!$this->ion_auth->logged_in()) {
+			redirect('');
+		}
+		$this->load->view('rw_input');
+	}
+
+	function self_test() {
+		if (!$this->ion_auth->logged_in()) {
+			redirect('');
+		}
+		$this->load->view('self_test');
+	}
+
 	function reverse_with_sound() {
 		if (!$this->ion_auth->logged_in()) {
 			redirect('');
 		}
 		$this->load->view('reverse_with_sound');
+	}
+
+
+	function reverse_with_sound_show_all($userId,$deckId) {
+		if (!$this->ion_auth->logged_in()) {
+			redirect('');
+		}
+		$data['userId'] = $userId;
+		$data['deckId'] = $deckId;
+		$this->load->view('reverse_with_sound_show_all',$data);
 	}
 
 	/*	 * Load Supervised plus test mode Ashvin Patel 19/jun/2014* */
@@ -693,6 +733,21 @@ class game extends CI_Controller{
 		$path_to_file = "./sound-files/" . $file;
 		$this->load->model('card');
 		$cards = $this->card->updateCardUrlInDeck($id, $type);
+		if ($cards == 1) {
+			unlink($path_to_file);
+			echo "File deleted successfully";
+		} else {
+			echo "error";
+		}
+	}
+	function deleteFileOnEditSlow() {
+		$file = $_POST['upload_file'];
+		$id = $_POST['id'];
+		$type = $_POST['type'];
+		$base_url = base_url();
+		$path_to_file = "./sound-files/" . $file;
+		$this->load->model('card');
+		$cards = $this->card->updateCardUrlInDeckSlow($id, $type);
 		if ($cards == 1) {
 			unlink($path_to_file);
 			echo "File deleted successfully";
@@ -761,6 +816,14 @@ class game extends CI_Controller{
 		$cards = array();
 		$cards["allCards"] = $this->card->getAllErrors($username);
 		$this->load->view('error', $cards);
+	}
+
+	function error_self_test() {
+		$this->load->model('card');
+		$username = $_GET['username'];
+		$cards = array();
+		$cards["allCards"] = $this->card->getAllErrorsSelft($username);
+		$this->load->view('error_self_test', $cards);
 	}
 
 }

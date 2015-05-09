@@ -56,25 +56,25 @@
 			</div>
 			<!-- Admin Window -->
 			<div class="adminScreen" id="adminScreen">
-				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/supervised_mode_plus" style="text-decoration:none;color:black" ><p>Supervised Test</p></a></div></div>
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:createDeck();"><p>Upload New Card Deck</p></div></div></div> 
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:newDeck();"><p>Create New Card Deck</p></div></div></div>
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:createUser();"><p>Create New User</p></div></div></div> 
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:createGroupu();"><p>Create Group</p></div></div></div> 
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:manageUser();"><p>User Management</p></div></div></div>
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:editRModeParams();"><p>Edit Review Mode</p></div></div></div>
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:editSModeParams();"><p>Edit Supervised Mode</p></div></div></div>
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:playGame();"><p>Play Game</p></div></div></div>
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:deleteDecks();"><p>Modify Decks</p></div></div></div>
+				<div class="buttonHolder1"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/supervised_mode_plus" style="text-decoration:none;color:black" ><p>Supervised Test</p></a></div></div>
+				 
+				<div class="buttonHolder1"><div class="buttonInner"><div class="button green" onclick="javascript:createDeck();"><p>Upload New Card Deck</p></div></div></div> 
+				
+				<div class="buttonHolder1"><div class="buttonInner"><div class="button green" onclick="javascript:newDeck();"><p>Create New Card Deck</p></div></div></div>
+				 
+				<div class="buttonHolder1"><div class="buttonInner"><div class="button green" onclick="javascript:createUser();"><p>Create New User</p></div></div></div> 
+				 
+				<div class="buttonHolder1"><div class="buttonInner"><div class="button green" onclick="javascript:createGroupu();"><p>Create Group</p></div></div></div> 
+				 
+				<div class="buttonHolder1"><div class="buttonInner"><div class="button green" onclick="javascript:manageUser();"><p>User Management</p></div></div></div>
+				 
+				<div class="buttonHolder1"><div class="buttonInner"><div class="button green" onclick="javascript:editRModeParams();"><p>Edit Review Mode</p></div></div></div>
+				 
+				<div class="buttonHolder1"><div class="buttonInner"><div class="button green" onclick="javascript:editSModeParams();"><p>Edit Supervised Mode</p></div></div></div>
+				 
+				<div class="buttonHolder1"><div class="buttonInner"><div class="button green" onclick="javascript:playGame();"><p>Play Game</p></div></div></div>
+				 
+				<div class="buttonHolder1"><div class="buttonInner"><div class="button green" onclick="javascript:deleteDecks();"><p>Modify Decks</p></div></div></div>
 			</div>
 		</div>
 	</body>

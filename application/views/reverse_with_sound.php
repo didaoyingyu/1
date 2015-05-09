@@ -143,10 +143,10 @@
 					function renderDeckSelection(deckArray) {
 						var innerHtml = "";
 						for (var i = 0; i < deckArray.length; i++) {
-							innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='loadGame(" + deckArray[i]['deck_id'] + ")'><p>" + deckArray[i]['deck_name'] + "</p></div></div></div><br/><br/><br/>";
+							innerHtml = innerHtml + "<div class='buttonHolder1'><div class='buttonHolder1'><div class='button green' onclick='loadGame(" + deckArray[i]['deck_id'] + ")'><p>" + deckArray[i]['deck_name'] + "</p></div></div></div><br/><br/><br/>";
 						}
 						/*for multiple deck mode*/
-						innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='loadGameMultiDeckMode()'><p>Play Multiple Decks</p></div></div></div><br/><br/><br/>";
+						innerHtml = innerHtml + "<div class='buttonHolder1'><div class='buttonHolder1'><div class='button green' onclick='loadGameMultiDeckMode()'><p>Play Multiple Decks</p></div></div></div><br/><br/><br/>";
 						document.getElementById("cardDeckSelectionScreen").innerHTML = innerHtml;
 					}
 					function renderDeckMultiSelection(deckArray) {
@@ -182,12 +182,16 @@
 								cardArray[i]['correct'] = 0;
 								cardArray[i]['wrong'] = 0;
 							}
+							
+							document.getElementById("deckIds").value = deckId;
+						
 							deckHander.setDeck(cardArray);
 							document.getElementById("gameScreen").style.display = "block";
 							document.getElementById("gameModeScreen").style.display = "none";
 							document.getElementById("cardDeckSelectionScreen").style.display = "none";
-							
-							showNextQues();
+							$(".fcardStage").css({"display":"block"});
+							$(".fcardQues").css({"display":"none"});
+							//showNextQues();
 							
 							
 						} else {
@@ -265,6 +269,8 @@
 					function showNextQues() {
 						$("#source_div_a").html("");
 						$("#source_div_q").html("");
+						$("#source_div_a_slow").html("");
+						$("#source_div_q_slow").html("");
 						currentCard = deckHander.getNextCard(gameMode);
 						game_results['deck'][game_count] = new Object();
 						//console.log(game_results['deck'][game_count]['deck_id'] = currentCard['deck_id']);
@@ -274,23 +280,48 @@
 						var base_url = '<?php echo base_url(); ?>';
 						var question_upload_file = currentCard['question_upload_file'];
 						var answer_upload_file = currentCard['answer_upload_file'];
+						var question_upload_file_slow = currentCard['question_upload_file_slow'];
+						var answer_upload_file_slow = currentCard['answer_upload_file_slow'];
+						
 						$("#source_div_q").html("<audio id='player_a'><source id='sorce_id_a' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file + "'></audio>");
 						$("#source_div_a").html("<audio id='player_q'><source id='sorce_id_q' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file + "'></audio>");
 						$("#sorce_id_q").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file']);
 						$("#sorce_id_a").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file']);
+						
+						$("#source_div_q_slow").html("<audio id='player_a_slow'><source id='sorce_id_a_slow' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file_slow + "'></audio>");
+						$("#source_div_a_slow").html("<audio id='player_q_slow'><source id='sorce_id_q_slow' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file_slow + "'></audio>");
+						$("#sorce_id_q_slow").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file_slow']);
+						$("#sorce_id_a_slow").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file_slow']);
+						
 						flipBack();
 						document.getElementById('player_q').play();
+						var first_play = 0;
 						window.loop = 	function(){
 											window.loop_q = setTimeout(function(){
-												document.getElementById('player_q').play();
+												first_play++;
+												console.log(Q_AudioLoopResetInterval+" "+first_play);
+												
+												if(first_play < 0)
+												{
+													console.log(0);
+												}
+												else
+												{	
+													console.log(1);
+													document.getElementById('player_q_slow').play();
+												}
 											}, Q_AudioLoopResetInterval);
 										};
+										
 						document.getElementById('player_q').addEventListener("ended",loop);
+						document.getElementById('player_q_slow').addEventListener("ended",loop);
+						
+						
 						var avgTime = 0;
 						if (parseInt(currentCard['play_count']) != 0) {
 							avgTime = currentCard['total_time'] / currentCard['play_count'];
 						}
-						renderQuestion(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['answer']);
+						renderQuestion(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['answer'], currentCard['answer_note'], currentCard['question']);
 						quick_review_log['before_history'] = game_results['deck'][game_count]['history'];
 						quick_review_log['reason'] = extraInfo.innerHTML;
 						quick_review_log['before_rank'] = currentCard['rank'];
@@ -308,17 +339,33 @@
 						flip();
 						
 						document.getElementById('player_q').removeEventListener("ended", loop);
+						document.getElementById('player_q_slow').removeEventListener("ended", loop);
 						if(typeof loop_q !== "undefined"){
 							clearTimeout(loop_q);
 						}
 						document.getElementById('player_q').pause();
+						document.getElementById('player_q_slow').pause();
 						document.getElementById('player_a').play();
+						var first_play = 0;
 						window.loop = 	function(){
-											window.loop_a = setTimeout(function(){
-												document.getElementById('player_a').play();
+											window.loop_q = setTimeout(function(){
+												first_play++;
+												console.log(A_AudioLoopResetInterval+" "+first_play);
+												
+												if(first_play < 0)
+												{
+													console.log(0);
+												}
+												else
+												{	
+													console.log(1);
+													document.getElementById('player_a_slow').play();
+												}
 											}, A_AudioLoopResetInterval);
 										};
-						document.getElementById('player_a').addEventListener("ended", loop);
+										
+						document.getElementById('player_a').addEventListener("ended",loop);
+						document.getElementById('player_a_slow').addEventListener("ended",loop);
 						/*stop the time up timer and get it value*/
 		
 						clearInterval(timerIntervalId);
@@ -329,14 +376,17 @@
 							avgTime = currentCard['total_time'] / currentCard['play_count'];
 						}
 						totalSeconds = 0;
-						renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['question']);
+						renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['question'], currentCard['question_note'], currentCard['answer']);
 					}
 					function markAnswer(mark) {
-					//	document.getElementById('player_a').removeEventListener("ended", loop);
-					//	if(typeof loop_a !== "undefined"){
-					//		clearTimeout(loop_a);
-				//		}
-					//	document.getElementById('player_a').pause();
+						document.getElementById('player_a').removeEventListener("ended", loop);
+						document.getElementById('player_a_slow').removeEventListener("ended", loop);
+						if(typeof loop_a !== "undefined"){
+							clearTimeout(loop_a);
+						}
+						document.getElementById('player_a').pause();
+						document.getElementById('player_a_slow').pause();
+						
 						var isValid = mark > 0;
 						console.log("isValid "+isValid+ " mark="+mark);
 						deckHander.handleCardStatus(currentCard, mark, gameMode, historyLength);
@@ -367,16 +417,21 @@
 					}
 					function finishGame() {
 						/* show the deck selection screen */
-					//	document.getElementById('player_a').removeEventListener("ended", loop);
-					//	if(typeof loop_a !== "undefined"){
-					//		clearTimeout(loop_a);
-					//	}
-					//	document.getElementById('player_a').pause();
-					//	document.getElementById('player_q').removeEventListener("ended", loop);
-					//	if(typeof loop_q !== "undefined"){
-					//		clearTimeout(loop_q);
-					//	}
-					//	document.getElementById('player_q').pause();
+						document.getElementById('player_a').removeEventListener("ended", loop);
+						document.getElementById('player_a_slow').removeEventListener("ended", loop);
+						if(typeof loop_a !== "undefined"){
+							clearTimeout(loop_a);
+						}
+						document.getElementById('player_a').pause();
+						document.getElementById('player_a_slow').pause();
+						document.getElementById('player_q').removeEventListener("ended", loop);
+						document.getElementById('player_q_slow').removeEventListener("ended", loop);
+						if(typeof loop_q !== "undefined"){
+							clearTimeout(loop_q);
+						}
+						document.getElementById('player_q').pause();
+						document.getElementById('player_q_slow').pause();
+						
 						game_results['card_count'] = total_cards;
 						total_cards = 0;
 						clearInterval(timerIntervalId);
@@ -417,24 +472,24 @@
 								(/(?:^|\s)fcardAnsFlip(?!\S)/g, '');
 					}
 					/********Card Content Rendering********/
-					function renderQuestion(mode, history,test_history, rank, avgTime, ques) {
+					function renderQuestion(mode, history,test_history, rank, avgTime, ans, ansNotes, ques) {
 						document.getElementById("qMode").innerHTML = "M:" + mode;
 						document.getElementById("qHistory").innerHTML = "H:" + history;
 						document.getElementById("qTestHistory").innerHTML = "Test H:" + test_history;
 						document.getElementById("qRank").innerHTML = "R:" + rank;
 						document.getElementById("qAvg").innerHTML = "Avg:" + avgTime;
-						document.getElementById("qContent").innerHTML = ques;
-						/*Call timer function to set count up time*/
+						document.getElementById("qContent").innerHTML = 'A. '+ans;
+						/*Call timer function to set count up time <div style="font-size:14px;">Q. '+ques+'</div>*/
 						startTimer(true);
 					}
-					function renderAnswer(mode, history,test_history, rank, avgTime, time, ans) {
+					function renderAnswer(mode, history,test_history, rank, avgTime, time, ques, quesNotes,ans) {
 						document.getElementById("aMode").innerHTML = "M:" + mode;
 						document.getElementById("aHistory").innerHTML = "H:" + history;
 						document.getElementById("aTestHistory").innerHTML = "Test H:" + test_history;
 						document.getElementById("aRank").innerHTML = "R:" + rank;
 						document.getElementById("aAvg").innerHTML = "Avg:" + avgTime;
 						document.getElementById("aTime").innerHTML = "Time:" + time;
-						document.getElementById("aContent").innerHTML = ans;
+						document.getElementById("aContent").innerHTML = '<div style="font-size:14px;">'+ques + '</div>'+ans+'<div style="font-size:14px;">'+quesNotes+'</div>';
 					}
 					/***********Timer Functions****************/
 					function startTimer(restart) {
@@ -485,6 +540,29 @@
 							showAns();
 						}
 					}
+					
+			function show_all()
+			{
+				document.getElementById("deckIds").value = deckId;
+				window.location = "<?php echo base_url(); ?>index.php/game/reverse_with_sound_show_all/<?php echo $this->ion_auth->user()->row()->id ?>/"+deckId;
+			}
+			function show_text()
+			{
+				$(".fcardQues").css({"display":"block"});
+				$(".fcardStage").css({"display":"none"});
+				showNextQues();
+			}
+			function finish()
+			{
+				if (confirm("Do you really want to finish this game?")) {
+					window.location = "<?php echo base_url(); ?>index.php/game/game_view/";
+				}
+				else
+				{
+				}
+			}
+			
+			
 					// register the handler 
 					document.addEventListener('keyup', keyHandler, false);
 		</script>
@@ -496,6 +574,13 @@
 		<div id="source_div_q">
 			<audio id='player_q'><source id='sorce_id_q' type='audio/mpeg' src=''></audio>
 		</div>
+		<div id="source_div_a_slow">
+			<audio id='player_a_slow'><source id='sorce_id_a_slow' type='audio/mpeg' src=''></audio>
+		</div>
+		<div id="source_div_q_slow">
+			<audio id='player_q_slow'><source id='sorce_id_q_slow' type='audio/mpeg' src=''></audio>
+		</div>
+		<input type="hidden" id="deckIds" value="">
 		<!--	  
 		<audio controls="controls">
 		  <source id="sorce_id" type="audio/mpeg" >
@@ -539,8 +624,11 @@
 						<div id="qContent" class="fcardContent">
 							Content
 						</div>
-						<div class="fcardFooterQues">
-							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="showAns()"><p>Question</p></div></div></div>
+						<div class="fcardFooterAns">
+							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:markAnswer(1);"><p>&#10004;</p></div></div></div> 
+							<div class="buttonHolder"><div class="buttonInner"><div class="button red" onclick="javascript:markAnswer(0);"><p>&#10007;</p></div></div></div> 
+							
+							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="showAns()"><p>Meaning</p></div></div></div>
 							<div class="buttonHolder"><div class="buttonInner"><div class="button" onclick="finishGame()"><p>Finish</p></div></div></div>
 							<div class="clearFloat"></div>
 						</div>
@@ -562,9 +650,24 @@
 						<div class="fcardFooterAns">
 							<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:markAnswer(1);"><p>&#10004;</p></div></div></div> 
 							<div class="buttonHolder"><div class="buttonInner"><div class="button red" onclick="javascript:markAnswer(0);"><p>&#10007;</p></div></div></div> 
+							<div class="buttonHolder"><div class="buttonInner"><div class="button" onclick="finishGame()"><p>Finish</p></div></div></div>
+							
 							<div class="clearFloat"></div>
 						</div>
 					</div>
+					
+					<!-- Stage-->
+					<div class="fcardStage" style="display:none;" id="fcardStage">
+						<h1>What o you hear?</h1>
+						<div class="fcardContent">	
+							<div class="reversclass  green " onclick="show_text();" >SHOW TEXT</div>
+							<div class="reversclass  green " onclick="show_all();" >SHOW ALL</div>
+							<div class="reversclass  green " onclick="finish();" >FINISH</div>
+							<div class="clearFloat"></div>
+						</div>
+					</div>
+				
+				
 				</div>
 				<div id="extraInfo" style="position:relative; z-index: 500000000000000000000;  top:-20px;"></div>
 			</div>

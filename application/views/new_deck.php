@@ -30,11 +30,13 @@
 				<p><input type="submit" value="Create Deck" /></p>
 				<p>
 				<pre>
-					Input File format is as followed.
-					Question 1||Answer 1
-					Question 2||Answer 2
-					Question 3||Answer 3
-					Question 4||Answer 4
+					<center>Input File format is as followed.</center>
+					 
+					Question 1 || Question_Notes 1 || Answer 1 || Answer_Notes 1
+					Question 2 || Question_Notes 2 || Answer 2 || Answer_Notes 2
+					Question 3 || Question_Notes 3 || Answer 3 || Answer_Notes 3
+					Question 4 || Question_Notes 4 || Answer 4 || Answer_Notes 4
+					 
 				</pre>
 				</p>
 				</form>

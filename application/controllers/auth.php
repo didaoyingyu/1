@@ -117,6 +117,24 @@ class Auth extends CI_Controller {
 		}
 	}
 
+	function check_useridselft() {
+		$user = $this->input->post('user');
+		$flag = 0;
+			$query = $this->db->get('users');
+			foreach ($query->result() as $row) {
+				if ($row->email == $user) {
+					$flag = 1;
+					$id = $row->id;
+				}
+			}
+			if ($flag == 0) {
+				echo "Please check username again";
+			} else if ($flag == 1) {
+				echo $id;
+			}
+		
+	}
+
 	function check_username() {
 		$user = $this->input->post('user');
 		$flag = 0;
@@ -134,8 +152,27 @@ class Auth extends CI_Controller {
 				echo $body;
 			}
 		} else {
-			echo 'not admin';
+			echo 'not admin 1';
 		}
+	}
+
+
+	function check_username_self() {
+		$user = $this->input->post('user');
+		$flag = 0;
+			$query = $this->db->get('users');
+			foreach ($query->result() as $row) {
+				if ($row->email == $user) {
+					$flag = 1;
+					$body = "You are playing as " . $row->username . ". Your email id is " . $row->email;
+				}
+			}
+			if ($flag == 0) {
+				echo "Please check username again";
+			} else if ($flag == 1) {
+				echo $body;
+			}
+
 	}
 
 	//log the user out
@@ -915,6 +952,16 @@ class Auth extends CI_Controller {
 		$user = $this->ion_auth->user()->row();
 		$log['user_id'] = $user->id;
 		$review_log = $this->card->save_quick_review_log($log);
+		if (!$review_log) {
+			echo "error";
+		}
+	}
+	function save_quick_review_log_self() {
+		$this->load->model('card');
+		$log = json_decode($this->input->post('data'), true);
+		$user = $this->ion_auth->user()->row();
+		$log['user_id'] = $user->id;
+		$review_log = $this->card->save_quick_review_log_self($log);
 		if (!$review_log) {
 			echo "error";
 		}

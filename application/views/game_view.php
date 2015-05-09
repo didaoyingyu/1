@@ -105,10 +105,10 @@
 			function renderDeckSelection(deckArray) {
 				var innerHtml = "";
 				for (var i = 0; i < deckArray.length; i++) {
-					innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='loadGame(" + deckArray[i]['deck_id'] + ")'><p>" + deckArray[i]['deck_name'] + "</p></div></div></div><br/><br/><br/>";
+					innerHtml = innerHtml + "<div class='buttonHolder1'><div class='buttonHolder1'><div class='button green' onclick='loadGame(" + deckArray[i]['deck_id'] + ")'><p>" + deckArray[i]['deck_name'] + "</p></div></div></div><br/><br/><br/>";
 				}
 				/*for multiple deck mode*/
-				innerHtml = innerHtml + "<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='loadGameMultiDeckMode()'><p>Play Multiple Decks</p></div></div></div><br/><br/><br/>";
+				innerHtml = innerHtml + "<div class='buttonHolder1'><div class='buttonHolder1'><div class='button green' onclick='loadGameMultiDeckMode()'><p>Play Multiple Decks</p></div></div></div><br/><br/><br/>";
 				deckScreen.innerHTML = innerHtml;
 			}
 			function renderDeckMultiSelection(deckArray) {
@@ -239,7 +239,7 @@
 				if (parseInt(currentCard['play_count']) != 0) {
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
-				renderQuestion(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question']);
+				renderQuestion(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), currentCard['question'], currentCard['question_note']);
 				quickReviewLog['before_history'] = gameResults['deck'][gameCount]['history'];
 				quickReviewLog['reason'] = extraInfo.innerHTML;
 				quickReviewLog['before_rank'] = currentCard['rank'];
@@ -268,7 +268,7 @@
 					avgTime = currentCard['total_time'] / currentCard['play_count'];
 				}
 				totalSeconds = 0;
-				renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer']);
+				renderAnswer(gameMode, currentCard['history'], currentCard['test_history'], currentCard['rank'], getFormatedTime(parseInt(avgTime)), timeTakenForQues, currentCard['answer'], currentCard['answer_note'], currentCard['question']);
 			}
 			function markAnswer(mark) {
 				var isValid = mark > 0;
@@ -337,24 +337,24 @@
 					(/(?:^|\s)fcardAnsFlip(?!\S)/g, '');
 			}
 			/********Card Content Rendering********/
-			function renderQuestion(mode, history,test_history, rank, avgTime, ques) {
+			function renderQuestion(mode, history,test_history, rank, avgTime, ques, quesNotes) {
 				qMode.innerHTML = "M:" + mode;
 				qHistory.innerHTML = "H:" + history;
 				qTestHistory.innerHTML = "Test H:" + test_history;
 				qRank.innerHTML = "R:" + rank;
 				qAvg.innerHTML = "Avg:" + avgTime;
-				qContent.innerHTML = ques;
+				qContent.innerHTML = 'Q. '+ques + '<div style="font-size:14px;">Q. Notes :- '+quesNotes+'</div>';
 				/*Call timer function to set count up time*/
 				startTimer(true);
 			}
-			function renderAnswer(mode, history, test_history, rank, avgTime, time, ans) {
+			function renderAnswer(mode, history, test_history, rank, avgTime, time, ans, ansNotes, ques) {
 				aMode.innerHTML = "M:" + mode;
 				aHistory.innerHTML = "H:" + history;
 				aTestHistory.innerHTML = "Test H:" + test_history;
 				aRank.innerHTML = "R:" + rank;
 				aAvg.innerHTML = "Avg:" + avgTime;
 				aTime.innerHTML = "Time:" + time;
-				aContent.innerHTML = ans;
+				aContent.innerHTML = '<div style="font-size:14px;">Q. '+ques+'</div>A. '+ans+'<div style="font-size:14px;">A. Notes :- '+ansNotes+'</div>';
 			}
 			/***********Timer Functions****************/
 			function startTimer(restart) {
@@ -513,25 +513,27 @@
 			<!--QuickView not redirect same page-->
 			<!-- Game mode and extra functions selector Screen -->
 			<div class="gameModeScreen" id="gameModeScreen">
-				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReview();"><p><span class="black">Quick Review</span></p></div></div></div> 
-				<br/><br/><br/>
+			
+				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReview();"><p><span class="black">QUICK</span></p></div></div></div> 
+				
 				<div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:loadGameMode('RW', true);"><p><span class="white">Review Mode</span></p></div></div></div> 
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p><span class="black">Quick Review With Sound</span></p></a></div></div>
 				
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/rw_with_sound" style="text-decoration:none;color:black"><p><span class="white">Review Mode With Sound</span></p></a></div></div> 
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p><span class="black">QUICK</span></p></a></div></div>
 				
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_reverse_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p><span class="black">Quick Reverse With Sound</span></p></a></div></div>
-				<br/><br/><br/>
-				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/reverse_with_sound" style="text-decoration:none;color:black"><p><span class="white">Reverse Mode With sound</span></p></a></div></div> 
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/rw_with_sound" style="text-decoration:none;color:black"><p><span class="white">Review + Sound</span></p></a></div></div> 
 				
-				<!-- <div class="buttonHolder"><div class="buttonInner"><div class="button green" onclick="javascript:quickReviewSound();"><p>Quick Review With Sound</p></div></div></div>  -->
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/quick_reverse_with_sound/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p><span class="black">QUICK</span></p></a></div></div>
+				
+				
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/reverse_with_sound" style="text-decoration:none;color:black"><p><span class="white">Reverse + sound</span></p></a></div></div> 
+				
+				
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/self_test/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p><span class="white">Self Test</span></p></a></div></div> 
+				<div class="buttonHolder"><div class="buttonInner"><a class="button green" href="<?php echo base_url() ?>index.php/game/rw_input/<?php echo $this->ion_auth->user()->row()->id ?>" style="text-decoration:none;color:black"><p><span class="white">Review w/Input</span></p></a></div></div> 
 				<br/><br/><br/>
+				
 				<!--create new deck-->
-				<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='newDeck()'><p>Create New Deck</p></div></div></div>
-				<br/><br/><br/>
+				<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='newDeck()'><p>New Deck</p></div></div></div>
 				<!--manage card decks-->
 				<div class='buttonHolder'><div class='buttonInner'><div class='button green' onclick='manageDeck()'><p>Manage Deck</p></div></div></div>
 				<br/><br/><br/>
