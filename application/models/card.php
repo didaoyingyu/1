@@ -1861,14 +1861,9 @@ class card extends CI_Model {
 		return $this->db->where("user_id", $user_id)->order_by("id desc")->get("quick_review_log")->result_array();
 	}
 	
-	public function get_quick_review_log_limit($user_id) {
-		$re = $this->db->query("select * from quick_review_log where user_id = $user_id order by id desc limit 0,20");
-		return $re->result();
-	}	
-	
 	public function get_quick_review_log_limit_scroll($user_id,$scroll_limit) {
 		$re = $this->db->query("select * from quick_review_log where user_id = $user_id order by id desc limit $scroll_limit,20");
-		return $re->result();
+		return $re->result_array();
 	}	
 
 	public function get_users() {

@@ -35,7 +35,6 @@ class game extends CI_Controller{
 	}
 
 	/* login a user to the system */
-
 	function login() {
 		if (!$this->ion_auth->logged_in()) {
 			$username = $this->input->post('username');
@@ -55,7 +54,6 @@ class game extends CI_Controller{
 	}
 
 	/* logout */
-
 	function logout() {
 		if ($this->ion_auth->logged_in()) {
 			$this->ion_auth->logout();
@@ -64,7 +62,6 @@ class game extends CI_Controller{
 	}
 
 	/* show the game */
-
 	function game_view() {
 		/* security check */
 		if (!$this->ion_auth->logged_in()) {
@@ -83,61 +80,45 @@ class game extends CI_Controller{
 		/* load review log control */
 		$this->load->view('review_log_control', $data);
 	}
+
 	function quick_review_log_scroll()
 	{
+		function filter($log) {
+			$interval = strtotime($log['itp']) - strtotime($log['utp']);
+			$days = floor($interval / 86400);
+			return array($log['itp'], $log['question'], $log['answer'],  $log['ans_userInput'],  $log['deck_name'],
+				$log['before_history'],  $log['before_rank'], $log['ans'], $log['reason'],
+				"$days, ".gmdate("H:i:s", $interval % 86400),  $log['after_history'],
+				$log['test_history'], $log['after_rank']);
+		}
+
 		$userid = $_POST['user_id'];
 		$scroll_limit = $_POST['scroll_limit'];
-		
 		$this->load->model('card');
-		$data = $this->card->get_quick_review_log_limit_scroll($userid,$scroll_limit);
-		
-		$json=array();
-		foreach($data as $r)
-		{
-			
-			$json[]=array(
-				'itp'=> $r->itp ,
-				'question'=> $r->question,
-				'answer'=> $r->answer,
-				'deck_name'=> $r->deck_name,
-				'before_history'=> $r->before_history,
-				'before_rank'=> $r->before_rank,
-				'ans'=> $r->ans,
-				'reason'=> $r->reason,
-				'utp'=> $r->utp,
-				'after_history'=> $r->after_history,
-				'after_rank'=> $r->after_rank,
-				'scroll_limit'=> $scroll_limit + 20
-				);
-		}
-		echo json_encode($json);
-		
+		$logs = $this->card->get_quick_review_log_limit_scroll($userid,$scroll_limit);
+		echo json_encode(array_map("filter", $logs));
 	}
+
 	function quick_review_log($user_Id) {
 		$this->load->model('card');
 		$user = $this->ion_auth->user($user_Id)->row();
 		$data['user'] = $user->first_name.' '.$user->last_name;
 		$data['user_Id'] = $user_Id;
-		$data['logs'] = $this->card->get_quick_review_log($user_Id);
-		$data['logs1'] = $this->card->get_quick_review_log_limit($user_Id);
 		$data['all_user'] = $this->card->get_users();
 		$this->load->view('quick_review_log', $data);
 	}
 
 	/* ajax library test function */
-
 	function ajax_test() {
 		$this->load->view('ajax_test');
 	}
 
 	/* load the cards for a given deck for a given user */
-
 	function load_cards($user_id, $deck_id) {
 		$cardArray = $this->card->load_cards($user_id, $deck_id);
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($cardArray));
 	}
-
 
 	function load_cards_re($user_id, $deck_id) {
 		$cardArray = $this->card->load_cards_re($user_id, $deck_id);
@@ -145,15 +126,13 @@ class game extends CI_Controller{
 		$this->output->set_output(json_encode($cardArray));
 	}
 
-
 	function load_cards_quick($user_id, $deck_id) {
 		$deckArray = $this->card->load_decks($userId);
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($deckArray));
 	}
 
-	/*	 * Load plus mode cards Ashvin Patel 19/jun/2014* */
-
+	/* Load plus mode cards Ashvin Patel 19/jun/2014 */
 	function load_plus_mode_cards() {
 		$user_id = $this->input->post('user_id');
 		$deck_id = $this->input->post('deck_id');
@@ -164,8 +143,6 @@ class game extends CI_Controller{
 			$this->output->set_output(json_encode($cardArray));
 		}
 	}
-
-	/*	 * * */
 
 	function load_plus_mode_more_cards() {
 		$user_id = $this->input->post('user_id');
@@ -180,13 +157,13 @@ class game extends CI_Controller{
 	}
 
 	/* load the card form multiple decks */
-
 	function load_cards_md($user_id) {
 		$deck_id_arr = json_decode($this->input->post('data'));
 		$cardArray = $this->card->load_cards_md($user_id, $deck_id_arr);
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($cardArray));
 	}
+
 	/*"fix change bug new cards marked wrong showing as - "*/
 	function load_cards_md_play($user_id) {
 		$deck_id_arr = json_decode($this->input->post('data'));
@@ -202,6 +179,7 @@ class game extends CI_Controller{
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($cardArray));
 	}
+
 	/*"add ability for user to create new decks and edit personal decks"*/
 	function load_cards_md_sound($user_id) {
 		$deck_id_arr = json_decode($this->input->post('data'));
@@ -211,7 +189,6 @@ class game extends CI_Controller{
 	}
 
 	/* load the decks in the db */
-
 	function load_decks($userId) {
 		//echo "hello";
 		//die();
@@ -220,8 +197,7 @@ class game extends CI_Controller{
 		$this->output->set_output(json_encode($deckArray));
 	}
 
-	/*	 * Load Decks for plus mode parameters Ashvin Patel 19/jun/2014* */
-
+	/* Load Decks for plus mode parameters Ashvin Patel 19/jun/2014 */
 	function load_plus_decks($userId) {
 		$deckArray = $this->card->load_plus_decks($userId);
 		$this->output->set_content_type('application/json');
@@ -246,9 +222,7 @@ class game extends CI_Controller{
 		$this->output->set_output(json_encode($deckArray));
 	}
 
-	/*	 * * */
 	/* load the decks in the db */
-
 	function load_decks_id($userId){
 		$deckArray = $this->card->load_decks($userId);
 		$this->output->set_content_type('application/json');
@@ -268,7 +242,6 @@ class game extends CI_Controller{
 	}
 
 	/* save card info back to the DB */
-
 	function save_user_card() {
 		/* Old Buggy Code - $data = json_decode($this->input->post('data'),TRUE,512); */
 		$data = json_decode($this->input->post('data'), TRUE);
@@ -284,7 +257,6 @@ class game extends CI_Controller{
 	}
 
 	/* edit review mode parameters */
-
 	function edit_rm_params() {
 		$this->form_validation->set_rules('maxNoShowTime', 'Min No Show Time', 'required|numeric');
 		$this->form_validation->set_rules('minRepeatTime', 'Min Repeat Time', 'required|numeric');
@@ -376,7 +348,6 @@ class game extends CI_Controller{
 	}
 
 	/* load review mode params */
-
 	function load_rm_params() {
 		//   $mode=$_GET['mode'];
 		//  $mode=var_dump($lang);
@@ -392,15 +363,13 @@ class game extends CI_Controller{
 		$this->output->set_output(json_encode($rmParamArray));
 	}
 
-	/*	 * Load Supervied plus mode parameters Ashvin Patel 19/jun/2014* */
-
+	/* Load Supervied plus mode parameters Ashvin Patel 19/jun/2014 */
 	function load_stst_plus_params() {
 		$rmParamArray = $this->card->load_stst_plus_params();
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($rmParamArray));
 	}
 
-	/*	 * */
 	/* delete decks */
 	function delete_decks($deckId) {
 		/* check whether the admin */
@@ -586,37 +555,35 @@ class game extends CI_Controller{
 	}
 
 	function upload_sound() {
-		  $status = "";
-  $msg = "";
-  if (empty($_POST['id']) || empty($_POST['type']) || empty($_POST['data'])) {
-   if (empty($_POST['id'])){
-    $empty = 'id';
-   }
-   elseif (empty($_POST['type'])){
-    $empty = 'type';
-   }
-   elseif (empty($_POST['data'])){
-    $empty = 'data';
-   }
-   $status = "error";
-   $msg = $empty." not passed";
-  } else {
-   $name_id = $_POST['id'];
-   $name_type = $_POST['type'];
-   $data = substr($_POST['data'], strpos($_POST['data'], ",") + 1);
-   $decodedData = base64_decode($data);
-   $file_element_name = $name_type . '_' . $name_id . ".mp3";
-  }
-  if ($status != "error") {
-   $fp = fopen('./sound-files/'.$file_element_name, 'wb');
-   $fwrite = fwrite($fp, $decodedData);
-   if ($fwrite == true){
-    $status = "success";
-    $msg = "File successfully uploaded_-_-0909//^%*(" . $file_element_name;
-   }
-   fclose($fp);
-   }
-  echo json_encode(array('status' => $status, 'msg' => $msg));
+		$status = "";
+		$msg = "";
+		if (empty($_POST['id']) || empty($_POST['type']) || empty($_POST['data'])) {
+			if (empty($_POST['id'])) {
+				$empty = 'id';
+			} elseif (empty($_POST['type'])) {
+				$empty = 'type';
+			} elseif (empty($_POST['data'])) {
+				$empty = 'data';
+			}
+			$status = "error";
+			$msg = $empty." not passed";
+		} else {
+			$name_id = $_POST['id'];
+			$name_type = $_POST['type'];
+			$data = substr($_POST['data'], strpos($_POST['data'], ",") + 1);
+			$decodedData = base64_decode($data);
+			$file_element_name = $name_type . '_' . $name_id . ".mp3";
+		}
+		if ($status != "error") {
+			$fp = fopen('./sound-files/'.$file_element_name, 'wb');
+			$fwrite = fwrite($fp, $decodedData);
+			if ($fwrite == true) {
+				$status = "success";
+				$msg = "File successfully uploaded_-_-0909//^%*(" . $file_element_name;
+			}
+			fclose($fp);
+		}
+		echo json_encode(array('status' => $status, 'msg' => $msg));
 	}
 
 	function upload_sound_from_cerate() {
@@ -706,7 +673,6 @@ class game extends CI_Controller{
 		$this->load->view('reverse_with_sound');
 	}
 
-
 	function reverse_with_sound_show_all($userId,$deckId) {
 		if (!$this->ion_auth->logged_in()) {
 			redirect('');
@@ -716,8 +682,7 @@ class game extends CI_Controller{
 		$this->load->view('reverse_with_sound_show_all',$data);
 	}
 
-	/*	 * Load Supervised plus test mode Ashvin Patel 19/jun/2014* */
-
+	/* Load Supervised plus test mode Ashvin Patel 19/jun/2014 */
 	function supervised_mode_plus() {
 		if (!$this->ion_auth->logged_in()) {
 			redirect('');
@@ -772,12 +737,12 @@ class game extends CI_Controller{
 		$this->load->view('enter_password');
 	}
 
-	/*	 * Count all for user ASHVIN PATEL 21/JUN/2014* */
+	/* Count all for user ASHVIN PATEL 21/JUN/2014 */
 	/* function countAllCards($userId){
 	  $this->card->getAllCardsCount($userId);
 	  } */
-	/*	 * Count all for user ASHVIN PATEL 21/JUN/2014* */
 
+	/* Count all for user ASHVIN PATEL 21/JUN/2014 */
 	function userGroups($userId) {
 		$this->card->getUserDeck($userId);
 	}
@@ -825,7 +790,5 @@ class game extends CI_Controller{
 		$cards["allCards"] = $this->card->getAllErrorsSelft($username);
 		$this->load->view('error_self_test', $cards);
 	}
-
 }
-
 ?>
