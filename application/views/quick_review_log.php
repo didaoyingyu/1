@@ -72,7 +72,7 @@
 				userId = document.getElementById("user_id");
 				loadData(false);
 				window.onscroll = function () {
-					if (window.scrollY >= window.scrollMaxY) {
+					if (window.scrollY + window.innerHeight >= document.body.scrollHeight) {
 						loadData(true);
 					}
 				};
