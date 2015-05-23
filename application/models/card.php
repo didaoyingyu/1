@@ -1875,6 +1875,15 @@ class card extends CI_Model {
 			$this->db->where("id", $log['user_id'])->update("users", array("review_log_status" => $log['status']));
 		}
 	}
+        public function insert_import_file($import_data,$deck_id){
+            $return = FALSE;
+            $insert_data = $this->db->insert('card',$import_data);
+            if($insert_data){
+                $return = $this->db->insert_id();
+                $insert_card_in_deck = $this->db->insert('card_in_deck',array('deck_id'=>$deck_id,'card_id'=>$return));
+            }
+            return $return;
+        }
 
 }
 
