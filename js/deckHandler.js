@@ -19,7 +19,7 @@ var expiredQueue = [];
 /*skip counter for skipping rounds, to show expired cards periodically*/
 var expiredSkipCount = 0;
 /*period after which a new expired card can be picked*/
-var expiredCardPickPeriod = 10;
+var expiredCardPickPeriod = 20;
 /*indicates whether SPECIAL FREQUENCY is active*/
 var specialFreq = false;
 
@@ -201,25 +201,25 @@ DeckHandler.prototype.getNextCardReviewMode = function() {
 	/*ii. get the rank regarding to it*/
 	var rank = 1;
 	if (randNum <= r1) {
-		rank = 4;
+		rank = 1;
 	} else if (randNum > r1 && randNum <= r2) {
-		rank = 5;
+		rank = 2;
 	} else if (randNum > r2 && randNum <= r3) {
-		rank = 6;
+		rank = 3;
 	} else if (randNum > r3 && randNum <= r4) {
-		rank = 7;
+		rank = 4;
 	} else if (randNum > r4 && randNum <= r5) {
-		rank = 8;
+		rank = 5;
 	} else if (randNum > r5 && randNum <= r6) {
-		rank = 9;
+		rank = 6;
 	} else if (randNum > r6 && randNum <= r7) {
-		rank = 10;
+		rank = 7;
 	} else if (randNum > r7 && randNum <= r8) {
-		rank = 11;
+		rank = 8;
 	} else if (randNum > r8 && randNum <= r9) {
-		rank = 12;
+		rank = 9;
 	} else if (randNum > r9 && randNum <= r10) {
-		rank = Math.floor(12 + 2 / (r10 - randNum));
+		rank = Math.floor(9 + 2 / (r10 - randNum));
 	}
 	console.log("Trying random rank mode...");
 	console.log("Rand: " + randNum + ", Selected Rank: " + rank);
