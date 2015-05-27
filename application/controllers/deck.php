@@ -122,10 +122,10 @@ class Deck extends CI_Controller {
 							$tmpQans1 = trim($allDataInSheet[$i]["B"]);
 							$tmpQans2 = trim($allDataInSheet[$i]["C"]);
 							$tmpQans3 = trim($allDataInSheet[$i]["D"]);
-							$tmpQans4 = trim($allDataInSheet[$i]["E"]);
-							$tmpQans5 = trim($allDataInSheet[$i]["F"]);
-							$tmpQans6 = trim($allDataInSheet[$i]["G"]);
-							$tmpQans7 = trim($allDataInSheet[$i]["H"]);
+							$tmpQans4 = (isset($allDataInSheet[$i]["E"]) && !empty($allDataInSheet[$i]["E"])) ? trim($allDataInSheet[$i]["E"]) : '';
+							$tmpQans5 = (isset($allDataInSheet[$i]["F"]) && !empty(trim($allDataInSheet[$i]["F"]))) ? trim($allDataInSheet[$i]["F"]) : '';
+							$tmpQans6 = (isset($allDataInSheet[$i]["G"]) && !empty(trim($allDataInSheet[$i]["G"]))) ? trim($allDataInSheet[$i]["G"]) : '';
+							$tmpQans7 = (isset($allDataInSheet[$i]["H"])&&!empty(trim($allDataInSheet[$i]["H"]))) ? trim($allDataInSheet[$i]["H"]) : '';
 							
 							$qans[] = array(
 										"q" => $tmpQans0,
