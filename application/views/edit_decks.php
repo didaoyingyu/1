@@ -19,9 +19,11 @@
         <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.js"></script>
         <script src="<?php echo base_url() ?>js/ajaxfileupload.js"></script>
         <script src="<?php echo base_url() ?>js/recordmp3.js"></script>
+        <script src="<?php echo base_url() ?>js/recorderWorker.js"></script>
+        <script src="<?php echo base_url() ?>js/mp3Worker.js"></script>
         <!-- uploader -->
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
-        <script src="//<?php echo base_url('js/jquery_uploader/js/vendor/jquery.ui.widget.js'); ?>"></script>
+        <script src="<?php echo base_url('js/jquery_uploader/js/vendor/jquery.ui.widget.js'); ?>"></script>
         <script src="<?php echo base_url('js/jquery_uploader/js/load-image.min.js'); ?>"></script>
         <script src="<?php echo base_url('js/jquery_uploader/js/canvas-to-blob.min.js'); ?>"></script>
         <script src="<?php echo base_url('js/jquery_uploader/js/jquery.blueimp-gallery.min.js'); ?>"></script>
@@ -739,7 +741,7 @@
                                     }
                                     function uploadFiles(id, obj, type, data)
                                     {
-                                        console.log("type "+type)
+//                                        console.log("type "+type)
                                         obj = "#"+$(obj).attr("id");
                                         var base_url = '<?php echo base_url(); ?>';
                                         var tr = $(obj).parents('tr').first();

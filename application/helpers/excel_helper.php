@@ -36,7 +36,7 @@ function import_excel($excel_data) {
         $data[$row] = array();
         for ($col = 0; $col < count($field); $col++) {
             $val = $workSheet->getCellByColumnAndRow($col, $row)->getValue();
-            $data[$row][$field[$col]] = $val;
+            $data[$row][$field[$col]] = $val ? $val : '';
         }
     }
 

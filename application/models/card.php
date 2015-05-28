@@ -1318,7 +1318,7 @@ class card extends CI_Model {
 			$sql = "SELECT a.card_id, a.created_user_id, a.question, a.question_note, a.answer,a.answer_note, a.answer_upload_file_slow, a.question_upload_file_slow, a.answer_upload_file, a.question_upload_file, a.created_date,
 	b.deck_name, b.deck_id, c.id FROM card a
 	INNER JOIN card_in_deck c ON a.card_id = c.card_id
-	INNER JOIN card_deck b ON c.deck_id = b.deck_id WHERE c.deck_id = $id";
+	INNER JOIN card_deck b ON c.deck_id = b.deck_id WHERE c.deck_id = $id order by a.card_id desc";
 			$query = $this->db->query($sql, array($id))->result();
 			return $query;
 			//	 return $query->row_array();
