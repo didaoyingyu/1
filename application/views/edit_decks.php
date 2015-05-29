@@ -19,9 +19,11 @@
         <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.js"></script>
         <script src="<?php echo base_url() ?>js/ajaxfileupload.js"></script>
         <script src="<?php echo base_url() ?>js/recordmp3.js"></script>
+        <script src="<?php echo base_url() ?>js/recorderWorker.js"></script>
+        <script src="<?php echo base_url() ?>js/mp3Worker.js"></script>
         <!-- uploader -->
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
-        <script src="//<?php echo base_url('js/jquery_uploader/js/vendor/jquery.ui.widget.js'); ?>"></script>
+        <script src="<?php echo base_url('js/jquery_uploader/js/vendor/jquery.ui.widget.js'); ?>"></script>
         <script src="<?php echo base_url('js/jquery_uploader/js/load-image.min.js'); ?>"></script>
         <script src="<?php echo base_url('js/jquery_uploader/js/canvas-to-blob.min.js'); ?>"></script>
         <script src="<?php echo base_url('js/jquery_uploader/js/jquery.blueimp-gallery.min.js'); ?>"></script>
@@ -288,8 +290,8 @@
                 </form>
             </div>
             <p><?php echo anchor('', 'Home') ?></p>
-               <a href="#" onclick="incrementCount();
-           getNewRow()">Add New Row</a><br /><br />
+            <a href="#" onclick="incrementCount();
+                   getNewRow()">Add New Row</a><br /><br />
             <form id="import_form">
                 <a href="javascript:void(0)" id="attach_file" ><span>Import New Row</span></a><br /a>
                     <a href="javascript:void(0)" id="attachment_name" ></a>
@@ -302,19 +304,19 @@
         <script>
             var audio_context;
             var recorder;
-
+            
             function startUserMedia(stream) {
                 var input = audio_context.createMediaStreamSource(stream);
                 console.log('Media stream created.' );
                 console.log("input sample rate " +input.context.sampleRate);
-			    
+                
                 //input.connect(audio_context.destination);
                 //console.log('Input connected to audio context destination.');
-			    
+                
                 recorder = new Recorder(input);
                 console.log('Recorder initialised.');
             }
-
+            
             $(document).ready(function(){
                 audio = document.createElement('audio');
                 $('button').click(function(e){
@@ -347,7 +349,7 @@
                     $('button[name ="' + $(audio).attr('src') + '"]').html('Listen');
                 }
             });
-
+            
             function startRecording(button,type) {
                 recorder && recorder.record();
                 button.disabled = true;
@@ -355,11 +357,11 @@
                 $(tr).find('.sound_file.'+type).show();
                 $(tr).find('.upload_link.'+type).hide();
                 $(tr).find('.delete_file_button.'+type).hide();
-				
+                
                 button.nextElementSibling.disabled = false;
                 console.log('Recording...');
             }			
-			
+            
             function stopRecording(button, id, type) {
                 recorder && recorder.stop();
                 button.disabled = true;
@@ -375,7 +377,7 @@
                 //createDownloadLinkSlow($(button).prop('outerHTML'), id, "slow_"+type);
                 recorder.clear();
             }
-			
+            
             function createDownloadLink(obj, id, type) {
                 recorder && recorder.exportWAV(function(blob){},'',obj,id,type);
             }
@@ -388,522 +390,522 @@
                         navigator.mozGetUserMedia ||
                         navigator.msGetUserMedia);
                     window.URL = window.URL || window.webkitURL;
-			    
+                    
                     audio_context = new AudioContext;
                     console.log('Audio context set up.');
                     console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
                 } catch (e) {
-			
+                    
                 }
-			    
+                
                 navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
                     console.log('No live audio input: ' + e);
                 });
             };
-
+            
             function incrementCount()
             {
                 var hidden_count = $("#hidden_count").val();
                 hidden_count++;
                 $("#hidden_count").val(hidden_count);
             }
-			
-            function getNewRow()
-            {
-                var hidden_count = $("#hidden_count").val();
-                //  $(obj).hide();
-                $('.dis').removeAttr('disabled');
-                $("#table ").find('#tbody')
-                .append($('<tr>')
-                .attr("data-count", hidden_count)
-                .attr("data-action", "active")
-                .attr("data-unchanged", "changed")
-                .attr("data-question", "")
-                .attr("data-question_note", "")
-                .attr("data-answer", "")
-                .attr("data-answer_note", "")
-                /*
+            
+                function getNewRow()
+                {
+                    var hidden_count = $("#hidden_count").val();
+                    //  $(obj).hide();
+                    $('.dis').removeAttr('disabled');
+                    $("#table ").find('#tbody')
+                    .prepend($('<tr>')
+                    .attr("data-count", hidden_count)
+                    .attr("data-action", "active")
+                    .attr("data-unchanged", "changed")
+                    .attr("data-question", "")
+                    .attr("data-question_note", "")
+                    .attr("data-answer", "")
+                    .attr("data-answer_note", "")
+                    /*
                 <div style="border:0px solid;width:100%;">
                                 <span style="float:left;width:12%;" >
                                 N
                                 </span>
                                 <span style="float:left;width:87%;" >
-                                <textarea cols="10"  style="width: 97%; height: 60px;" onChange='getValuesOnTrOnAN(this)'  rows="4"><?= htmlspecialchars($card->answer_note, ENT_QUOTES) ?></textarea>
+                                <textarea cols="10"  style="width: 97%; height: 60px;" 
+                     *onChange='getValuesOnTrOnAN(this)'  rows="4">
+            <?php //htmlspecialchars($card->answer_note, ENT_QUOTES)  ?></textarea>
                                 </span>
                 </div>
-                 */	
-                                        .append($('<td>')
-
-                                        .append($('<div style="border:0px solid;width:100%;">')
-
-                                        .append($('<span style="float:left;width:12%;" >')
-                                        .text('Q')
-                                    )
-                                        .append($('<span style="float:left;width:87%;" >')
-                                        .append($('<textarea  style="width: 97%; height: 40px;" >')
-                                        .attr('onBlur', 'getValuesOnTrOnQ(this)')
-                                    )
-                                    )
-                                    )
-
-                                        .append($('<div style="border:0px solid;width:100%;">')
-
-                                        .append($('<span style="float:left;width:12%;" >')
-                                        .text('N')
-                                    )
-                                        .append($('<span style="float:left;width:87%;" >')
-                                        .append($('<textarea  style="width: 97%; height: 40px;" >')
-                                        .attr('onBlur', 'getValuesOnTrOnQN(this)')
-                                    )
-                                    )
-                                    )
-
-                                    )
-
-                                        .append($('<td>')
-                                        .append($("<button>")
-                                        .html('Rec')
-                                        .attr('onClick', 'startRecording(this, "slow_q");')
-                                    )
-
-                                        .append($("<button>")
-                                        .html("Stop")
-                                        .attr("style", "margin-left:5px;")
-                                        .attr("class", "sound_file slow_q")
-                                        .attr("name", "slow_q_file_name_" + hidden_count)
-                                        .attr("onClick", "stopRecording(this, " + hidden_count + ", 'slow_q');")
-                                        .attr("id", "slow_q_file_name_" + hidden_count)
-                                        .prop('disabled', true)
-                                    )
-                                        .append($("<span>")
-                                        .text('Encoding...')
-                                        .attr('class', 'upload_bar slow_q')
-                                        .attr('style', 'display:none;margin-left:5px;')
-                                    )
-                                        .append($("<button>")
-                                        .text('Nothing To display')
-                                        .attr('class', 'upload_link slow_q')
-                                        .attr('style', 'display:none;margin-left:5px;')
-                                    )
-                                        .append($("<div>")
-                                        .text('x')
-                                        .attr('class', 'delete_file_button slow_q')
-                                        .attr('style', 'float:right;display:none;cursor:pointer')
-                                        .attr('onClick', 'deleteFileOnNewUpload(' + hidden_count + ',this, "slow_q")')
-                                    )
-                                    )
-                                        .append($('<td>')
-                                        .append($("<button>")
-                                        .html('Rec')
-                                        .attr('onClick', 'startRecording(this, "q");')
-                                    )
-                                        .append($("<button>")
-                                        .html("Stop")
-                                        .attr("style", "margin-left:5px;")
-                                        .attr("class", "sound_file q")
-                                        .attr("name", "q_file_name_" + hidden_count)
-                                        .attr("onClick", "stopRecording(this, " + hidden_count + ", 'q');")
-                                        .attr("id", "q_file_name_" + hidden_count)
-                                        .prop('disabled', true)
-                                    )
-                                        .append($("<span>")
-                                        .text('Encoding...')
-                                        .attr('class', 'upload_bar q')
-                                        .attr('style', 'display:none;margin-left:5px;')
-                                    )
-                                        .append($("<button>")
-                                        .text('Nothing To display')
-                                        .attr('class', 'upload_link q')
-                                        .attr('style', 'display:none;margin-left:5px;')
-                                    )
-                                        .append($("<div>")
-                                        .text('x')
-                                        .attr('class', 'delete_file_button q')
-                                        .attr('style', 'float:right;display:none;cursor:pointer')
-                                        .attr('onClick', 'deleteFileOnNewUpload(' + hidden_count + ',this, "q")')
-                                    )
-                                    )
-                                        .append($('<td>')
-                                        .append($('<div style="border:0px solid;width:100%;">')
-
-                                        .append($('<span style="float:left;width:12%;" >')
-                                        .text('A')
-                                    )
-                                        .append($('<span style="float:left;width:87%;" >')
-                                        .append($('<textarea  style="width: 97%; height: 40px;" >')
-                                        .attr('onBlur', 'getValuesOnTrOnA(this)')
-                                    )
-                                    )
-                                    )
-
-                                        .append($('<div style="border:0px solid;width:100%;">')
-
-                                        .append($('<span style="float:left;width:12%;" >')
-                                        .text('N')
-                                    )
-                                        .append($('<span style="float:left;width:87%;" >')
-                                        .append($('<textarea  style="width: 97%; height: 40px;" >')
-                                        .attr('onBlur', 'getValuesOnTrOnAN(this)')
-                                    )
-                                    )
-                                    )
-
-
-                                    )
-                                        .append($('<td>')
-                                        .append($("<button>")
-                                        .html('Rec')
-                                        .attr('onClick', 'startRecording(this, "slow_a");')
-                                    )
-                                        .append($("<button>")
-                                        .html("Stop")
-                                        .attr("style", "margin-left:5px;")
-                                        .attr("class", "sound_file slow_a")
-                                        .attr("name", "slow_a_file_name_" + hidden_count)
-                                        .attr("onClick", "stopRecording(this, " + hidden_count + ", 'slow_a');")
-                                        .attr("id", "slow_a_file_name_" + hidden_count)
-                                        .prop('disabled', true)
-                                    )
-                                        .append($("<span>")
-                                        .text('Encoding...')
-                                        .attr('class', 'upload_bar slow_a')
-                                        .attr('style', 'display:none;margin-left:5px;')
-                                    )
-                                        .append($("<button>")
-                                        .text('Nothing To display')
-                                        .attr('class', 'upload_link slow_a')
-                                        .attr('style', 'display:none;margin-left:5px;')
-                                    )
-                                        .append($("<div>")
-                                        .text('x')
-                                        .attr('class', 'delete_file_button slow_a')
-                                        .attr('style', 'float:right;display:none;cursor:pointer')
-                                        .attr('onClick', 'deleteFileOnNewUpload(' + hidden_count + ',this, "slow_a")')
-                                    )
-                                    )
-                                        .append($('<td>')
-                                        .append($("<button>")
-                                        .html('Rec')
-                                        .attr('onClick', 'startRecording(this, "a");')
-                                    )
-                                        .append($("<button>")
-                                        .html("Stop")
-                                        .attr("style", "margin-left:5px;")
-                                        .attr("class", "sound_file a")
-                                        .attr("name", "a_file_name_" + hidden_count)
-                                        .attr("onClick", "stopRecording(this, " + hidden_count + ", 'a');")
-                                        .attr("id", "a_file_name_" + hidden_count)
-                                        .prop('disabled', true)
-                                    )
-                                        .append($("<span>")
-                                        .text('Encoding...')
-                                        .attr('class', 'upload_bar a')
-                                        .attr('style', 'display:none;margin-left:5px;')
-                                    )
-                                        .append($("<button>")
-                                        .text('Nothing To display')
-                                        .attr('class', 'upload_link a')
-                                        .attr('style', 'display:none;margin-left:5px;')
-                                    )
-                                        .append($("<div>")
-                                        .text('x')
-                                        .attr('class', 'delete_file_button a')
-                                        .attr('style', 'float:right;display:none;cursor:pointer')
-                                        .attr('onClick', 'deleteFileOnNewUpload(' + hidden_count + ',this, "a")')
-                                    )
-                                    )
-
-                                        .append($('<td>')
-                                        .append($('<button>')
-                                        .attr('type', 'button')
-                                        .text('Delete')
-                                        .addClass('btn-danger dis')
-                                        .attr('onClick', 'deleteThisNew(this)')
-                                        .attr('style', 'cursor:pointer')
-                                    )
-                                    )
-                                    )
-                                    }
-
-
-                                    function deleteFile(id, obj, type)
-                                    {
-                                        var con = confirm("Are you sure you want to delete this?");
-                                        if (con)
-                                        {
-                                            var tr = $(obj).parents('tr').first();
-                                            var upload_file = "";
-                                            if (type == "a")
-                                            {
-                                                upload_file = $(tr).attr('data-answer_upload_file');
-                                            }
-                                            else if (type == 'slow_a')
-                                            {
-                                                upload_file = $(tr).attr('data-answer_upload_file_slow');
-                                            }
-                                            else if (type == 'slow_q')
-                                            {
-                                                upload_file = $(tr).attr('data-question_upload_file_slow');
-                                            }
-                                            else
-                                            {
-                                                upload_file = $(tr).attr('data-question_upload_file');
-                                            }
-
-
-                                            var base_url = '<?php echo base_url(); ?>';
-                                            $.post(base_url + "/index.php/game/deleteFileOnEdit", {"upload_file": upload_file, "id": id, "type":type}, function(res) {
-                                                alert(res);
-                                                if (res == 'File deleted successfully') {
-                                                    $(tr).find('.upload_link.'+type).html('');
-                                                    $(tr).find('.upload_link.'+type).hide();
-                                                    $(tr).find('.delete_file_button.'+type).hide();
-                                                    $(tr).find('.sound_file.'+type).show();
-
-                                                    if (type == "a")
-                                                    {
-                                                        $(tr).removeAttr("data-answer_upload_file");
-                                                    }
-                                                    else if (type == 'slow_a')
-                                                    {
-                                                        $(tr).removeAttr("data-answer_upload_file_slow");
-                                                    }
-                                                    else if (type == 'slow_q')
-                                                    {
-                                                        $(tr).removeAttr("data-question_upload_file_slow");
-                                                    }
-                                                    else
-                                                    {
-                                                        $(tr).removeAttr("data-question_upload_file");
-                                                    }
-
-                                                }
-                                            });
-
-
-                                        }
-                                    }
-                                    function deleteFileOnNewUpload(id, obj, type)
-                                    {
-                                        var con = confirm("Are you sure you want to delete this?");
-                                        if (con)
-                                        {
-                                            var tr = $(obj).parents('tr').first();
-                                            var upload_file = "";
-                                            if (type == "a")
-                                            {
-                                                upload_file = $(tr).attr('data-answer_upload_file');
-                                            }
-                                            else if (type == 'slow_a')
-                                            {
-                                                upload_file = $(tr).attr('data-answer_upload_file_slow');
-                                            }
-                                            else if (type == 'slow_q')
-                                            {
-                                                upload_file = $(tr).attr('data-question_upload_file_slow');
-                                            }
-                                            else
-                                            {
-                                                upload_file = $(tr).attr('data-question_upload_file');
-                                            }
-
-
-                                            var base_url = '<?php echo base_url(); ?>';
-                                            $.post(base_url + "/index.php/game/deleteFile", {"upload_file": upload_file}, function(res) {
-                                                alert(res);
-                                                if (res == 'File deleted successfully') {
-                                                    $(tr).find('.upload_link.'+type).html('');
-                                                    $(tr).find('.upload_link.'+type).hide();
-                                                    $(tr).find('.delete_file_button.'+type).hide();
-                                                    $(tr).find('.sound_file.'+type).show();
-                                                    if (type == "a")
-                                                    {
-                                                        $(tr).removeAttr("data-answer_upload_file");
-                                                    }
-                                                    else if (type == 'slow_a')
-                                                    {
-                                                        $(tr).removeAttr("data-answer_upload_file_slow");
-                                                    }
-                                                    else if (type == 'slow_q')
-                                                    {
-                                                        $(tr).removeAttr("data-question_upload_file_slow");
-                                                    }
-                                                    else
-                                                    {
-                                                        $(tr).removeAttr("data-question_upload_file");
-                                                    }
-                                                }
-                                            });
-
-                                        }
-                                    }
-                                    function uploadFiles(id, obj, type, data)
-                                    {
-                                        console.log("type "+type)
-                                        obj = "#"+$(obj).attr("id");
-                                        var base_url = '<?php echo base_url(); ?>';
-                                        var tr = $(obj).parents('tr').first();
-                                        $.ajax({
-                                            url: config.base + "/index.php/game/upload_sound",
-                                            dataType: 'json',
-                                            type: 'POST',
-                                            data: {
-                                                'id': id,
-                                                'type': type,
-                                                'data': data
-                                            },
-                                            success: function(data, status)
-                                            {
-                                                if (data.status != 'error')
-                                                {
-                                                    var message = data.msg;
-                                                    var array_msg = message.split("_-_-0909//^%*(");
-                                                    $(tr).find('.upload_bar.'+type).hide();
-                                                    if (type == "a")
-                                                    {
-                                                        $(tr).attr("data-answer_upload_file", array_msg[1]);
-                                                    }
-                                                    else if (type == 'slow_a')
-                                                    {
-                                                        $(tr).attr("data-answer_upload_file_slow", array_msg[1]);
-                                                    }
-                                                    else if (type == 'slow_q')
-                                                    {
-                                                        $(tr).attr("data-question_upload_file_slow", array_msg[1]);
-                                                    }
-                                                    else
-                                                    {
-                                                        $(tr).attr("data-question_upload_file", array_msg[1]);
-                                                    }
-
-                                                    $(tr).find('.upload_link.'+type).html("Listen");
-                                                    $(tr).find('.upload_link.'+type).attr("name", base_url + "sound-files/" + array_msg[1]);
-                                                    $(tr).find(".upload_link."+type).show();
-                                                    $(tr).find(".delete_file_button."+type).show();
-                                                }
-                                                else
-                                                {
-                                                    alert(data.msg);
-                                                    $(tr).find('.upload_bar.'+type).hide();
-                                                    $(tr).find('.sound_file.'+type).show();
-                                                }
-
-
-                                            }
-                                        });
-                                        return false;
-                                    }
-                                    function deleteThis(obj)
-                                    {
-                                        $(obj).hide();
-                                        var td = $(obj).parents('tr').first();
-                                        $(td).find('.btn-classic').show();
-                                        $(td).attr('data-action', 'delete');
-                                        $(td).attr('data-unchanged', 'changed');
-                                    }
-                                    function deleteThisNew(obj)
-                                    {
-                                        $(obj).closest('tr').remove();
-                                    }
-                                    function undoDeleteThis(obj)
-                                    {
-                                        $(obj).hide();
-                                        var td = $(obj).parents('tr').first();
-                                        $(td).find('.btn-danger').show();
-                                        $(td).attr('data-action', 'active');
-                                        $(td).attr('data-unchanged', 'changed');
-                                    }
-                                    function save() {
-                                        var base_url = '<?php echo base_url(); ?>';
-                                        var data = new Object();
-                                        data['deck_name'] = $("#deck_name").val();
-                                        data['deck_id'] = '<?php echo $allCards['deck_id'] ?>';
-                                        var fields = new Array(
-                                        "id",
-                                        "question",
-                                        "question_note",
-                                        "answer",
-                                        "answer_note",
-                                        "unchanged",
-                                        "action",
-                                        "question_upload_file",
-                                        "question_upload_file_slow",
-                                        "answer_upload_file",
-                                        "answer_upload_file_slow"
-                                    );
-                                        data['items'] = getPostData("#table", fields).length > 0 ? getPostData("#table", fields) : null;
-
-
-                                        $.post(base_url + "index.php/game/update_cards",
-                                        {"cards": data},
-                                        function(res) {
-                                            alert(res);
-                                            //alert(JSON.stringify(data))
-                                            if (res == 'Cards successfully updated')
-                                            {
-                                                location.reload();
-                                            }
-                                        });
-                                    }
-                                    function getPostData(tableId, fields)
-                                    {
-                                        var trs = $(tableId).find("tr:gt(0)");
-                                        var data = new Array();
-                                        $.each(trs, function(i, tr) {
-                                            var row = new Object();
-                                            $.each(fields, function(j, field) {
-                                                row[field] = $(tr).attr("data-" + field);
-                                            });
-                                            data.push(row);
-                                        });
-                                        return data;
-                                    }
-                                    /********************Row Import Code Starts********************/
-                                    var i = 0, a_ele;
-
-                                    // Click on attach file link.
-                                    $("#attach_file").click(function(e) {
-                                        //                                                                                        e.preventDefault();
-                                        $("#fileupload").click();
-                                    });
-                                    // Initialize file Uploader
-                                    $('#fileupload').fileupload({
-                                        url: '<?php echo base_url('index.php/upload') ?>',
-                                        autoUpload: true,
-                                        acceptFileTypes: /(\.|\/)(xlsx?|csv)$/i,
-                                        maxFileSize: 30 * 1024 * 1024,
-                                        processfail: function(e, data) {
-                                            alert(data.files[data.index].name + "\n" + data.files[data.index].error);
-                                        },
-                                        submit: function(e, data) {
-                                            $("#attachment_name").html(data.files[0].name);
-                                        },
-                                        done: function(e, data) {
-                                            $("#attachment").val(data._response.result.files[0].name);
-                                            $.ajax({
-                                                url: '<?php echo base_url("index.php/game/save_import_file") ?>',
-                                                data: $("#import_form").serialize(),
-                                                type: "post",
-                                                dataType: "json",
-                                                beforeSend: function() {
-
-                                                },
-                                                success: function(result) {
-                                                    location.reload();
-                                                    $("#attachment").val("");
-                                                    element.closest(".upload_text").find(".attachment_box_wrapper").remove();
-                                                },
-                                                error: function() {
-
-                                                }
-                                            });
-                                        },
-                                        fail: function(e, data) {
-                                            console.log(data);
-                                        }
-                                    });
-
-                                    /********************Row Import Code Ends********************/
+                     */	
+                    .append($('<td>')
+                    
+                    .append($('<div style="border:0px solid;width:100%;">')
+                    
+                    .append($('<span style="float:left;width:12%;" >') .text('Q') )
+                    .append($('<span style="float:left;width:87%;" >')
+                    .append($('<textarea  style="width: 97%; height: 40px;" >')
+                    .attr('onBlur', 'getValuesOnTrOnQ(this)')
+                )
+                )
+                )
+                    
+                    .append($('<div style="border:0px solid;width:100%;">')
+                    
+                    .append($('<span style="float:left;width:12%;" >')
+                    .text('N')
+                )
+                    .append($('<span style="float:left;width:87%;" >')
+                    .append($('<textarea  style="width: 97%; height: 40px;" >')
+                    .attr('onBlur', 'getValuesOnTrOnQN(this)')
+                )
+                )
+                )
+                    
+                )
+                    
+                    .append($('<td>')
+                    .append($("<button>")
+                    .html('Rec')
+                    .attr('onClick', 'startRecording(this, "slow_q");')
+                )
+                    
+                    .append($("<button>")
+                    .html("Stop")
+                    .attr("style", "margin-left:5px;")
+                    .attr("class", "sound_file slow_q")
+                    .attr("name", "slow_q_file_name_" + hidden_count)
+                    .attr("onClick", "stopRecording(this, " + hidden_count + ", 'slow_q');")
+                    .attr("id", "slow_q_file_name_" + hidden_count)
+                    .prop('disabled', true)
+                )
+                    .append($("<span>")
+                    .text('Encoding...')
+                    .attr('class', 'upload_bar slow_q')
+                    .attr('style', 'display:none;margin-left:5px;')
+                )
+                    .append($("<button>")
+                    .text('Nothing To display')
+                    .attr('class', 'upload_link slow_q')
+                    .attr('style', 'display:none;margin-left:5px;')
+                )
+                    .append($("<div>")
+                    .text('x')
+                    .attr('class', 'delete_file_button slow_q')
+                    .attr('style', 'float:right;display:none;cursor:pointer')
+                    .attr('onClick', 'deleteFileOnNewUpload(' + hidden_count + ',this, "slow_q")')
+                )
+                )
+                    .append($('<td>')
+                    .append($("<button>")
+                    .html('Rec')
+                    .attr('onClick', 'startRecording(this, "q");')
+                )
+                    .append($("<button>")
+                    .html("Stop")
+                    .attr("style", "margin-left:5px;")
+                    .attr("class", "sound_file q")
+                    .attr("name", "q_file_name_" + hidden_count)
+                    .attr("onClick", "stopRecording(this, " + hidden_count + ", 'q');")
+                    .attr("id", "q_file_name_" + hidden_count)
+                    .prop('disabled', true)
+                )
+                    .append($("<span>")
+                    .text('Encoding...')
+                    .attr('class', 'upload_bar q')
+                    .attr('style', 'display:none;margin-left:5px;')
+                )
+                    .append($("<button>")
+                    .text('Nothing To display')
+                    .attr('class', 'upload_link q')
+                    .attr('style', 'display:none;margin-left:5px;')
+                )
+                    .append($("<div>")
+                    .text('x')
+                    .attr('class', 'delete_file_button q')
+                    .attr('style', 'float:right;display:none;cursor:pointer')
+                    .attr('onClick', 'deleteFileOnNewUpload(' + hidden_count + ',this, "q")')
+                )
+                )
+                    .append($('<td>')
+                    .append($('<div style="border:0px solid;width:100%;">')
+                    
+                    .append($('<span style="float:left;width:12%;" >')
+                    .text('A')
+                )
+                    .append($('<span style="float:left;width:87%;" >')
+                    .append($('<textarea  style="width: 97%; height: 40px;" >')
+                    .attr('onBlur', 'getValuesOnTrOnA(this)')
+                )
+                )
+                )
+                    
+                    .append($('<div style="border:0px solid;width:100%;">')
+                    
+                    .append($('<span style="float:left;width:12%;" >')
+                    .text('N')
+                )
+                    .append($('<span style="float:left;width:87%;" >')
+                    .append($('<textarea  style="width: 97%; height: 40px;" >')
+                    .attr('onBlur', 'getValuesOnTrOnAN(this)')
+                )
+                )
+                )
+                    
+                    
+                )
+                    .append($('<td>')
+                    .append($("<button>")
+                    .html('Rec')
+                    .attr('onClick', 'startRecording(this, "slow_a");')
+                )
+                    .append($("<button>")
+                    .html("Stop")
+                    .attr("style", "margin-left:5px;")
+                    .attr("class", "sound_file slow_a")
+                    .attr("name", "slow_a_file_name_" + hidden_count)
+                    .attr("onClick", "stopRecording(this, " + hidden_count + ", 'slow_a');")
+                    .attr("id", "slow_a_file_name_" + hidden_count)
+                    .prop('disabled', true)
+                )
+                    .append($("<span>")
+                    .text('Encoding...')
+                    .attr('class', 'upload_bar slow_a')
+                    .attr('style', 'display:none;margin-left:5px;')
+                )
+                    .append($("<button>")
+                    .text('Nothing To display')
+                    .attr('class', 'upload_link slow_a')
+                    .attr('style', 'display:none;margin-left:5px;')
+                )
+                    .append($("<div>")
+                    .text('x')
+                    .attr('class', 'delete_file_button slow_a')
+                    .attr('style', 'float:right;display:none;cursor:pointer')
+                    .attr('onClick', 'deleteFileOnNewUpload(' + hidden_count + ',this, "slow_a")')
+                )
+                )
+                    .append($('<td>')
+                    .append($("<button>")
+                    .html('Rec')
+                    .attr('onClick', 'startRecording(this, "a");')
+                )
+                    .append($("<button>")
+                    .html("Stop")
+                    .attr("style", "margin-left:5px;")
+                    .attr("class", "sound_file a")
+                    .attr("name", "a_file_name_" + hidden_count)
+                    .attr("onClick", "stopRecording(this, " + hidden_count + ", 'a');")
+                    .attr("id", "a_file_name_" + hidden_count)
+                    .prop('disabled', true)
+                )
+                    .append($("<span>")
+                    .text('Encoding...')
+                    .attr('class', 'upload_bar a')
+                    .attr('style', 'display:none;margin-left:5px;')
+                )
+                    .append($("<button>")
+                    .text('Nothing To display')
+                    .attr('class', 'upload_link a')
+                    .attr('style', 'display:none;margin-left:5px;')
+                )
+                    .append($("<div>")
+                    .text('x')
+                    .attr('class', 'delete_file_button a')
+                    .attr('style', 'float:right;display:none;cursor:pointer')
+                    .attr('onClick', 'deleteFileOnNewUpload(' + hidden_count + ',this, "a")')
+                )
+                )
+                    
+                    .append($('<td>')
+                    .append($('<button>')
+                    .attr('type', 'button')
+                    .text('Delete')
+                    .addClass('btn-danger dis')
+                    .attr('onClick', 'deleteThisNew(this)')
+                    .attr('style', 'cursor:pointer')
+                )
+                )
+                )
+                }
+    
+    
+    function deleteFile(id, obj, type)
+    {
+        var con = confirm("Are you sure you want to delete this?");
+        if (con)
+        {
+            var tr = $(obj).parents('tr').first();
+            var upload_file = "";
+            if (type == "a")
+            {
+                upload_file = $(tr).attr('data-answer_upload_file');
+            }
+            else if (type == 'slow_a')
+            {
+                upload_file = $(tr).attr('data-answer_upload_file_slow');
+            }
+            else if (type == 'slow_q')
+            {
+                upload_file = $(tr).attr('data-question_upload_file_slow');
+            }
+            else
+            {
+                upload_file = $(tr).attr('data-question_upload_file');
+            }
+            
+            
+            var base_url = '<?php echo base_url(); ?>';
+            $.post(base_url + "/index.php/game/deleteFileOnEdit", {"upload_file": upload_file, "id": id, "type":type}, function(res) {
+                alert(res);
+                if (res == 'File deleted successfully') {
+                    $(tr).find('.upload_link.'+type).html('');
+                    $(tr).find('.upload_link.'+type).hide();
+                    $(tr).find('.delete_file_button.'+type).hide();
+                    $(tr).find('.sound_file.'+type).show();
+                    
+                    if (type == "a")
+                    {
+                        $(tr).removeAttr("data-answer_upload_file");
+                    }
+                    else if (type == 'slow_a')
+                    {
+                        $(tr).removeAttr("data-answer_upload_file_slow");
+                    }
+                    else if (type == 'slow_q')
+                    {
+                        $(tr).removeAttr("data-question_upload_file_slow");
+                    }
+                    else
+                    {
+                        $(tr).removeAttr("data-question_upload_file");
+                    }
+                    
+                }
+            });
+            
+            
+        }
+    }
+    function deleteFileOnNewUpload(id, obj, type)
+    {
+        var con = confirm("Are you sure you want to delete this?");
+        if (con)
+        {
+            var tr = $(obj).parents('tr').first();
+            var upload_file = "";
+            if (type == "a")
+            {
+                upload_file = $(tr).attr('data-answer_upload_file');
+            }
+            else if (type == 'slow_a')
+            {
+                upload_file = $(tr).attr('data-answer_upload_file_slow');
+            }
+            else if (type == 'slow_q')
+            {
+                upload_file = $(tr).attr('data-question_upload_file_slow');
+            }
+            else
+            {
+                upload_file = $(tr).attr('data-question_upload_file');
+            }
+            
+            
+            var base_url = '<?php echo base_url(); ?>';
+            $.post(base_url + "/index.php/game/deleteFile", {"upload_file": upload_file}, function(res) {
+                alert(res);
+                if (res == 'File deleted successfully') {
+                    $(tr).find('.upload_link.'+type).html('');
+                    $(tr).find('.upload_link.'+type).hide();
+                    $(tr).find('.delete_file_button.'+type).hide();
+                    $(tr).find('.sound_file.'+type).show();
+                    if (type == "a")
+                    {
+                        $(tr).removeAttr("data-answer_upload_file");
+                    }
+                    else if (type == 'slow_a')
+                    {
+                        $(tr).removeAttr("data-answer_upload_file_slow");
+                    }
+                    else if (type == 'slow_q')
+                    {
+                        $(tr).removeAttr("data-question_upload_file_slow");
+                    }
+                    else
+                    {
+                        $(tr).removeAttr("data-question_upload_file");
+                    }
+                }
+            });
+            
+        }
+    }
+    function uploadFiles(id, obj, type, data)
+    {
+        //                                        console.log("type "+type)
+        obj = "#"+$(obj).attr("id");
+        var base_url = '<?php echo base_url(); ?>';
+        var tr = $(obj).parents('tr').first();
+        $.ajax({
+            url: config.base + "/index.php/game/upload_sound",
+            dataType: 'json',
+            type: 'POST',
+            data: {
+                'id': id,
+                'type': type,
+                'data': data
+            },
+            success: function(data, status)
+            {
+                if (data.status != 'error')
+                {
+                    var message = data.msg;
+                    var array_msg = message.split("_-_-0909//^%*(");
+                    $(tr).find('.upload_bar.'+type).hide();
+                    if (type == "a")
+                    {
+                        $(tr).attr("data-answer_upload_file", array_msg[1]);
+                    }
+                    else if (type == 'slow_a')
+                    {
+                        $(tr).attr("data-answer_upload_file_slow", array_msg[1]);
+                    }
+                    else if (type == 'slow_q')
+                    {
+                        $(tr).attr("data-question_upload_file_slow", array_msg[1]);
+                    }
+                    else
+                    {
+                        $(tr).attr("data-question_upload_file", array_msg[1]);
+                    }
+                    
+                    $(tr).find('.upload_link.'+type).html("Listen");
+                    $(tr).find('.upload_link.'+type).attr("name", base_url + "sound-files/" + array_msg[1]);
+                    $(tr).find(".upload_link."+type).show();
+                    $(tr).find(".delete_file_button."+type).show();
+                }
+                else
+                {
+                    alert(data.msg);
+                    $(tr).find('.upload_bar.'+type).hide();
+                    $(tr).find('.sound_file.'+type).show();
+                }
+                
+                
+            }
+        });
+        return false;
+    }
+    function deleteThis(obj)
+    {
+        $(obj).hide();
+        var td = $(obj).parents('tr').first();
+        $(td).find('.btn-classic').show();
+        $(td).attr('data-action', 'delete');
+        $(td).attr('data-unchanged', 'changed');
+    }
+    function deleteThisNew(obj)
+    {
+        $(obj).closest('tr').remove();
+    }
+    function undoDeleteThis(obj)
+    {
+        $(obj).hide();
+        var td = $(obj).parents('tr').first();
+        $(td).find('.btn-danger').show();
+        $(td).attr('data-action', 'active');
+        $(td).attr('data-unchanged', 'changed');
+    }
+    function save() {
+        var base_url = '<?php echo base_url(); ?>';
+        var data = new Object();
+        data['deck_name'] = $("#deck_name").val();
+        data['deck_id'] = '<?php echo $allCards['deck_id'] ?>';
+        var fields = new Array(
+        "id",
+        "question",
+        "question_note",
+        "answer",
+        "answer_note",
+        "unchanged",
+        "action",
+        "question_upload_file",
+        "question_upload_file_slow",
+        "answer_upload_file",
+        "answer_upload_file_slow"
+    );
+        data['items'] = getPostData("#table", fields).length > 0 ? getPostData("#table", fields) : null;
+        
+        
+        $.post(base_url + "index.php/game/update_cards",
+        {"cards": data},
+        function(res) {
+            alert(res);
+            //alert(JSON.stringify(data))
+            if (res == 'Cards successfully updated')
+            {
+                location.reload();
+            }
+        });
+    }
+    function getPostData(tableId, fields)
+    {
+        var trs = $(tableId).find("tr:gt(0)");
+        var data = new Array();
+        $.each(trs, function(i, tr) {
+            var row = new Object();
+            $.each(fields, function(j, field) {
+                row[field] = $(tr).attr("data-" + field);
+            });
+            data.push(row);
+        });
+        return data;
+    }
+    /********************Row Import Code Starts********************/
+    var i = 0, a_ele;
+    
+    // Click on attach file link.
+    $("#attach_file").click(function(e) {
+        //e.preventDefault();
+        $("#fileupload").click();
+    });
+    // Initialize file Uploader
+    $('#fileupload').fileupload({
+        url: '<?php echo base_url('index.php/upload') ?>',
+        autoUpload: true,
+        acceptFileTypes: /(\.|\/)(xlsx?|csv)$/i,
+        maxFileSize: 30 * 1024 * 1024,
+        processfail: function(e, data) {
+            alert(data.files[data.index].name + "\n" + data.files[data.index].error);
+        },
+        submit: function(e, data) {
+            $("#attachment_name").html(data.files[0].name);
+        },
+        done: function(e, data) {
+            $("#attachment").val(data._response.result.files[0].name);
+            $.ajax({
+                url: '<?php echo base_url("index.php/game/save_import_file") ?>',
+                data: $("#import_form").serialize(),
+                type: "post",
+                dataType: "json",
+                beforeSend: function() {
+                    
+                },
+                success: function(result) {
+                    location.reload();
+                    $("#attachment").val("");
+                    element.closest(".upload_text").find(".attachment_box_wrapper").remove();
+                },
+                error: function() {
+                    
+                }
+            });
+        },
+        fail: function(e, data) {
+            console.log(data);
+        }
+    });
+    
+    /********************Row Import Code Ends********************/
         </script>
     </body>
 </html>
