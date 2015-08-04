@@ -287,7 +287,8 @@
 						
 						var question_upload_file_slow = currentCard['question_upload_file_slow'];
 						var answer_upload_file_slow = currentCard['answer_upload_file_slow'];
-						
+						document.getElementById("answerFast").value = answer_upload_file;
+						document.getElementById("answerSlow").value = answer_upload_file_slow;
 						$("#source_div_a").html("<audio id='player_a'><source id='sorce_id_a' type='audio/mpeg' src='" + base_url + "/sound-files/" + answer_upload_file + "'></audio>");
 						$("#source_div_q").html("<audio id='player_q'><source id='sorce_id_q' type='audio/mpeg' src='" + base_url + "/sound-files/" + question_upload_file + "'></audio>");
 						$("#sorce_id_a").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file']);
@@ -298,7 +299,55 @@
 						$("#sorce_id_a_slow").attr("src", base_url + "/sound-files/" + currentCard['answer_upload_file_slow']);
 						$("#sorce_id_q_slow").attr("src", base_url + "/sound-files/" + currentCard['question_upload_file_slow']);
 						flipBack();
-						document.getElementById('player_q').play();
+						
+						console.log("player_q = "+ question_upload_file+ " player_q_slow = "+question_upload_file_slow);
+						
+						var qRankI = document.getElementById("qRankI").value;
+						if(question_upload_file_slow == "" && question_upload_file != "")
+						{
+								if(qRankI > 6)
+								{
+									console.log("up question");
+									document.getElementById('player_q').play();
+								}
+								else
+								{
+									console.log("down question");
+									document.getElementById('player_q').play();
+								}
+						}
+						else if(question_upload_file == "" && question_upload_file_slow != "")
+						{
+								if(qRankI > 6)
+								{
+									console.log("up question slow");
+									document.getElementById('player_q_slow').play();
+								}
+								else
+								{
+									console.log("down question slow");
+									document.getElementById('player_q_slow').play();
+								}
+						}
+						else
+						{
+								if(qRankI > 6)
+								{
+									console.log("up question both");
+									document.getElementById('player_q').play();
+								}
+								else
+								{
+									console.log("down question both");
+									document.getElementById('player_q_slow').play();
+									
+									$("#player_q_slow").bind("ended", function(){
+										document.getElementById('player_q').play();
+									});
+								}
+						}
+						
+						
 						
 						var first_play = 0;
 						window.loop = 	function(){
@@ -312,9 +361,22 @@
 												}
 												else
 												{	
-													console.log(1);
-													document.getElementById('player_q_slow').play();
+														console.log(1);
+														if(question_upload_file_slow == "" && question_upload_file != "")
+														{
+																	document.getElementById('player_q').play();
+														}
+														else if(question_upload_file == "" && question_upload_file_slow != "")
+														{
+																	document.getElementById('player_q_slow').play();
+														}
+														else
+														{
+																	document.getElementById('player_q').play();
+														}														
 												}
+												
+												
 											}, Q_AudioLoopResetInterval);
 										};
 										
@@ -349,7 +411,65 @@
 						}
 						document.getElementById('player_q').pause();
 						document.getElementById('player_q_slow').pause();
-						document.getElementById('player_a').play();
+						
+						var answer_upload_file = document.getElementById("answerFast").value;
+						var answer_upload_file_slow = document.getElementById("answerSlow").value;
+						
+						console.log("player_a = "+ answer_upload_file+ " player_a_slow = "+answer_upload_file_slow);
+						var aRankI = document.getElementById("aRankI").value;
+						/*
+						if(aRankI > 6)
+						{
+							console.log("up");
+							document.getElementById('player_a').play();
+						}
+						else
+						{
+							console.log("down");
+							document.getElementById('player_a_slow').play();
+						}
+						
+						*/
+						if(answer_upload_file_slow == "" && answer_upload_file != "")
+						{
+								if(qRankI > 6)
+								{
+									console.log("up question");
+									document.getElementById('player_a').play();
+								}
+								else
+								{
+									console.log("down question");
+									document.getElementById('player_a').play();
+								}
+						}
+						else if(answer_upload_file == "" && answer_upload_file_slow != "")
+						{
+								if(qRankI > 6)
+								{
+									console.log("up question slow");
+									document.getElementById('player_a_slow').play();
+								}
+								else
+								{
+									console.log("down question slow");
+									document.getElementById('player_a_slow').play();
+								}
+						}
+						else
+						{
+								if(qRankI > 6)
+								{
+									console.log("up question both");
+									document.getElementById('player_a').play();
+								}
+								else
+								{
+									console.log("down question both");
+									document.getElementById('player_a_slow').play();
+								}
+						}
+						
 						
 						var first_play = 0;
 						window.loop = 	function(){
@@ -361,8 +481,19 @@
 												}
 												else
 												{	
-													console.log(1);
-													document.getElementById('player_a_slow').play();
+													if(answer_upload_file_slow == "" && answer_upload_file != "")
+													{
+														document.getElementById('player_a').play();
+													}
+													else if(answer_upload_file == "" && answer_upload_file_slow != "")
+													{
+														document.getElementById('player_a_slow').play();
+													}
+													else
+													{
+														document.getElementById('player_a').play();
+													}
+													
 												}
 												
 											}, A_AudioLoopResetInterval);
@@ -486,6 +617,8 @@
 						document.getElementById("qAvg").innerHTML = "Avg:" + avgTime;
 						document.getElementById("qContent").innerHTML = ques + '<div style="font-size:14px;">'+quesNotes+'</div>';
 						/*Call timer function to set count up time*/
+						
+						document.getElementById("qRankI").value = rank;
 						startTimer(true);
 					}
 					function renderAnswer(mode, history,test_history, rank, avgTime, time, ans, ansNotes, ques) {
@@ -496,6 +629,8 @@
 						document.getElementById("aAvg").innerHTML = "Avg:" + avgTime;
 						document.getElementById("aTime").innerHTML = "Time:" + time;
 						document.getElementById("aContent").innerHTML = '<div style="font-size:14px;">'+ques+'</div>'+ans+'<div style="font-size:14px;">'+ansNotes+'</div>';
+						
+						document.getElementById("aRankI").value = rank;
 					}
 					/***********Timer Functions****************/
 					function startTimer(restart) {
@@ -596,6 +731,7 @@
 							<div id="qRank" style="width:10%"  class="fcardHeadderContent">Rank: 1</div>
 							<div id="qAvg" style="width:15%"  class="fcardHeadderContent">Avg Time: 04:45</div>
 							<div id="qTime" style="width:15%"  class="fcardHeadderContent">Time: 00.00</div>
+							<input type="hidden" id="qRankI" value="0">
 							<div class="clearFloat"></div>
 						</div>
 						<div id="qContent" class="fcardContent">
@@ -616,6 +752,9 @@
 							<div id="aRank" style="width:10%"  class="fcardHeadderContent">Rank: 1</div>
 							<div id="aAvg"  style="width:15%" class="fcardHeadderContent">Avg Time: 04:45</div>
 							<div id="aTime" style="width:15%"  class="fcardHeadderContent">Time: 00.00</div>
+							<input type="hidden" id="aRankI" value="0">
+							<input type="hidden" id="answerSlow" value="">
+							<input type="hidden" id="answerFast" value="">
 							<div class="clearFloat"></div>
 						</div>
 						<div id="aContent" class="fcardContent">
