@@ -293,13 +293,15 @@
             <a href="#" onclick="incrementCount();
                    getNewRow()">Add New Row</a><br /><br />
             <form id="import_form">
-                <a href="javascript:void(0)" id="attach_file" ><span>Import New Row</span></a><br /a>
+                <a href="javascript:void(0)" id="attach_file" ><span>Import New Row</span></a><br/><br />
+                <a href="#" onclick="save()">Save</a>
                     <a href="javascript:void(0)" id="attachment_name" ></a>
                 <input type="file" name="files" id="fileupload" style="visibility: hidden; height:0; padding: 0;" /><br />
                 <div class="row upload_text"></div>
                 <input type="hidden" name='attachment' id="attachment" />
                 <input type="hidden" name='deck_id' id="attachment" value="<?php echo $deck_id; ?>"/>
             </form>
+                   
         </div>
         <script>
             var audio_context;

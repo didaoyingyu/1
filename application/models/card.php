@@ -1514,7 +1514,7 @@ class card extends CI_Model {
 		$this->db->trans_begin();
 		try {
 			$insert = array();
-			$items = $datas['items'];
+			$items = array_reverse($datas['items']);
 			unset($datas['items']);
 			$deck_id = $datas['deck_id'];
 			unset($datas['deck_id']);
