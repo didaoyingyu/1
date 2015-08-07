@@ -1052,4 +1052,115 @@ class Auth extends CI_Controller {
     }
 
     /*     * ******************Logic For User import Excel File Ends************************* */
+
+    public function export_user() {
+        $users = $this->ion_auth_model->export_user_data();
+        if ($users) {
+            $this->load->library("excel");
+
+            $this->excel = new PHPExcel();
+
+            $this->excel->getActiveSheet()->setTitle('users');
+            $this->excel->setActiveSheetIndex(0);
+            $fields = $users->list_fields();
+            $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
+            $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+            $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth(30);
+            // Fetching the table data
+            $row = 1;
+            foreach ($users->result() as $data) {
+                $col = 0;
+                foreach ($fields as $field) {
+                    $this->excel->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $data->$field);
+                    $col++;
+                }
+                $row++;
+            }
+
+            //$this->excel->stream('users_'.date('d-m-Y_H:i:s').'.xls');
+            // Create PHP Writer object to write file in an object.
+
+            $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+            $file_name = 'users_' . strtotime("now") . '.xls';
+            $excel_file = $objWriter->save("files/" . $file_name);
+
+            $result['status'] = 'success';
+            $result["file_name"] = $file_name;
+            $result['message'] = "users exported successfully.";
+        } else {
+            $result['status'] = 'error';
+            $result['message'] = "No users found to export";
+        }
+        echo json_encode($result);
+    }
+
+    public function export_group() {
+        $users = $this->ion_auth_model->export_group_data();
+        if ($users) {
+            $this->load->library("excel");
+
+            $this->excel = new PHPExcel();
+
+            $this->excel->getActiveSheet()->setTitle('groups');
+            $this->excel->setActiveSheetIndex(0);
+            $fields = $users->list_fields();
+
+            // Fetching the table data
+            $row = 1;
+            $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
+            $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(25);
+            $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth(100);
+            foreach ($users->result() as $data) {
+                $col = 0;
+                foreach ($fields as $field) {
+                    $deck_name = array();
+                    $deck_name_array = array();
+                    if ($field == 'deck') {
+                        $deck_id = explode(',', $data->deck);
+                        foreach ($deck_id as $id) {
+                            $deck_name = $this->ion_auth_model->get_deck_name_by_id($id);
+                            if (isset($deck_name['deck_name']))
+                                array_push($deck_name_array, $deck_name['deck_name']);
+                        }
+                        $data->deck = implode(',', $deck_name_array);
+                    }
+                    $this->excel->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $data->$field);
+                    $col++;
+                }
+                $row++;
+            }
+
+            //$this->excel->stream('users_'.date('d-m-Y_H:i:s').'.xls');
+            // Create PHP Writer object to write file in an object.
+
+            $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+            $file_name = 'users_' . strtotime("now") . '.xls';
+            $excel_file = $objWriter->save("files/" . $file_name);
+
+            $result['status'] = 'success';
+            $result["file_name"] = $file_name;
+            $result['message'] = "groups exported successfully.";
+        } else {
+            $result['status'] = 'error';
+            $result['message'] = "No groups found to export";
+        }
+        echo json_encode($result);
+    }
+
+    public function export_user_file_download($file_name) {
+        header("Content-type: application/excel");
+        header("Content-Disposition: attachment; filename=users_" . date("d-M-y_H:i:s") . ".xls");
+        $filedata = file_get_contents("files/" . $file_name);
+        unlink("files/" . $file_name);
+        echo $filedata;
+    }
+
+    public function export_group_file_download($file_name) {
+        header("Content-type: application/excel");
+        header("Content-Disposition: attachment; filename=groups_" . date("d-M-y_H:i:s") . ".xls");
+        $filedata = file_get_contents("files/" . $file_name);
+        unlink("files/" . $file_name);
+        echo $filedata;
+    }
+
 }

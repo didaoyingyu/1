@@ -1622,7 +1622,17 @@ class Ion_auth_model extends CI_Model {
     }
 
     public function get_deck_id_by_name($name) {
-        return $this->db->select('deck_id')->from("card_deck")->where('deck_name',$name)->get()->row_array();
+        return $this->db->select('deck_id')->from("card_deck")->where('deck_name', $name)->get()->row_array();
+    }
+    public function get_deck_name_by_id($id) {
+        return $this->db->select('deck_name')->from("card_deck")->where('deck_id', $id)->get()->row_array();
+    }
+
+    public function export_user_data() {
+        return $this->db->select('first_name,last_name,email')->from('users')->get();
+    }
+    public function export_group_data() {
+        return $this->db->select('name,description,deck')->from('groups')->get();
     }
 
 }

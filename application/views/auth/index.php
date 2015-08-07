@@ -37,11 +37,12 @@
             <form id="import_form">
                 <a href="javascript:void(0)" id="attach_file" title="Click To Import User File"><span>Import New Users</span></a>
                 <a href="<?php echo base_url('files/excelsheet_demo_files/users.xlsx') ?>" target='_blank'title="Click To Download User Demo File"><span>Download Demo File</span></a>
+                <a href="javascript:void(0)" id="export_user" title="Export Users" >Export Users</a>
                 <a href="javascript:void(0)" id="attachment_name" ></a>
                 <input type="file" name="files" class="form-control" id="fileupload" style="visibility: hidden; height:0; padding: 0;" />
                 <div class="row upload_text"></div>
                 <input type="hidden" name='attachment' id="attachment" />
-                <input type="hidden" name='deck_id' id="attachment" value="//<?php //echo $deck_id;   ?>"/>
+                <input type="hidden" name='deck_id' id="attachment" value="//<?php //echo $deck_id;      ?>"/>
             </form> 
             <div class="userIndexFormHolder">
                 <table cellpadding=0 cellspacing=10>
@@ -117,6 +118,28 @@
                     fail: function(e, data) {
                         console.log(data);
                     }
+                });
+                $(document).off("click", "#export_user").on('click', '#export_user', function() {
+                    var ele = $(this);
+                    ele.attr("disabled", "disabled");
+                    $.ajax({
+                        url: '<?php echo base_url("index.php/auth/export_user")?>',
+                        beforeSend: function() {
+                            //$('#user_table').html('<div class="loader_large"><i class="hi hi-refresh fa-spin fa-3x"></i></div>');
+                        },
+                        dataType: 'json',
+                        success: function(result) {
+                            ele.removeAttr("disabled");
+                            if (result["status"] == "success") {
+                                window.location.href = "<?php echo base_url("index.php/auth/export_user_file_download/"); ?>" + "/" + result["file_name"];
+                            } else {
+                                alert('Something Went Wrong Please refresh the page.');
+                            }
+                        },
+                        error: function() {
+                            //$("#user_table").html("Some Error! Please refresh the page.");
+                        }
+                    });
                 });
             });
     
